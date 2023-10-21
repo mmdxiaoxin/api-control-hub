@@ -1,22 +1,22 @@
 {
-  "name": "geeker-admin",
+  "name": "api-control-hub",
   "private": true,
-  "version": "1.2.0",
+  "version": "1.0.0",
   "type": "module",
-  "description": "geeker-admin open source management system",
+  "description": "HTTP API management system",
   "author": {
-    "name": "Geeker",
-    "email": "848130454@qq.com",
-    "url": "https://github.com/HalseySpicy"
+    "name": "mmdxiaoxin",
+    "email": "782446723@qq.com",
+    "url": "https://github.com/mmdxiaoxin"
   },
   "license": "MIT",
-  "homepage": "https://github.com/HalseySpicy/Geeker-Admin",
+  "homepage": "https://github.com/mmdxiaoxin/api-control-hub",
   "repository": {
     "type": "git",
-    "url": "git@github.com:HalseySpicy/Geeker-Admin.git"
+    "url": "git@github.com:mmdxiaoxin/api-control-hub.git"
   },
   "bugs": {
-    "url": "https://github.com/HalseySpicy/Geeker-Admin/issues"
+    "url": "https://github.com/mmdxiaoxin/api-control-hub/issues"
   },
   "scripts": {
     "dev": "vite",
