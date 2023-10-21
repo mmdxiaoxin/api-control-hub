@@ -85,10 +85,10 @@
         .forgot-password-button {
           text-decoration: none;
           cursor: pointer; /* 鼠标悬停时显示手型光标 */
-          color: #007bff; /* 设置链接文本颜色 */
+          color: var(--el-color-primary); /* 调整文本颜色 */
 
           &:hover {
-            color: #0056b3; /* 设置链接文本悬停时的颜色 */
+            color: var(--el-color-primary); /* 设置链接文本悬停时的颜色 */
           }
         }
       }
