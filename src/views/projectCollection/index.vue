@@ -10,7 +10,7 @@
     />
     <ProjectOverview v-if="isProject" :project-title="pageTitle" />
     <CatalogOverview v-if="isDirectory" :directory-title="pageTitle" />
-    <InterfaceConfiguration v-if="isApi" :api-title="pageTitle" />
+    <InterfaceConfiguration v-if="isApi" :api-title="pageTitle" :api-id="curId" />
   </div>
 </template>
 
@@ -31,6 +31,7 @@ const apiCollectionTreeRef = ref(null);
 const isProject = ref(true);
 const isDirectory = ref(false);
 const isApi = ref(false);
+const curId = ref("");
 const pageTitle = ref("");
 const workPlace = useWorkPlaceStore();
 
@@ -42,6 +43,7 @@ const judgeList = (data: any) => {
 
 const changeTreeFilter = (val: { id: string; treeCurrentData: any }) => {
   treeFilterValue.CollectionId = val.id;
+  curId.value = val.id;
   pageTitle.value = val.treeCurrentData.name;
   judgeList(val.treeCurrentData);
 };

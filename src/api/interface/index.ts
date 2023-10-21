@@ -149,46 +149,55 @@ export namespace HttpServer {
     projectName: string;
   }
 
+  export interface ReqHttpConfig {
+    apiId: string;
+  }
+
   export interface ResCollectionList {
     id: string;
     name: string;
-    isProject?: Object;
-    isDirectory?: Object;
-    isApi?: HttpParams;
+    isProject?: boolean;
+    isDirectory?: boolean;
+    isApi?: boolean;
     children?: ResCollectionList[];
   }
 
-  export interface HttpParams {
-    httpUrl: string;
-    httpMethod: string;
-    httpDescription: string;
-    headers?: Params[];
-    params?: Params[];
-    Authorization: string;
-    httpBody?: string | Params[];
-    creator: string;
-    createTime: string;
-    updateTime: string;
-  }
-
-  interface Params {
-    Key: string;
-    Value: string;
-  }
-
-  export interface ResHttpResult {
-    httpBody?: string | Params[];
-    httpCookies?: string;
-    httpHeaders?: Params[];
-  }
-}
-
-//项目管理模块
-export namespace Project {
-  export interface ResProjectList {
-    id: string;
-    name: string;
+  interface QueryParam {
+    key: string;
+    value: string;
     description: string;
+  }
+
+  interface QueryHeader {
+    key: string;
+    value: string;
+    description: string;
+  }
+
+  interface QueryBodyForm {
+    key: string;
+    value: string;
+    description: string;
+  }
+
+  interface QueryBodyFormX {
+    key: string;
+    value: string;
+    description: string;
+  }
+
+  export interface ResHttpConfig {
+    name: string;
+    requestMethod: string;
+    apiUrl: string;
+    authType: string;
+    queryParams: QueryParam[];
+    queryHeaders: QueryHeader[];
+    queryBodyForm: QueryBodyForm[];
+    queryBodyFormX: QueryBodyFormX[];
+    queryJsonBody: string;
+    queryXmlBody: string;
+    queryRawBody: string;
     creator: string;
     createTime: string;
     updateTime: string;

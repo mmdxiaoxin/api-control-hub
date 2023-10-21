@@ -10,3 +10,8 @@ import { HttpServer } from "@/api/interface";
 export const getHttpCollectionList = (params: HttpServer.ReqHttpParams) => {
   return http.post<HttpServer.ResCollectionList[]>(PORT1 + `/http/collection/list`, params);
 };
+
+//获取接口配置
+export const getHttpConfig = (params: HttpServer.ReqHttpConfig) => {
+  return http.post<HttpServer.ResHttpConfig>(PORT1 + `/http/config`, params);
+};

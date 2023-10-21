@@ -1,5 +1,5 @@
 <template>
-  <el-form ref="formRef" label-position="top" class="card interface-configuration">
+  <el-form ref="formRef" label-position="top" class="card interface-configuration" :model="formData">
     <!-- 接口标题和编辑按钮 -->
     <el-row :gutter="20" style="margin-bottom: 20px">
       <el-col :span="20">
@@ -49,7 +49,10 @@
       <el-tabs v-model="activeQuery">
         <el-tab-pane label="Params" name="first">
           <div class="query-params">
-            <QueryTable v-model:queryParams="formData.queryParams" />
+            <!-- 查询参数 -->
+            <el-form-item>
+              <QueryTable v-model:queryParams="formData.queryParams" />
+            </el-form-item>
           </div>
         </el-tab-pane>
         <el-tab-pane label="Auth" name="second">
@@ -65,8 +68,10 @@
         </el-tab-pane>
         <el-tab-pane label="Headers" name="third">
           <div class="query-params">
-            <!-- 请求头参数 -->
-            <QueryTable v-model:queryParams="formData.queryHeaders" />
+            <el-form-item>
+              <!-- 请求头参数 -->
+              <QueryTable v-model:queryParams="formData.queryHeaders" />
+            </el-form-item>
           </div>
         </el-tab-pane>
         <el-tab-pane label="Body" name="fourth">
@@ -85,34 +90,44 @@
                 <el-empty :image-size="70" />
               </div>
               <div v-if="queryBody === 2">
-                <QueryTable v-model:queryParams="formData.queryBodyForm" />
+                <el-form-item>
+                  <QueryTable v-model:queryParams="formData.queryBodyForm" />
+                </el-form-item>
               </div>
               <div v-if="queryBody === 3">
-                <QueryTable v-model:queryParams="formData.queryBodyFormX" />
+                <el-form-item>
+                  <QueryTable v-model:queryParams="formData.queryBodyFormX" />
+                </el-form-item>
               </div>
               <div v-if="queryBody === 4">
-                <el-input
-                  v-model="queryJsonBody"
-                  :autosize="{ minRows: 6, maxRows: 10 }"
-                  type="textarea"
-                  placeholder="Please input"
-                />
+                <el-form-item>
+                  <el-input
+                    v-model="formData.queryJsonBody"
+                    :autosize="{ minRows: 6, maxRows: 10 }"
+                    type="textarea"
+                    placeholder="Please input"
+                  />
+                </el-form-item>
               </div>
               <div v-if="queryBody === 5">
-                <el-input
-                  v-model="queryXmlBody"
-                  :autosize="{ minRows: 6, maxRows: 10 }"
-                  type="textarea"
-                  placeholder="Please input"
-                />
+                <el-form-item>
+                  <el-input
+                    v-model="formData.queryXmlBody"
+                    :autosize="{ minRows: 6, maxRows: 10 }"
+                    type="textarea"
+                    placeholder="Please input"
+                  />
+                </el-form-item>
               </div>
               <div v-if="queryBody === 6">
-                <el-input
-                  v-model="queryRawBody"
-                  :autosize="{ minRows: 6, maxRows: 10 }"
-                  type="textarea"
-                  placeholder="Please input"
-                />
+                <el-form-item>
+                  <el-input
+                    v-model="formData.queryRawBody"
+                    :autosize="{ minRows: 6, maxRows: 10 }"
+                    type="textarea"
+                    placeholder="Please input"
+                  />
+                </el-form-item>
               </div>
             </div>
           </div>
@@ -151,7 +166,7 @@
             />
             <!-- JSON 视图，raw -->
             <div class="raw-json" v-if="resBodyRadio === 'Raw' && ResSelect === 'JSON' && !isResponseBodyEmpty(responseBody)">
-              {{ responseBodyRaw }}
+              {{ responseBody }}
             </div>
             <!-- 非 JSON 格式的提示 -->
             <div v-if="ResSelect !== 'JSON' && !isResponseBodyEmpty(responseBody)">
@@ -184,13 +199,16 @@ import QueryTable from "./QueryTable.vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { Edit } from "@element-plus/icons-vue";
 import { useGlobalStore } from "@/stores/modules/global";
-import { reactiveToJSON } from "@/utils/switchJson";
 import { getOptionStyle } from "@/utils/workPlace";
 import axios, { AxiosError, AxiosResponse } from "axios";
+import { getHttpConfig } from "@/api/modules/httpServer";
+import { HttpServer } from "@/api/interface";
 
 const props = defineProps({
-  apiTitle: String
+  apiTitle: String,
+  apiId: String
 });
+console.log(props.apiId);
 
 interface QueryParam {
   key: string;
@@ -247,9 +265,6 @@ const formData = reactive<FormData>({
   queryRawBody: ""
 });
 
-const queryJsonBody = ref("");
-const queryXmlBody = ref("");
-const queryRawBody = ref("");
 const responseBody = reactive({
   message: "",
   code: 0,
@@ -265,9 +280,6 @@ const responseHeader = reactive([
   { key: "Content-Length", value: "" }
   // Add other headers as needed
 ]);
-
-// 将响应体转换为 JSON 字符串
-const responseBodyRaw = reactiveToJSON(responseBody);
 
 //检查响应体是否为空
 const isResponseBodyEmpty = (responseBody: any) => {
@@ -403,14 +415,54 @@ const sendApiForm = async () => {
   }
 };
 
+const useHttpApiConfig = async (reqApiId: string) => {
+  try {
+    const { data } = await getHttpConfig({ apiId: reqApiId });
+    const resFormData: HttpServer.ResHttpConfig = data;
+    if (resFormData) {
+      formData.requestMethod = resFormData.requestMethod;
+      formData.apiUrl = resFormData.apiUrl;
+      formData.authType = resFormData.authType;
+      formData.queryParams = resFormData.queryParams;
+      formData.queryHeaders = resFormData.queryHeaders;
+      formData.queryBodyForm = resFormData.queryBodyForm;
+      formData.queryBodyFormX = resFormData.queryBodyFormX;
+      formData.queryJsonBody = resFormData.queryJsonBody;
+      formData.queryXmlBody = resFormData.queryXmlBody;
+      formData.queryRawBody = resFormData.queryRawBody;
+    } else {
+      formData.requestMethod = "GET";
+      formData.apiUrl = "";
+      formData.authType = "noAuth";
+      formData.queryParams = [];
+      formData.queryHeaders = [];
+      formData.queryBodyForm = [];
+      formData.queryBodyFormX = [];
+      formData.queryJsonBody = "";
+      formData.queryXmlBody = "";
+      formData.queryRawBody = "";
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 onMounted(() => {
   apiName.value = props.apiTitle as string;
+  useHttpApiConfig(props.apiId as string);
 });
 
 watch(
   () => props.apiTitle,
   newVal => {
     apiName.value = newVal as string;
+  }
+);
+
+watch(
+  () => props.apiId,
+  newVal => {
+    useHttpApiConfig(typeof newVal === "string" ? newVal : "");
   }
 );
 </script>
