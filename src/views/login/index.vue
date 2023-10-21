@@ -3,10 +3,10 @@
     <div class="login-box">
       <SwitchDark class="dark" />
       <div class="login-left" v-if="globalStore.isDark">
-        <img class="login-left-img" src="../../assets/images/login_left_dark.svg" alt="login" />
+        <img class="login-left-img" src="@/assets/images/login_left_dark.svg" alt="login" />
       </div>
       <div class="login-left" v-else>
-        <img class="login-left-img" src="../../assets/images/login_left_sunny.svg" alt="login" />
+        <img class="login-left-img" src="@/assets/images/login_left_sunny.svg" alt="login" />
       </div>
       <div class="login-form">
         <div class="login-logo">
