@@ -8,7 +8,7 @@
         </div>
         <el-form ref="registerFormRef" :model="registerForm" :rules="registerRules" size="large">
           <el-form-item prop="username">
-            <el-input v-model="registerForm.username" placeholder="请输入用户名">
+            <el-input v-model="registerForm.username" placeholder="请输入用户名(邮箱)">
               <template #prefix>
                 <el-icon class="el-input__icon">
                   <user />
