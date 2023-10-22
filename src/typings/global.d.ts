@@ -7,6 +7,7 @@ declare namespace Menu {
     redirect?: string;
     meta: MetaProps;
     children?: MenuOptions[];
+    isProjectTeam?: ProjectTeam;
   }
   interface MetaProps {
     icon: string;
@@ -17,6 +18,11 @@ declare namespace Menu {
     isFull: boolean;
     isAffix: boolean;
     isKeepAlive: boolean;
+  }
+
+  interface ProjectTeam {
+    ProjectId: string;
+    name: string;
   }
 }
 
