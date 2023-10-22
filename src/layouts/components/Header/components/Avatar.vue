@@ -36,7 +36,7 @@ import PasswordDialog from "./PasswordDialog.vue";
 const router = useRouter();
 const userStore = useUserStore();
 
-// 退出登录
+// 退出登录逻辑
 const logout = () => {
   ElMessageBox.confirm("您是否确认退出登录?", "温馨提示", {
     confirmButtonText: "确定",
