@@ -28,12 +28,6 @@ defineProps<{ menuList: Menu.MenuOptions[] }>();
 const router = useRouter();
 const handleClickMenu = (subItem: Menu.MenuOptions) => {
   if (subItem.meta.isLink) return window.open(subItem.meta.isLink, "_blank");
-  if (subItem.isProjectTeam ?? false) {
-    const projectTeam = subItem.isProjectTeam as Menu.ProjectTeam;
-    const teamId = projectTeam.ProjectId;
-    router.push({ path: subItem.path, params: { teamId: teamId } });
-    return;
-  }
   router.push(subItem.path);
 };
 </script>
