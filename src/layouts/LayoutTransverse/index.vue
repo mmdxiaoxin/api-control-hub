@@ -2,8 +2,12 @@
 <template>
   <el-container class="layout">
     <el-header>
-      <div class="logo flx-center">
-        <img class="logo-img" src="@/assets/images/logo1.svg" alt="logo" />
+      <div class="logo flx-center" v-if="globalStore.isDark || globalStore.headerInverted">
+        <img class="logo-img" src="@/assets/images/logo_dark.svg" alt="logo" />
+        <span class="logo-text">{{ title }}</span>
+      </div>
+      <div class="logo flx-center" v-else>
+        <img class="logo-img" src="@/assets/images/logo_sunny.svg" alt="logo" />
         <span class="logo-text">{{ title }}</span>
       </div>
       <el-menu mode="horizontal" :router="false" :default-active="activeMenu">
@@ -41,6 +45,7 @@ import { useRoute, useRouter } from "vue-router";
 import Main from "@/layouts/components/Main/index.vue";
 import ToolBarRight from "@/layouts/components/Header/ToolBarRight.vue";
 import SubMenu from "@/layouts/components/Menu/SubMenu.vue";
+import { useGlobalStore } from "@/stores/modules/global";
 
 const title = import.meta.env.VITE_GLOB_APP_TITLE;
 
@@ -49,6 +54,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 const menuList = computed(() => authStore.showMenuListGet);
 const activeMenu = computed(() => (route.meta.activeMenu ? route.meta.activeMenu : route.path) as string);
+const globalStore = useGlobalStore();
 
 const handleClickMenu = (subItem: Menu.MenuOptions) => {
   if (subItem.meta.isLink) return window.open(subItem.meta.isLink, "_blank");
