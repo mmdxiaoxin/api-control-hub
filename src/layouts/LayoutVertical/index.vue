@@ -3,8 +3,12 @@
   <el-container class="layout">
     <el-aside>
       <div class="aside-box" :style="{ width: isCollapse ? '65px' : '210px' }">
-        <div class="logo flx-center">
-          <img class="logo-img" src="@/assets/images/logo1.svg" alt="logo" />
+        <div class="logo flx-center" v-if="globalStore.isDark || globalStore.asideInverted">
+          <img class="logo-img" src="@/assets/images/logo_dark.svg" alt="logo" />
+          <span v-show="!isCollapse" class="logo-text">{{ title }}</span>
+        </div>
+        <div class="logo flx-center" v-else>
+          <img class="logo-img" src="@/assets/images/logo_sunny.svg" alt="logo" />
           <span v-show="!isCollapse" class="logo-text">{{ title }}</span>
         </div>
         <el-scrollbar>
