@@ -3,8 +3,12 @@
   <el-container class="layout">
     <el-header>
       <div class="header-lf mask-image">
-        <div class="logo flx-center">
-          <img class="logo-img" src="@/assets/images/logo1.svg" alt="logo" />
+        <div class="logo flx-center" v-if="globalStore.isDark || globalStore.headerInverted">
+          <img class="logo-img" src="@/assets/images/logo_dark.svg" alt="logo" />
+          <span class="logo-text">{{ title }}</span>
+        </div>
+        <div class="logo flx-center" v-else>
+          <img class="logo-img" src="@/assets/images/logo_sunny.svg" alt="logo" />
           <span class="logo-text">{{ title }}</span>
         </div>
         <ToolBarLeft />
