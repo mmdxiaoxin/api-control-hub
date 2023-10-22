@@ -9,8 +9,12 @@
         <img class="login-left-img" src="@/assets/images/login_left_sunny.svg" alt="login" />
       </div>
       <div class="login-form">
-        <div class="login-logo">
-          <img class="login-icon" src="@/assets/images/logo1.svg" alt="" />
+        <div class="login-logo" v-if="globalStore.isDark">
+          <img class="login-icon" src="@/assets/images/logo_dark.svg" alt="" />
+          <h2 class="logo-text">HTTP接口管理平台</h2>
+        </div>
+        <div class="login-logo" v-else>
+          <img class="login-icon" src="@/assets/images/logo_sunny.svg" alt="" />
           <h2 class="logo-text">HTTP接口管理平台</h2>
         </div>
         <LoginForm />

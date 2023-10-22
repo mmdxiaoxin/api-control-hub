@@ -3,7 +3,7 @@
     <div class="register-box">
       <div class="register-form">
         <div class="register-logo">
-          <img class="register-icon" src="@/assets/images/logo1.svg" alt="" />
+          <img class="register-icon" src="@/assets/images/logo_sunny.svg" alt="" />
           <h2 class="logo-text">账号注册</h2>
         </div>
         <el-form ref="registerFormRef" :model="registerForm" :rules="registerRules" size="large">
