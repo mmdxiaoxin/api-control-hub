@@ -2,8 +2,11 @@
 <template>
   <el-container class="layout">
     <div class="aside-split">
-      <div class="logo flx-center">
-        <img class="logo-img" src="@/assets/images/logo1.svg" alt="logo" />
+      <div class="logo flx-center" v-if="globalStore.isDark || globalStore.asideInverted">
+        <img class="logo-img" src="@/assets/images/logo_dark.svg" alt="logo" />
+      </div>
+      <div class="logo flx-center" v-else>
+        <img class="logo-img" src="@/assets/images/logo_sunny.svg" alt="logo" />
       </div>
       <el-scrollbar>
         <div class="split-list">
