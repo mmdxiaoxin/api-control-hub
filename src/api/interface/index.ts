@@ -110,8 +110,8 @@ export namespace MockServer {
   export interface ResCollectionList {
     id: string;
     name: string;
-    isSpace?: Object;
-    isProject?: Object;
+    isSpace: Object;
+    isCollection: Object;
     children?: ResCollectionList[];
   }
 
