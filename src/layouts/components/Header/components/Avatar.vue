@@ -1,7 +1,7 @@
 <template>
   <el-dropdown trigger="click">
     <div class="avatar">
-      <img src="@/assets/images/avatar.gif" alt="avatar" />
+      <img :src="avatar" alt="avatar" />
     </div>
     <template #dropdown>
       <el-dropdown-menu>
@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { LOGIN_URL } from "@/config";
 import { useRouter } from "vue-router";
 import { logoutApi } from "@/api/modules/login";
@@ -35,7 +35,7 @@ import PasswordDialog from "./PasswordDialog.vue";
 
 const router = useRouter();
 const userStore = useUserStore();
-
+const avatar = computed(() => userStore.userInfo.avatar);
 // 退出登录逻辑
 const logout = () => {
   ElMessageBox.confirm("您是否确认退出登录?", "温馨提示", {
