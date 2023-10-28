@@ -74,7 +74,8 @@ onBeforeMount(async () => {
   if (props.requestApi) {
     const { data } = await props.requestApi!();
     treeData.value = data;
-    treeAllData.value = [{ id: "", [props.label]: "全部" }, ...data];
+    // treeAllData.value = [{ id: "", [props.label]: "全部" }, ...data];
+    treeAllData.value = [...data];
   }
 });
 
@@ -90,7 +91,8 @@ watch(
   () => {
     if (props.data?.length) {
       treeData.value = props.data;
-      treeAllData.value = [{ id: "", [props.label]: "全部" }, ...props.data];
+      // treeAllData.value = [{ id: "", [props.label]: "全部" }, ...props.data];
+      treeAllData.value = [...props.data];
     }
   },
   { deep: true, immediate: true }

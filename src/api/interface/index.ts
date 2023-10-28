@@ -97,3 +97,50 @@ export namespace User {
     children?: ResDepartment[];
   }
 }
+
+//Mock服务模块
+export namespace MockServer {
+  export interface ReqMockParams extends ReqPage {
+    mockMethod: string;
+    mockURL: string;
+    mockDescription: string;
+    mockStatus: number;
+  }
+
+  export interface ResCollectionList {
+    id: string;
+    name: string;
+    isSpace?: Object;
+    isProject?: Object;
+    children?: ResCollectionList[];
+  }
+
+  export interface ResMockList {
+    id: string;
+    mockMethod: string;
+    mockURL: string;
+    mockDescription: string;
+    mockStatus: number;
+    mockResponse: string;
+    mockCreator: string;
+    mockCreateTime: string;
+    mockUpdateTime: string;
+  }
+
+  export interface ResStatus {
+    mockLabel: string;
+    mockValue: number;
+  }
+}
+
+//接口管理模块
+export namespace HttpServer {
+  export interface ResCollectionList {
+    id: string;
+    name: string;
+    isSpace?: Object;
+    isProject?: Object;
+    isApi?: Object;
+    children?: ResCollectionList[];
+  }
+}
