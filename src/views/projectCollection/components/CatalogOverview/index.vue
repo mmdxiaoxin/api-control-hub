@@ -1,6 +1,6 @@
 <template>
   <div class="descriptions-box card">
-    <span class="text"> 目录概览 </span>
+    <span class="text"> {{ props.directoryTitle }} </span>
     <el-descriptions title="配置项 📚" :column="1" border>
       <el-descriptions-item label="requestApi"> 请求分类数据的 api </el-descriptions-item>
       <el-descriptions-item label="data"> 分类数据，如果有分类数据，则不会执行 api 请求 </el-descriptions-item>
@@ -13,7 +13,11 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const props = defineProps({
+  directoryTitle: String
+});
+</script>
 
 <style scoped lang="scss">
 .descriptions-box {

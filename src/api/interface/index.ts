@@ -138,8 +138,8 @@ export namespace HttpServer {
   export interface ResCollectionList {
     id: string;
     name: string;
-    isSpace?: Object;
     isProject?: Object;
+    isDirectory?: Object;
     isApi?: Object;
     children?: ResCollectionList[];
   }

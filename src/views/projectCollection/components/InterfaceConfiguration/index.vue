@@ -2,7 +2,7 @@
   <el-form ref="formRef" label-position="top" class="card interface-configuration">
     <el-row :gutter="20" style="margin-bottom: 20px">
       <el-col :span="20">
-        <span class="text"> {{ apiTitle }} </span>
+        <span class="text"> {{ props.apiTitle }} </span>
       </el-col>
       <el-col :span="4" class="right-aligned">
         <el-button type="info">保存</el-button>
@@ -31,7 +31,7 @@
       </el-col>
     </el-row>
     <div class="interface-query card">
-      <el-tabs v-model="activeQuery" @tab-click="handleClick">
+      <el-tabs v-model="activeQuery">
         <el-tab-pane label="Params" name="first">
           <div class="query-params">
             <el-table :data="queryParams" style="width: 100%" border>
@@ -40,7 +40,8 @@
               <el-table-column prop="description" label="描述"> </el-table-column>
               <el-table-column label="操作">
                 <template #default="scope">
-                  <el-button type="primary" @click="removeQueryParam(scope.$index)">删除</el-button>
+                  <el-button type="primary">修改</el-button>
+                  <el-button type="danger" @click="removeQueryParam(scope.$index)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -65,7 +66,8 @@
               <el-table-column prop="description" label="描述"> </el-table-column>
               <el-table-column label="操作">
                 <template #default="scope">
-                  <el-button type="primary" @click="removeQueryHeader(scope.$index)">删除</el-button>
+                  <el-button type="primary">修改</el-button>
+                  <el-button type="danger" @click="removeQueryHeader(scope.$index)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -78,7 +80,7 @@
       </el-tabs>
     </div>
     <div class="interface-response card">
-      <el-tabs v-model="activeResponse" @tab-click="handleClick">
+      <el-tabs v-model="activeResponse">
         <el-tab-pane label="Body" name="first">
           <div class="response-body">
             <div class="res-body-toolBar">
@@ -111,14 +113,17 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import type { TabsPaneContext } from "element-plus";
+
+const props = defineProps({
+  apiTitle: String
+});
 
 const formRef = ref(null);
 const activeQuery = ref("first");
 const activeResponse = ref("first");
 const resBodyRadio = ref("Pretty");
-const apiTitle = ref("接口配置");
 const ResSelect = ref("JSON");
+//响应体配置
 const ResFileOption = [
   {
     value: "JSON",
@@ -142,6 +147,7 @@ const ResFileOption = [
   }
 ];
 
+//响应头配置
 const resHeaders = [
   {
     key: "Date",
@@ -160,9 +166,7 @@ const resHeaders = [
     value: "Tom"
   }
 ];
-const handleClick = (tab: TabsPaneContext, event: Event) => {
-  console.log(tab, event);
-};
+
 const queryParams = ref([{ name: "param1", value: "value1", description: "描述1" }]);
 const queryHeaders = ref([{ name: "header1", value: "value1", description: "描述1" }]);
 const addQueryParam = () => {

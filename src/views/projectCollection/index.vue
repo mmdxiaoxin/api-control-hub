@@ -4,66 +4,58 @@
       ref="apiCollectionTreeRef"
       label="name"
       title="项目集合"
-      :data="testData"
-      :default-value="treeFilterValue.CollectionId"
+      :data="treeFilterData"
+      :default-value="initParam.departmentId"
       @change="changeTreeFilter"
     />
-    <ProjectOverview v-if="isProject" />
-    <CatalogOverview v-if="isDirectory" />
-    <InterfaceConfiguration v-if="isApi" />
+    <ProjectOverview v-if="isProject" :project-title="pageTitle" />
+    <CatalogOverview v-if="isDirectory" :directory-title="pageTitle" />
+    <InterfaceConfiguration v-if="isApi" :api-title="pageTitle" />
   </div>
 </template>
 
 <script setup lang="ts" name="treeFilter">
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import { ElMessage } from "element-plus";
 import ApiTreeFilter from "./components/ApiTreeFilter/index.vue";
 import ProjectOverview from "./components/ProjectOverview/index.vue";
 import CatalogOverview from "./components/CatalogOverview/index.vue";
 import InterfaceConfiguration from "./components/InterfaceConfiguration/index.vue";
+import { getHttpCollectionList } from "@/api/modules/httpServer";
 
 const treeFilterValue = reactive({ CollectionId: "1" });
+const initParam = reactive({ departmentId: "" });
+
 const apiCollectionTreeRef = ref(null);
 const isProject = ref(true);
 const isDirectory = ref(false);
 const isApi = ref(false);
+const pageTitle = ref("");
 
-const testData = [
-  {
-    id: "1",
-    name: "农业监控系统",
-    isProject: true,
-    children: [
-      {
-        id: "11",
-        name: "目录 1.1",
-        isDirectory: true,
-        children: [
-          { id: "111", name: "api1", isApi: true },
-          { id: "112", name: "api2", isApi: true },
-          { id: "113", name: "api3", isApi: true },
-          { id: "114", name: "api4", isApi: true }
-        ]
-      }
-    ]
-  }
-];
-
-const judgeList = (Project: boolean, Directory: boolean, Api: boolean) => {
-  isProject.value = Project;
-  isDirectory.value = Directory;
-  isApi.value = Api;
+const judgeList = (data: any) => {
+  isProject.value = !!data.isProject;
+  isDirectory.value = !!data.isDirectory;
+  isApi.value = !!data.isApi;
 };
 
 const changeTreeFilter = (val: { id: string; treeCurrentData: any }) => {
   ElMessage.success(`你选择了 id 为 ${val.id} 的数据🤔`);
   treeFilterValue.CollectionId = val.id;
-  judgeList(
-    val.treeCurrentData.isProject as boolean,
-    val.treeCurrentData.isDirectory as boolean,
-    val.treeCurrentData.isApi as boolean
-  );
+  pageTitle.value = val.treeCurrentData.name;
+  judgeList(val.treeCurrentData);
 };
+
+const treeFilterData = ref<any>([]);
+const getTreeFilter = async () => {
+  const { data } = await getHttpCollectionList();
+  treeFilterData.value = data;
+  initParam.departmentId = treeFilterData.value[0].id;
+  pageTitle.value = treeFilterData.value[0].name;
+};
+
+onMounted(() => {
+  getTreeFilter();
+});
 </script>
 
 <style scoped lang="scss">
