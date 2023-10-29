@@ -1,55 +1,68 @@
 <template>
   <div class="content-box">
-    <TreeFilter
+    <ApiTreeFilter
+      ref="apiCollectionTreeRef"
       label="name"
       title="项目集合"
       :data="testData"
       :default-value="treeFilterValue.CollectionId"
       @change="changeTreeFilter"
     />
-    <div class="descriptions-box card">
-      <span class="text"> 树形筛选器 🍓🍇🍈🍉</span>
-      <el-descriptions title="配置项 📚" :column="1" border>
-        <el-descriptions-item label="requestApi"> 请求分类数据的 api </el-descriptions-item>
-        <el-descriptions-item label="data"> 分类数据，如果有分类数据，则不会执行 api 请求 </el-descriptions-item>
-        <el-descriptions-item label="title"> treeFilter 标题 </el-descriptions-item>
-        <el-descriptions-item label="id"> 选择的id，默认为 “id” </el-descriptions-item>
-        <el-descriptions-item label="label"> 显示的label，默认为 “label” </el-descriptions-item>
-        <el-descriptions-item label="multiple"> 是否为多选，默认为 false </el-descriptions-item>
-        <el-descriptions-item label="defaultValue"> 默认选中的值 </el-descriptions-item>
-      </el-descriptions>
-    </div>
+    <ProjectOverview v-if="isProject" />
+    <CatalogOverview v-if="isDirectory" />
+    <InterfaceConfiguration v-if="isApi" />
   </div>
 </template>
 
 <script setup lang="ts" name="treeFilter">
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
-import TreeFilter from "@/components/TreeFilter/index.vue";
+import ApiTreeFilter from "./components/ApiTreeFilter/index.vue";
+import ProjectOverview from "./components/ProjectOverview/index.vue";
+import CatalogOverview from "./components/CatalogOverview/index.vue";
+import InterfaceConfiguration from "./components/InterfaceConfiguration/index.vue";
 
 const treeFilterValue = reactive({ CollectionId: "1" });
+const apiCollectionTreeRef = ref(null);
+const isProject = ref(true);
+const isDirectory = ref(false);
+const isApi = ref(false);
+
 const testData = [
   {
     id: "1",
-    name: "Category 1",
-    isDir: true,
+    name: "农业监控系统",
+    isProject: true,
     children: [
-      { id: "11", name: "Subcategory 1.1" },
-      { id: "12", name: "Subcategory 1.2" }
-    ]
-  },
-  {
-    id: "2",
-    name: "Category 2",
-    children: [
-      { id: "21", name: "Subcategory 2.1" },
-      { id: "22", name: "Subcategory 2.2" }
+      {
+        id: "11",
+        name: "目录 1.1",
+        isDirectory: true,
+        children: [
+          { id: "111", name: "api1", isApi: true },
+          { id: "112", name: "api2", isApi: true },
+          { id: "113", name: "api3", isApi: true },
+          { id: "114", name: "api4", isApi: true }
+        ]
+      }
     ]
   }
 ];
-const changeTreeFilter = (val: string) => {
-  ElMessage.success(`你选择了 id 为 ${val} 的数据🤔`);
-  treeFilterValue.CollectionId = val;
+
+const judgeList = (Project: boolean, Directory: boolean, Api: boolean) => {
+  isProject.value = Project;
+  isDirectory.value = Directory;
+  isApi.value = Api;
+};
+
+const changeTreeFilter = (val: { id: string; treeCurrentData: any }) => {
+  ElMessage.success(`你选择了 id 为 ${val.id} 的数据🤔`);
+  treeFilterValue.CollectionId = val.id;
+  judgeList(
+    val.treeCurrentData.isProject as boolean,
+    val.treeCurrentData.isDirectory as boolean,
+    val.treeCurrentData.isApi as boolean
+  );
 };
 </script>
 
