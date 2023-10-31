@@ -7,7 +7,7 @@
             <el-avatar class="mr-3" :size="32" :src="useStore.userInfo.avatar" />
             <span style="margin-left: 20px" v-if="!editMode">{{ useStore.userInfo.name }}</span>
             <el-input v-else v-model="editedUserInfo.name" style="max-width: 30%; margin-left: 20px" />
-            <el-tag style="margin-left: 20px">{{ workPlace.currentRole }}</el-tag>
+            <el-tag style="margin-left: 20px" :type="getTagType(workPlace.currentRole)">{{ workPlace.currentRole }}</el-tag>
           </div>
         </template>
         <template #extra>
@@ -68,6 +68,17 @@ const toggleEditMode = () => {
     // 例如，将editedUserInfo的值提交到后端
   }
   editMode.value = !editMode.value;
+};
+
+const getTagType = (role: String) => {
+  switch (role) {
+    case "管理员":
+      return "primary"; // 管理员样式
+    case "团队拥有者":
+      return "warning"; // 团队拥有者样式
+    default:
+      return "info"; // 普通成员样式
+  }
 };
 
 defineExpose({ openDialog });
