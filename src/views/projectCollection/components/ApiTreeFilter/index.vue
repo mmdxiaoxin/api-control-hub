@@ -3,7 +3,7 @@
     <div class="filter-header">
       <el-breadcrumb :separator-icon="ArrowRight" style="margin-bottom: 20px">
         <el-breadcrumb-item>{{ useWorkPlace.teamName }}</el-breadcrumb-item>
-        <el-breadcrumb-item> {{ useWorkPlace.projectName }}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{ useWorkPlace.projectName }}</el-breadcrumb-item>
       </el-breadcrumb>
       <span v-if="title" class="title sle">
         {{ title }}
@@ -28,6 +28,7 @@
         :default-checked-keys="multiple ? selected : []"
         @node-click="handleNodeClick"
         @check="handleCheckChange"
+        @node-drop="handleDrop"
       >
         <template #default="{ node, data }">
           <span class="el-tree-node__label custom-tree-node">
@@ -44,6 +45,9 @@
                   <el-dropdown-item :icon="DocumentAdd" @click="addApi(data)" v-if="data.isApi === undefined">
                     接口添加
                   </el-dropdown-item>
+                  <el-dropdown-item :icon="DocumentCopy" @click="duplicateApi(data)" v-if="data.isApi !== undefined">
+                    克隆
+                  </el-dropdown-item>
                   <el-dropdown-item :icon="Delete" v-if="data.isProject === undefined" @click="removeNode(node, data)">
                     删除
                   </el-dropdown-item>
@@ -59,12 +63,13 @@
 
 <script setup lang="ts" name="ApiTreeFilter">
 import { ref, watch, onBeforeMount, nextTick } from "vue";
-import { ElTree } from "element-plus";
-import { AllowDropType } from "element-plus/es/components/tree/src/tree.type";
+import { ElMessage, ElTree } from "element-plus";
+import { AllowDropType, NodeDropType } from "element-plus/es/components/tree/src/tree.type";
 import type Node from "element-plus/es/components/tree/src/model/node";
+import type { DragEvents } from "element-plus/es/components/tree/src/model/useDragNode";
 import { TreeNodeData } from "element-plus/es/components/tree-v2/src/types";
 import { useWorkPlaceStore } from "@/stores/modules/workPlace";
-import { ArrowRight, Delete, More, FolderAdd, DocumentAdd } from "@element-plus/icons-vue";
+import { ArrowRight, Delete, More, FolderAdd, DocumentAdd, DocumentCopy } from "@element-plus/icons-vue";
 
 // 接收父组件参数并设置默认值
 interface TreeFilterProps {
@@ -75,6 +80,13 @@ interface TreeFilterProps {
   label?: string; // 显示的label ==> 非必传，默认为 “label”
   multiple?: boolean; // 是否为多选 ==> 非必传，默认为 false
   defaultValue?: any; // 默认选中的值 ==> 非必传
+}
+
+// 配置节点的数据data
+interface Tree {
+  id: string;
+  label: string;
+  children?: Tree[];
 }
 
 const props = withDefaults(defineProps<TreeFilterProps>(), {
@@ -167,6 +179,23 @@ const handleCheckChange = () => {
 };
 
 const allowDrop = (draggingNode: Node, dropNode: Node, type: AllowDropType): boolean => {
+  // 获取拖拽源和目标节点的数据
+  const draggingData = draggingNode.data;
+  const dropData = dropNode.data;
+
+  // 检查拖拽源和目标节点的 isApi 属性
+  const isDraggingApi = draggingData.isApi !== undefined;
+  const isDropApi = dropData.isApi !== undefined;
+
+  if (type === "prev" || type === "next") {
+    return true; // 允许拖拽到前一个或后一个节点
+  }
+
+  // 如果拖拽源是接口 (isApi 不为 undefined)，并且目标节点也是接口，则禁止拖拽到目标节点内部
+  if (isDraggingApi && isDropApi) {
+    return false;
+  }
+
   // 如果是叶子节点（没有子节点）并且拖拽到根节点以外，不允许拖拽
   if (type === "inner") {
     return true; // 允许拖拽到内部
@@ -177,17 +206,22 @@ const allowDrop = (draggingNode: Node, dropNode: Node, type: AllowDropType): boo
   }
 };
 
-interface Tree {
-  id: string;
-  label: string;
-  children?: Tree[];
-}
+// 拖拽事件
+const handleDrop = (draggingNode: Node, dropNode: Node, dropType: NodeDropType, ev: DragEvents) => {
+  const message = `拖拽源：${draggingNode.label}，目标节点：${dropNode.label}，拖拽类型：${dropType}`;
+  ElMessage.success(message);
+  console.log("拖拽事件：", ev);
+};
 
 const addDirectory = (data: { [key: string]: any }) => {
   console.log(data);
 };
 
 const addApi = (data: { [key: string]: any }) => {
+  console.log(data);
+};
+
+const duplicateApi = (data: { [key: string]: any }) => {
   console.log(data);
 };
 
