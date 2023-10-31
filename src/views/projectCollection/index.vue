@@ -16,7 +16,6 @@
 
 <script setup lang="ts" name="treeFilter">
 import { reactive, ref, onMounted } from "vue";
-import { ElMessage } from "element-plus";
 import ApiTreeFilter from "./components/ApiTreeFilter/index.vue";
 import ProjectOverview from "./components/ProjectOverview/index.vue";
 import CatalogOverview from "./components/CatalogOverview/index.vue";
@@ -39,7 +38,6 @@ const judgeList = (data: any) => {
 };
 
 const changeTreeFilter = (val: { id: string; treeCurrentData: any }) => {
-  ElMessage.success(`你选择了 id 为 ${val.id} 的数据🤔`);
   treeFilterValue.CollectionId = val.id;
   pageTitle.value = val.treeCurrentData.name;
   judgeList(val.treeCurrentData);
