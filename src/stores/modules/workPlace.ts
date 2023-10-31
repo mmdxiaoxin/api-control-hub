@@ -11,10 +11,10 @@ export const useWorkPlaceStore = defineStore({
     currentRole: string;
   } => ({
     projectId: "0000001",
-    projectName: "测试项目1",
+    projectName: "农业监控系统",
     teamId: "000001",
-    teamName: "测试团队",
-    currentRole: "管理员"
+    teamName: "个人空间",
+    currentRole: "团队拥有者"
   }),
   getters: {},
   actions: {
