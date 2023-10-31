@@ -1,8 +1,14 @@
 <template>
   <div class="card filter">
-    <h4 v-if="title" class="title sle">
-      {{ title }}
-    </h4>
+    <div class="filter-header">
+      <el-breadcrumb :separator-icon="ArrowRight" style="margin-bottom: 20px">
+        <el-breadcrumb-item>{{ useWorkPlace.teamName }}</el-breadcrumb-item>
+        <el-breadcrumb-item> {{ useWorkPlace.projectName }}</el-breadcrumb-item>
+      </el-breadcrumb>
+      <span v-if="title" class="title sle">
+        {{ title }}
+      </span>
+    </div>
     <el-input v-model="filterText" placeholder="输入关键字进行过滤" clearable />
     <el-scrollbar :style="{ height: title ? `calc(100% - 95px)` : `calc(100% - 56px)` }">
       <el-tree
@@ -15,7 +21,6 @@
         :show-checkbox="multiple"
         :check-strictly="false"
         :current-node-key="!multiple ? selected : ''"
-        :highlight-current="!multiple"
         :expand-on-click-node="false"
         :check-on-click-node="multiple"
         :props="defaultProps"
@@ -24,11 +29,27 @@
         @node-click="handleNodeClick"
         @check="handleCheckChange"
       >
-        <template #default="scope">
-          <span class="el-tree-node__label">
-            <slot :row="scope">
-              {{ scope.node.label }}
-            </slot>
+        <template #default="{ node, data }">
+          <span class="el-tree-node__label custom-tree-node">
+            <span>{{ node.label }}</span>
+            <el-dropdown trigger="click">
+              <span class="el-dropdown-link">
+                <el-icon><More /></el-icon>
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item :icon="FolderAdd" @click="addDirectory(data)" v-if="data.isApi === undefined">
+                    子目录添加
+                  </el-dropdown-item>
+                  <el-dropdown-item :icon="DocumentAdd" @click="addApi(data)" v-if="data.isApi === undefined">
+                    接口添加
+                  </el-dropdown-item>
+                  <el-dropdown-item :icon="Delete" v-if="data.isProject === undefined" @click="removeNode(node, data)">
+                    删除
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
           </span>
         </template>
       </el-tree>
@@ -42,6 +63,8 @@ import { ElTree } from "element-plus";
 import { AllowDropType } from "element-plus/es/components/tree/src/tree.type";
 import type Node from "element-plus/es/components/tree/src/model/node";
 import { TreeNodeData } from "element-plus/es/components/tree-v2/src/types";
+import { useWorkPlaceStore } from "@/stores/modules/workPlace";
+import { ArrowRight, Delete, More, FolderAdd, DocumentAdd } from "@element-plus/icons-vue";
 
 // 接收父组件参数并设置默认值
 interface TreeFilterProps {
@@ -53,6 +76,7 @@ interface TreeFilterProps {
   multiple?: boolean; // 是否为多选 ==> 非必传，默认为 false
   defaultValue?: any; // 默认选中的值 ==> 非必传
 }
+
 const props = withDefaults(defineProps<TreeFilterProps>(), {
   id: "id",
   label: "label",
@@ -63,6 +87,8 @@ const defaultProps = {
   children: "children",
   label: props.label
 };
+
+const useWorkPlace = useWorkPlaceStore();
 
 const treeRef = ref<InstanceType<typeof ElTree>>();
 const treeCurrentData = ref<TreeNodeData>();
@@ -151,6 +177,27 @@ const allowDrop = (draggingNode: Node, dropNode: Node, type: AllowDropType): boo
   }
 };
 
+interface Tree {
+  id: string;
+  label: string;
+  children?: Tree[];
+}
+
+const addDirectory = (data: { [key: string]: any }) => {
+  console.log(data);
+};
+
+const addApi = (data: { [key: string]: any }) => {
+  console.log(data);
+};
+
+const removeNode = (node: Node, data: Tree) => {
+  const parent = node.parent;
+  const children: Tree[] = parent.data.children || parent.data;
+  const index = children.findIndex(d => d.id === data.id);
+  children.splice(index, 1);
+  treeAllData.value = [...treeAllData.value];
+};
 // 暴露给父组件使用
 defineExpose({ treeData, treeAllData, treeRef, treeCurrentData });
 </script>

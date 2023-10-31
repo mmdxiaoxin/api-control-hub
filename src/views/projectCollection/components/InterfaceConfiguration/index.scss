@@ -1,0 +1,40 @@
+.interface-configuration {
+  width: calc(100% - 260px);
+  height: 100%;
+  padding: 3%;
+
+  .right-aligned {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .interface-query {
+    margin-top: 20px;
+    max-height: 300px;
+  }
+
+  .interface-response {
+    margin-top: 10px;
+    height: calc(100% - 300px);
+
+    .response-body {
+      height: 100%;
+
+      .res-body-toolBar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+
+      .response-body-content {
+        width: 100%;
+        height: calc(100% - 40px);
+        overflow: auto;
+        border: #6b778c 1px solid;
+      }
+    }
+  }
+}

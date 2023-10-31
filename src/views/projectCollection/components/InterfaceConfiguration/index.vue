@@ -5,53 +5,46 @@
         <span class="text"> {{ props.apiTitle }} </span>
       </el-col>
       <el-col :span="4" class="right-aligned">
-        <el-button type="info">保存</el-button>
+        <el-button type="info" @click="ElMessage.success('保存成功')">
+          保存<el-icon class="el-icon--right"><MessageBox /></el-icon>
+        </el-button>
       </el-col>
     </el-row>
     <el-row :gutter="20">
       <el-col :span="4">
         <el-form-item>
-          <el-select placeholder="请选择请求方法">
+          <el-select placeholder="请选择请求方法" v-model="formData.requestMethod">
             <el-option label="GET" value="GET"></el-option>
             <el-option label="POST" value="POST"></el-option>
-            <el-option label="DELETE" value="POST"></el-option>
-            <el-option label="PUT" value="POST"></el-option>
+            <el-option label="DELETE" value="DELETE"></el-option>
+            <el-option label="PUT" value="PUT"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
       <el-col :span="16">
         <el-form-item>
-          <el-input placeholder="请输入接口 URL" clearable>
+          <el-input placeholder="请输入接口 URL" clearable v-model="formData.apiUrl">
             <template #prepend>Http://</template>
           </el-input>
         </el-form-item>
       </el-col>
       <el-col :span="4" class="right-aligned">
-        <el-button type="primary">发送</el-button>
+        <el-button type="primary" @click="console.log('发送数据:', formData)">
+          发送<el-icon class="el-icon--right"><Connection /></el-icon>
+        </el-button>
       </el-col>
     </el-row>
     <div class="interface-query card">
       <el-tabs v-model="activeQuery">
         <el-tab-pane label="Params" name="first">
           <div class="query-params">
-            <el-table :data="queryParams" style="width: 100%" border>
-              <el-table-column prop="name" label="参数名"> </el-table-column>
-              <el-table-column prop="value" label="参数值"> </el-table-column>
-              <el-table-column prop="description" label="描述"> </el-table-column>
-              <el-table-column label="操作">
-                <template #default="scope">
-                  <el-button type="primary">修改</el-button>
-                  <el-button type="danger" @click="removeQueryParam(scope.$index)">删除</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-            <el-button @click="addQueryParam" style="width: 100%">添加参数</el-button>
+            <QueryTable v-model:queryParams="formData.queryParams" />
           </div>
         </el-tab-pane>
         <el-tab-pane label="Auth" name="second">
           <div class="query-params">
             <el-form-item label="类型">
-              <el-select placeholder="请选择请求类型">
+              <el-select placeholder="请选择请求类型" v-model="formData.authType">
                 <el-option label="从父级继承" value="father"></el-option>
                 <el-option label="No Auth" value="noAuth"></el-option>
               </el-select>
@@ -60,22 +53,54 @@
         </el-tab-pane>
         <el-tab-pane label="Headers" name="third">
           <div class="query-params">
-            <el-table :data="queryHeaders" style="width: 100%" border>
-              <el-table-column prop="name" label="参数名"> </el-table-column>
-              <el-table-column prop="value" label="参数值"> </el-table-column>
-              <el-table-column prop="description" label="描述"> </el-table-column>
-              <el-table-column label="操作">
-                <template #default="scope">
-                  <el-button type="primary">修改</el-button>
-                  <el-button type="danger" @click="removeQueryHeader(scope.$index)">删除</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-            <el-button @click="addQueryHeader" style="width: 100%">添加参数</el-button>
+            <QueryTable v-model:queryParams="formData.queryHeaders" />
           </div>
         </el-tab-pane>
         <el-tab-pane label="Body" name="fourth">
-          <div class="query-params">Body</div>
+          <div class="query-params">
+            <el-radio-group v-model="queryBody">
+              <el-radio :label="1">none</el-radio>
+              <el-radio :label="2">form-data</el-radio>
+              <el-radio :label="3">x-www-form-urlencoded</el-radio>
+              <el-radio :label="4">json</el-radio>
+              <el-radio :label="5">xml</el-radio>
+              <el-radio :label="6">raw</el-radio>
+            </el-radio-group>
+            <!-- 根据选中的 queryBody 显示不同的内容 -->
+            <div class="query-body-container">
+              <div v-if="queryBody === 1"><el-empty :image-size="70" /></div>
+              <div v-if="queryBody === 2">
+                <QueryTable v-model:queryParams="formData.queryBodyForm" />
+              </div>
+              <div v-if="queryBody === 3">
+                <QueryTable v-model:queryParams="formData.queryBodyFormX" />
+              </div>
+              <div v-if="queryBody === 4">
+                <el-input
+                  v-model="queryJsonBody"
+                  :autosize="{ minRows: 6, maxRows: 10 }"
+                  type="textarea"
+                  placeholder="Please input"
+                />
+              </div>
+              <div v-if="queryBody === 5">
+                <el-input
+                  v-model="queryXmlBody"
+                  :autosize="{ minRows: 6, maxRows: 10 }"
+                  type="textarea"
+                  placeholder="Please input"
+                />
+              </div>
+              <div v-if="queryBody === 6">
+                <el-input
+                  v-model="queryRawBody"
+                  :autosize="{ minRows: 6, maxRows: 10 }"
+                  type="textarea"
+                  placeholder="Please input"
+                />
+              </div>
+            </div>
+          </div>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -95,6 +120,8 @@
                 </el-option>
               </el-select>
             </div>
+            <div v-if="responseBody == ''"><el-empty :image-size="70" /></div>
+            <el-input v-else type="textarea" v-model="responseBody" :autosize="{ minRows: 6, maxRows: 10 }" disabled />
           </div>
         </el-tab-pane>
         <el-tab-pane label="Cookies" name="second"><div class="response-params">No Cookies</div></el-tab-pane>
@@ -112,18 +139,46 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { reactive, ref } from "vue";
+import QueryTable from "./QueryTable.vue";
+import { ElMessage } from "element-plus";
 
 const props = defineProps({
   apiTitle: String
 });
 
+//测试数据
+const queryParams = [{ key: "param1", value: "value1", description: "描述1" }];
+const queryHeaders = [{ key: "header1", value: "value1", description: "描述1" }];
+const queryBodyForm = [{ key: "header1", value: "value1", description: "描述1" }];
+const queryBodyFormX = [{ key: "header1", value: "value1", description: "描述1" }];
+
 const formRef = ref(null);
+const formData = reactive({
+  requestMethod: "GET",
+  apiUrl: "",
+  authType: "father",
+  queryParams: queryParams,
+  queryHeaders: queryHeaders,
+  queryBodyForm: queryBodyForm,
+  queryBodyFormX: queryBodyFormX,
+  queryJsonBody: "",
+  queryXmlBody: "",
+  queryRawBody: ""
+  // 其他表单属性
+});
+
 const activeQuery = ref("first");
 const activeResponse = ref("first");
 const resBodyRadio = ref("Pretty");
 const ResSelect = ref("JSON");
-//响应体配置
+const queryBody = ref(1);
+const queryJsonBody = ref("");
+const queryXmlBody = ref("");
+const queryRawBody = ref("");
+const responseBody = ref("test");
+
+//响应体文件显示配置
 const ResFileOption = [
   {
     value: "JSON",
@@ -166,55 +221,9 @@ const resHeaders = [
     value: "Tom"
   }
 ];
-
-const queryParams = ref([{ name: "param1", value: "value1", description: "描述1" }]);
-const queryHeaders = ref([{ name: "header1", value: "value1", description: "描述1" }]);
-const addQueryParam = () => {
-  queryParams.value.push({ name: "param", value: "value", description: "描述" });
-};
-const addQueryHeader = () => {
-  queryHeaders.value.push({ name: "header", value: "value", description: "描述" });
-};
-const removeQueryParam = (index: number) => {
-  queryParams.value.splice(index, 1);
-};
-const removeQueryHeader = (index: number) => {
-  queryHeaders.value.splice(index, 1);
-};
 // 其他的设置和事件处理函数
 </script>
 
 <style scoped lang="scss">
-.interface-configuration {
-  width: 100%;
-  height: 100%;
-  padding: 3%;
-
-  .right-aligned {
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  .interface-query {
-    margin-top: 20px;
-    max-height: 300px;
-  }
-
-  .interface-response {
-    margin-top: 10px;
-    height: calc(100% - 300px);
-
-    .response-body {
-      height: 100%;
-
-      .res-body-toolBar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-direction: row;
-        flex-wrap: wrap;
-      }
-    }
-  }
-}
+@import "./index.scss";
 </style>
