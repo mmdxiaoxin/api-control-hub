@@ -64,25 +64,25 @@
         <el-button type="primary" link :icon="Delete" @click="deleteAccount(scope.row)">删除</el-button>
       </template>
     </ProTable>
-    <UserDrawer ref="drawerRef" />
+    <MockDrawer ref="drawerRef" />
     <ImportExcel ref="dialogRef" />
   </div>
 </template>
 
 <script setup lang="tsx" name="useProTable">
 import { ref, reactive } from "vue";
-import { MockServer, User } from "@/api/interface";
+import { MockServer } from "@/api/interface";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useDownload } from "@/hooks/useDownload";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
 import { ElMessage, ElMessageBox } from "element-plus";
 import ProTable from "@/components/ProTable/index.vue";
 import ImportExcel from "@/components/ImportExcel/index.vue";
-import UserDrawer from "@/views/proTable/components/UserDrawer.vue";
 import { ProTableInstance, ColumnProps } from "@/components/ProTable/interface";
 import { CirclePlus, Delete, EditPen, Download, Upload, View } from "@element-plus/icons-vue";
 import { deleteUser, editUser, addUser, exportUserInfo, BatchAddUser } from "@/api/modules/user";
 import { changeMockStatus, getMockList, getMockStatus } from "@/api/modules/mockServer";
+import MockDrawer from "@/views/mockServer/components/MockDrawer.vue";
 
 const baseURL = "https://mock.presstime.cn/mock/6534b86affb279f23e01859d/api-control-hub";
 
@@ -202,8 +202,8 @@ const batchAdd = () => {
 };
 
 // 打开 drawer(新增、查看、编辑)
-const drawerRef = ref<InstanceType<typeof UserDrawer> | null>(null);
-const openDrawer = (title: string, row: Partial<User.ResUserList> = {}) => {
+const drawerRef = ref<InstanceType<typeof MockDrawer> | null>(null);
+const openDrawer = (title: string, row: Partial<MockServer.ResMockList> = {}) => {
   const params = {
     title,
     isView: title === "查看",
