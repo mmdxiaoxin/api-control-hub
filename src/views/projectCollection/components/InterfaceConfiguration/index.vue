@@ -45,8 +45,8 @@
           <div class="query-params">
             <el-form-item label="类型">
               <el-select placeholder="请选择请求类型" v-model="formData.authType">
-                <el-option label="从父级继承" value="father"></el-option>
                 <el-option label="No Auth" value="noAuth"></el-option>
+                <el-option label="从父级继承" value="father"></el-option>
               </el-select>
             </el-form-item>
           </div>
@@ -157,7 +157,7 @@ const formRef = ref(null);
 const formData = reactive({
   requestMethod: "GET",
   apiUrl: "",
-  authType: "father",
+  authType: "noAuth",
   queryParams: queryParams,
   queryHeaders: queryHeaders,
   queryBodyForm: queryBodyForm,
@@ -178,7 +178,7 @@ const queryXmlBody = ref("");
 const queryRawBody = ref("");
 const responseBody = ref("test");
 
-//响应体文件显示配置
+//响应体格式化显示配置
 const ResFileOption = [
   {
     value: "JSON",
