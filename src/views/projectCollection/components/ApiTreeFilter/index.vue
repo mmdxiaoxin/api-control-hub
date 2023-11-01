@@ -85,7 +85,7 @@ interface TreeFilterProps {
 // 配置节点的数据data
 interface Tree {
   id: string;
-  label: string;
+  name: string;
   children?: Tree[];
 }
 
@@ -213,16 +213,61 @@ const handleDrop = (draggingNode: Node, dropNode: Node, dropType: NodeDropType, 
   console.log("拖拽事件：", ev);
 };
 
-const addDirectory = (data: { [key: string]: any }) => {
-  console.log(data);
+// 添加子目录
+const addDirectory = (data: Tree) => {
+  const newChild = { id: data.id + `${dataId++}`, name: "新目录", children: [], isDirectory: true };
+  if (!data.children) {
+    data.children = [];
+  }
+  data.children.push(newChild);
+  treeAllData.value = [...treeAllData.value];
 };
 
-const addApi = (data: { [key: string]: any }) => {
-  console.log(data);
+// 添加接口
+const addApi = (data: Tree) => {
+  const newChild = { id: data.id + `${dataId++}`, name: "新接口", children: [], isApi: true };
+  if (!data.children) {
+    data.children = [];
+  }
+  data.children.push(newChild);
+  treeAllData.value = [...treeAllData.value];
 };
 
-const duplicateApi = (data: { [key: string]: any }) => {
-  console.log(data);
+// 克隆接口
+let dataId = 1000;
+const duplicateApi = (data: Tree) => {
+  const parent = getParentNode(treeAllData.value, data);
+  if (!parent) {
+    ElMessage.error("没有找到父节点.");
+    return;
+  }
+
+  const index = parent.children.indexOf(data);
+  if (index === -1) {
+    ElMessage.error("待复制节点不存在数据.");
+    return;
+  }
+
+  const newChild = { id: data.id + `${dataId++}`, name: data.name + "-Copy", isApi: true };
+  parent.children.splice(index + 1, 0, newChild);
+
+  treeAllData.value = [...treeAllData.value];
+};
+
+//获取父节点
+const getParentNode = (dataList: { [key: string]: any }[], targetNode: Tree): { [p: string]: any } | null => {
+  for (const node of dataList) {
+    if (node.children && node.children.includes(targetNode)) {
+      return node;
+    }
+    if (node.children) {
+      const parent = getParentNode(node.children, targetNode);
+      if (parent) {
+        return parent;
+      }
+    }
+  }
+  return null;
 };
 
 const removeNode = (node: Node, data: Tree) => {
