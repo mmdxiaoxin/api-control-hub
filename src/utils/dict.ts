@@ -15,3 +15,11 @@ export const userStatus = [
   { label: "启用", value: 1, tagType: "success" },
   { label: "禁用", value: 0, tagType: "danger" }
 ];
+
+/**
+ * @description：接口状态
+ */
+export const mockStatus = [
+  { label: "启用", value: 1, tagType: "success" },
+  { label: "关闭", value: 0, tagType: "danger" }
+];

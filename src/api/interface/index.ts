@@ -121,7 +121,7 @@ export namespace MockServer {
     mockURL: string;
     mockDescription: string;
     mockStatus: number;
-    mockResponse: string;
+    mockContent: string;
     mockCreator: string;
     mockCreateTime: string;
     mockUpdateTime: string;
