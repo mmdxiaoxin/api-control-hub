@@ -2,7 +2,7 @@
   <el-container class="project-description card">
     <el-main class="project-content">
       <div class="project-header">
-        <span class="text">{{ props.projectTitle }} </span>
+        <span class="text">{{ props.projectTitle }} <el-button :icon="Edit" circle size="small" /></span>
         <el-tag>项目概览</el-tag>
       </div>
       <el-divider direction="horizontal" style="width: 100%" />
@@ -28,6 +28,7 @@
 
 <script setup lang="ts">
 import ApiStatistic from "./ApiStatistic.vue";
+import { Edit } from "@element-plus/icons-vue";
 
 const props = defineProps({
   projectTitle: String
