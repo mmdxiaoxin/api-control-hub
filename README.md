@@ -35,7 +35,7 @@ api-control-hub 一款基于 Vue3.3、TypeScript、Vite4、Pinia、Element-Plus 
 # Gitee
 git clone 
 # GitHub
-git clone 
+git clone https://github.com/NWAFU-Software-Engineering-Team/api-control-hub.git
 ```
 
 - **Install：**
