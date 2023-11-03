@@ -185,6 +185,7 @@ const allowDrop = (draggingNode: Node, dropNode: Node, type: AllowDropType): boo
 
   // 检查拖拽源和目标节点的 isApi 属性
   const isDraggingApi = draggingData.isApi !== undefined;
+  const isDraggingDir = draggingData.isDirectory !== undefined;
   const isDropApi = dropData.isApi !== undefined;
 
   if (type === "prev" || type === "next") {
@@ -192,7 +193,7 @@ const allowDrop = (draggingNode: Node, dropNode: Node, type: AllowDropType): boo
   }
 
   // 如果拖拽源是接口 (isApi 不为 undefined)，并且目标节点也是接口，则禁止拖拽到目标节点内部
-  if (isDraggingApi && isDropApi) {
+  if ((isDraggingApi || isDraggingDir) && isDropApi) {
     return false;
   }
 

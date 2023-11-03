@@ -1,6 +1,6 @@
 <template>
   <div class="descriptions-box card">
-    <span class="text"> {{ props.directoryTitle }} </span>
+    <span class="text"> {{ props.directoryTitle }} <el-button :icon="Edit" circle size="small" /></span>
     <el-descriptions title="配置项 📚" :column="1" border>
       <el-descriptions-item label="requestApi"> 请求分类数据的 api </el-descriptions-item>
       <el-descriptions-item label="data"> 分类数据，如果有分类数据，则不会执行 api 请求 </el-descriptions-item>
@@ -14,6 +14,8 @@
 </template>
 
 <script setup lang="ts">
+import { Edit } from "@element-plus/icons-vue";
+
 const props = defineProps({
   directoryTitle: String
 });

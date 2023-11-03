@@ -2,7 +2,7 @@
   <el-form ref="formRef" label-position="top" class="card interface-configuration">
     <el-row :gutter="20" style="margin-bottom: 20px">
       <el-col :span="20">
-        <span class="text"> {{ props.apiTitle }} </span>
+        <span class="text"> {{ props.apiTitle }} <el-button :icon="Edit" circle size="small" /></span>
       </el-col>
       <el-col :span="4" class="right-aligned">
         <el-button type="info" @click="ElMessage.success('保存成功')">
@@ -142,6 +142,7 @@
 import { reactive, ref } from "vue";
 import QueryTable from "./QueryTable.vue";
 import { ElMessage } from "element-plus";
+import { Edit } from "@element-plus/icons-vue";
 
 const props = defineProps({
   apiTitle: String
