@@ -30,8 +30,3 @@ export const deleteMock = (params: { id: string[] }) => {
 export const changeMockStatus = (params: { id: string; mockStatus: number }) => {
   return http.post(PORT1 + `/mock/change`, params);
 };
-
-// 获取项目列表
-export const getMockCollectionList = () => {
-  return http.get<MockServer.ResCollectionList[]>(PORT1 + `/mock/collection/list`);
-};
