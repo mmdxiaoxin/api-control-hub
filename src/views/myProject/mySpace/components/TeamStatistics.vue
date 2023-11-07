@@ -16,7 +16,7 @@
       <el-col :span="8">
         <el-statistic :value="props.viewerCount" class="el-statistic-title">
           <template #title>
-            <el-tooltip effect="dark" content="成员" placement="top">
+            <el-tooltip effect="dark" content="游客只能访问与其明确共享的项目" placement="top">
               <span>游客</span>
             </el-tooltip>
           </template>
