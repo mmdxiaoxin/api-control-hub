@@ -25,7 +25,9 @@
         <TeamStatistics />
         <TeamTable />
       </el-tab-pane>
-      <el-tab-pane label="团队设置" name="third">Role</el-tab-pane>
+      <el-tab-pane label="团队设置" name="third">
+        <TeamSetting />
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -37,11 +39,12 @@ import type { TabsPaneContext } from "element-plus";
 import { getTagType } from "@/utils/workPlace";
 import { useWorkPlaceStore } from "@/stores/modules/workPlace";
 import TeamStatistics from "./components/TeamStatistics.vue";
-import TeamTable from "@/views/myProject/mySpace/components/TeamTable.vue";
+import TeamTable from "./components/TeamTable.vue";
+import TeamSetting from "./components/TeamSetting.vue";
 
 const workPlace = useWorkPlaceStore();
-const activeName = ref("first");
 
+const activeName = ref("first");
 const handleClick = (tab: TabsPaneContext, event: Event) => {
   console.log(tab, event);
 };
