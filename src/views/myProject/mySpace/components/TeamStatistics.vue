@@ -67,7 +67,7 @@ const props = defineProps({
   margin-bottom: 20px;
 
   .el-statistic {
-    background-color: #f5f7fa;
+    background-color: var(--el-bg-color-page);
     border-radius: 8px;
     padding: 10px;
 
