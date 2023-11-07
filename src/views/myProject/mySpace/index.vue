@@ -1,6 +1,9 @@
 <template>
   <div class="card my-space-container">
-    <h1>个人空间</h1>
+    <div class="space-container-title">
+      <h1>个人空间</h1>
+      <el-tag style="margin-left: 20px" :type="getTagType(workPlace.currentRole)">{{ workPlace.currentRole }}</el-tag>
+    </div>
     <el-tabs v-model="activeName" class="my-space-tabs" @tab-click="handleClick">
       <el-tab-pane label="团队项目" name="first">
         <draggable
@@ -18,7 +21,10 @@
           </template>
         </draggable>
       </el-tab-pane>
-      <el-tab-pane label="成员/权限" name="second">Config</el-tab-pane>
+      <el-tab-pane label="成员/权限" name="second">
+        <TeamStatistics />
+        <TeamTable />
+      </el-tab-pane>
       <el-tab-pane label="团队设置" name="third">Role</el-tab-pane>
     </el-tabs>
   </div>
@@ -28,6 +34,12 @@
 import { ref } from "vue";
 import draggable from "vuedraggable";
 import type { TabsPaneContext } from "element-plus";
+import { getTagType } from "@/utils/workPlace";
+import { useWorkPlaceStore } from "@/stores/modules/workPlace";
+import TeamStatistics from "./components/TeamStatistics.vue";
+import TeamTable from "@/views/myProject/mySpace/components/TeamTable.vue";
+
+const workPlace = useWorkPlaceStore();
 const activeName = ref("first");
 
 const handleClick = (tab: TabsPaneContext, event: Event) => {

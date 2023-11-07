@@ -107,14 +107,6 @@ export namespace MockServer {
     mockStatus: number;
   }
 
-  export interface ResCollectionList {
-    id: string;
-    name: string;
-    isSpace: Object;
-    isCollection: Object;
-    children?: ResCollectionList[];
-  }
-
   export interface ResMockList {
     id: string;
     mockMethod: string;
@@ -140,7 +132,43 @@ export namespace HttpServer {
     name: string;
     isProject?: Object;
     isDirectory?: Object;
-    isApi?: Object;
+    isApi?: HttpParams;
     children?: ResCollectionList[];
+  }
+
+  export interface HttpParams {
+    httpUrl: string;
+    httpMethod: string;
+    httpDescription: string;
+    headers?: Params[];
+    params?: Params[];
+    Authorization: string;
+    httpBody?: string | Params[];
+    creator: string;
+    createTime: string;
+    updateTime: string;
+  }
+
+  interface Params {
+    Key: string;
+    Value: string;
+  }
+
+  export interface ResHttpResult {
+    httpBody?: string | Params[];
+    httpCookies?: string;
+    httpHeaders?: Params[];
+  }
+}
+
+//项目管理模块
+export namespace Project {
+  export interface ResProjectList {
+    id: string;
+    name: string;
+    description: string;
+    creator: string;
+    createTime: string;
+    updateTime: string;
   }
 }

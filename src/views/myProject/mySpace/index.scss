@@ -1,5 +1,11 @@
 .my-space-container {
   height: 100%;
+  .space-container-title {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-items: flex-start;
+  }
 
   .my-space-tabs > .el-tabs__content {
     padding: 32px;
