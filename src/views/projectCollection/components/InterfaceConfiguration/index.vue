@@ -6,7 +6,10 @@
       </el-col>
       <el-col :span="4" class="right-aligned">
         <el-button type="info" @click="ElMessage.success('保存成功')">
-          保存<el-icon class="el-icon--right"><MessageBox /></el-icon>
+          保存
+          <el-icon class="el-icon--right">
+            <MessageBox />
+          </el-icon>
         </el-button>
       </el-col>
     </el-row>
@@ -30,7 +33,10 @@
       </el-col>
       <el-col :span="4" class="right-aligned">
         <el-button type="primary" @click="console.log('发送数据:', formData)">
-          发送<el-icon class="el-icon--right"><Connection /></el-icon>
+          发送
+          <el-icon class="el-icon--right">
+            <Connection />
+          </el-icon>
         </el-button>
       </el-col>
     </el-row>
@@ -68,7 +74,9 @@
             </el-radio-group>
             <!-- 根据选中的 queryBody 显示不同的内容 -->
             <div class="query-body-container">
-              <div v-if="queryBody === 1"><el-empty :image-size="70" /></div>
+              <div v-if="queryBody === 1">
+                <el-empty :image-size="70" />
+              </div>
               <div v-if="queryBody === 2">
                 <QueryTable v-model:queryParams="formData.queryBodyForm" />
               </div>
@@ -120,11 +128,15 @@
                 </el-option>
               </el-select>
             </div>
-            <div v-if="responseBody == ''"><el-empty :image-size="70" /></div>
-            <el-input v-else type="textarea" v-model="responseBody" :autosize="{ minRows: 6, maxRows: 10 }" disabled />
+            <div v-if="responseBody == ''">
+              <el-empty :image-size="70" />
+            </div>
+            <JsonViewer :value="responseBody" copyable boxed sort theme="light" @onKeyClick="keyClick" />
           </div>
         </el-tab-pane>
-        <el-tab-pane label="Cookies" name="second"><div class="response-params">No Cookies</div></el-tab-pane>
+        <el-tab-pane label="Cookies" name="second">
+          <div class="response-params">No Cookies</div>
+        </el-tab-pane>
         <el-tab-pane label="Headers" name="third">
           <div class="response-params">
             <el-table :data="resHeaders" border style="width: 100%">
@@ -140,6 +152,8 @@
 
 <script setup lang="ts">
 import { reactive, ref } from "vue";
+import { JsonViewer } from "vue3-json-viewer";
+import "vue3-json-viewer/dist/index.css";
 import QueryTable from "./QueryTable.vue";
 import { ElMessage } from "element-plus";
 import { Edit } from "@element-plus/icons-vue";
@@ -177,7 +191,14 @@ const queryBody = ref(1);
 const queryJsonBody = ref("");
 const queryXmlBody = ref("");
 const queryRawBody = ref("");
-const responseBody = ref("test");
+const responseBody = reactive({
+  name: "qiu", //字符串
+  age: 18, //数组
+  isMan: false, //布尔值
+  date: new Date(),
+  arr: [1, 2, 5],
+  reg: /ab+c/i
+});
 
 //响应体格式化显示配置
 const ResFileOption = [
@@ -223,6 +244,9 @@ const resHeaders = [
   }
 ];
 // 其他的设置和事件处理函数
+const keyClick = (keyName: any) => {
+  console.log(keyName, "被点击了");
+};
 </script>
 
 <style scoped lang="scss">
