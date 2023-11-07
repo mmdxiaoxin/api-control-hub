@@ -1,10 +1,12 @@
 <template>
   <el-form ref="formRef" label-position="top" class="card interface-configuration">
+    <!-- 接口标题和编辑按钮 -->
     <el-row :gutter="20" style="margin-bottom: 20px">
       <el-col :span="20">
         <span class="text"> {{ props.apiTitle }} <el-button :icon="Edit" circle size="small" /></span>
       </el-col>
       <el-col :span="4" class="right-aligned">
+        <!-- 保存按钮 -->
         <el-button type="info" @click="ElMessage.success('保存成功')">
           保存
           <el-icon class="el-icon--right">
@@ -14,6 +16,7 @@
       </el-col>
     </el-row>
     <el-row :gutter="20">
+      <!-- 请求方法和接口 URL -->
       <el-col :span="4">
         <el-form-item>
           <el-select placeholder="请选择请求方法" v-model="formData.requestMethod">
@@ -32,6 +35,7 @@
         </el-form-item>
       </el-col>
       <el-col :span="4" class="right-aligned">
+        <!-- 发送按钮 -->
         <el-button type="primary" @click="console.log('发送数据:', formData)">
           发送
           <el-icon class="el-icon--right">
@@ -41,6 +45,7 @@
       </el-col>
     </el-row>
     <div class="interface-query card">
+      <!-- 查询参数、鉴权、请求头和请求体选项卡 -->
       <el-tabs v-model="activeQuery">
         <el-tab-pane label="Params" name="first">
           <div class="query-params">
@@ -49,6 +54,7 @@
         </el-tab-pane>
         <el-tab-pane label="Auth" name="second">
           <div class="query-params">
+            <!-- 鉴权类型选择 -->
             <el-form-item label="类型">
               <el-select placeholder="请选择请求类型" v-model="formData.authType">
                 <el-option label="No Auth" value="noAuth"></el-option>
@@ -59,6 +65,7 @@
         </el-tab-pane>
         <el-tab-pane label="Headers" name="third">
           <div class="query-params">
+            <!-- 请求头参数 -->
             <QueryTable v-model:queryParams="formData.queryHeaders" />
           </div>
         </el-tab-pane>
@@ -113,6 +120,7 @@
       </el-tabs>
     </div>
     <div class="interface-response card">
+      <!-- 响应内容、Cookies 和响应头选项卡 -->
       <el-tabs v-model="activeResponse">
         <el-tab-pane label="Body" name="first">
           <div class="response-body">
@@ -123,6 +131,7 @@
                 <el-radio-button label="Preview" />
               </el-radio-group>
               <el-select v-model="ResSelect" size="small" v-if="resBodyRadio === 'Pretty'">
+                <!-- 选择响应体格式 -->
                 <el-option v-for="item in ResFileOption" :key="item.value" :label="item.label" :value="item.value">
                   <span>{{ item.label }}</span>
                 </el-option>
@@ -131,13 +140,13 @@
             <div v-if="responseBody == ''">
               <el-empty :image-size="70" />
             </div>
+            <!-- JSON 视图，仅在条件满足时显示 -->
             <JsonViewer
               :value="responseBody"
               copyable
               boxed
               sort
               theme="light"
-              @onKeyClick="keyClick"
               v-if="resBodyRadio === 'Pretty' && ResSelect === 'JSON'"
             />
           </div>
@@ -147,6 +156,7 @@
         </el-tab-pane>
         <el-tab-pane label="Headers" name="third">
           <div class="response-params">
+            <!-- 响应头参数 -->
             <el-table :data="resHeaders" border style="width: 100%">
               <el-table-column prop="key" label="key" />
               <el-table-column prop="value" label="Value" />
@@ -191,11 +201,6 @@ const formData = reactive({
   // 其他表单属性
 });
 
-const activeQuery = ref("first");
-const activeResponse = ref("first");
-const resBodyRadio = ref("Pretty");
-const ResSelect = ref("JSON");
-const queryBody = ref(1);
 const queryJsonBody = ref("");
 const queryXmlBody = ref("");
 const queryRawBody = ref("");
@@ -207,6 +212,31 @@ const responseBody = reactive({
   arr: [1, 2, 5],
   reg: /ab+c/i
 });
+//响应头测试数据
+const resHeaders = [
+  {
+    key: "Date",
+    value: "Thu, 14 Sep 2023 09:24:49 GMT"
+  },
+  {
+    key: "Server",
+    value: "Werkzeug/2.3.3 Python/3.9.16"
+  },
+  {
+    key: "Content-Type",
+    value: "application/json"
+  },
+  {
+    key: "Content-Length",
+    value: "Tom"
+  }
+];
+
+const queryBody = ref(1);
+const activeQuery = ref("first");
+const activeResponse = ref("first");
+const resBodyRadio = ref("Pretty");
+const ResSelect = ref("JSON");
 
 //响应体格式化显示配置
 const ResFileOption = [
@@ -232,29 +262,7 @@ const ResFileOption = [
   }
 ];
 
-//响应头测试数据
-const resHeaders = [
-  {
-    key: "Date",
-    value: "Thu, 14 Sep 2023 09:24:49 GMT"
-  },
-  {
-    key: "Server",
-    value: "Werkzeug/2.3.3 Python/3.9.16"
-  },
-  {
-    key: "Content-Type",
-    value: "application/json"
-  },
-  {
-    key: "Content-Length",
-    value: "Tom"
-  }
-];
 // 其他的设置和事件处理函数
-const keyClick = (keyName: any) => {
-  console.log(keyName, "被点击了");
-};
 </script>
 
 <style scoped lang="scss">
