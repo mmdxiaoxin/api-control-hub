@@ -131,7 +131,15 @@
             <div v-if="responseBody == ''">
               <el-empty :image-size="70" />
             </div>
-            <JsonViewer :value="responseBody" copyable boxed sort theme="light" @onKeyClick="keyClick" />
+            <JsonViewer
+              :value="responseBody"
+              copyable
+              boxed
+              sort
+              theme="light"
+              @onKeyClick="keyClick"
+              v-if="resBodyRadio === 'Pretty' && ResSelect === 'JSON'"
+            />
           </div>
         </el-tab-pane>
         <el-tab-pane label="Cookies" name="second">
@@ -224,7 +232,7 @@ const ResFileOption = [
   }
 ];
 
-//响应头配置
+//响应头测试数据
 const resHeaders = [
   {
     key: "Date",
