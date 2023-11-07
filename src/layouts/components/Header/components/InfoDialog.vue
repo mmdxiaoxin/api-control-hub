@@ -40,6 +40,7 @@
 import { ref } from "vue";
 import { useUserStore } from "@/stores/modules/user";
 import { useWorkPlaceStore } from "@/stores/modules/workPlace";
+import { getTagType } from "@/utils/workPlace";
 
 const useStore = useUserStore();
 const workPlace = useWorkPlaceStore();
@@ -68,17 +69,6 @@ const toggleEditMode = () => {
     // 例如，将editedUserInfo的值提交到后端
   }
   editMode.value = !editMode.value;
-};
-
-const getTagType = (role: String) => {
-  switch (role) {
-    case "管理员":
-      return "primary"; // 管理员样式
-    case "团队拥有者":
-      return "warning"; // 团队拥有者样式
-    default:
-      return "info"; // 普通成员样式
-  }
 };
 
 defineExpose({ openDialog });
