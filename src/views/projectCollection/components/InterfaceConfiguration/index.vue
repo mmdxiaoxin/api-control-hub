@@ -146,7 +146,7 @@
               copyable
               boxed
               sort
-              theme="light"
+              :theme="globalStore.isDark ? 'dark' : 'light'"
               v-if="resBodyRadio === 'Pretty' && ResSelect === 'JSON'"
             />
           </div>
@@ -175,6 +175,8 @@ import "vue3-json-viewer/dist/index.css";
 import QueryTable from "./QueryTable.vue";
 import { ElMessage } from "element-plus";
 import { Edit } from "@element-plus/icons-vue";
+import { useGlobalStore } from "@/stores/modules/global";
+const globalStore = useGlobalStore();
 
 const props = defineProps({
   apiTitle: String
