@@ -55,4 +55,17 @@
   justify-content: space-between;
   font-size: 14px;
   padding-right: 8px;
+
+  .el-dropdown-link {
+    display: none;
+    transition: display 0.3s ease;
+  }
+
+  &:hover {
+    .el-dropdown-link {
+      display: block;
+      transition: display 0.3s ease;
+    }
+  }
 }
+

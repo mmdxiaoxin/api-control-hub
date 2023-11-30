@@ -75,6 +75,7 @@ export namespace User {
     createTime: string;
     status: number;
     avatar: string;
+    role: string;
     photo: any[];
     children?: ResUserList[];
   }
