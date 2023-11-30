@@ -22,18 +22,21 @@
                 </div>
                 <div class="card-operation">
                   <el-button :icon="Position" circle></el-button>
-                  <el-button type="warning" :icon="Star" circle></el-button>
+                  <el-button
+                    :type="element.isCollection ? '' : 'warning'"
+                    :icon="Star"
+                    circle
+                    @click="starCollection(element.id)"
+                  ></el-button>
                   <el-dropdown ref="operation">
                     <span class="el-dropdown-link">
                       <el-button :icon="More" text></el-button>
                     </span>
                     <template #dropdown>
                       <el-dropdown-menu>
-                        <el-dropdown-item>Action 1</el-dropdown-item>
-                        <el-dropdown-item>Action 2 </el-dropdown-item>
-                        <el-dropdown-item>Action 3</el-dropdown-item>
-                        <el-dropdown-item>Action 4</el-dropdown-item>
-                        <el-dropdown-item>Action 5</el-dropdown-item>
+                        <el-dropdown-item :icon="Document" @click="modifyName(element)">修改名称</el-dropdown-item>
+                        <el-dropdown-item :icon="DocumentCopy" @click="cloneProject(element)">克隆项目</el-dropdown-item>
+                        <el-dropdown-item :icon="Delete" @click="deleteProject(element)">删除项目</el-dropdown-item>
                       </el-dropdown-menu>
                     </template>
                   </el-dropdown>
@@ -65,7 +68,7 @@ import { useWorkPlaceStore } from "@/stores/modules/workPlace";
 import TeamStatistics from "./components/TeamStatistics.vue";
 import TeamTable from "./components/TeamTable.vue";
 import TeamSetting from "./components/TeamSetting.vue";
-import { More, Position, Star } from "@element-plus/icons-vue";
+import { Delete, DocumentCopy, More, Position, Star, Document } from "@element-plus/icons-vue";
 
 const workPlace = useWorkPlaceStore();
 
@@ -75,9 +78,9 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
   console.log(tab, event);
 };
 let gridList = ref([
-  { id: 1, title: "企业网站建设", icon: "src/assets/icons/xianxingdaoyu.svg" },
-  { id: 2, title: "电商平台开发", icon: "src/assets/icons/xianxingdiqiu.svg" },
-  { id: 3, title: "社交媒体应用", icon: "src/assets/icons/xianxingditu.svg" },
+  { id: 1, title: "企业网站建设", icon: "src/assets/icons/xianxingdaoyu.svg", isCollection: true },
+  { id: 2, title: "电商平台开发", icon: "src/assets/icons/xianxingdiqiu.svg", isCollection: true },
+  { id: 3, title: "社交媒体应用", icon: "src/assets/icons/xianxingditu.svg", isCollection: true },
   { id: 4, title: "在线教育平台", icon: "src/assets/icons/xianxingfanchuan.svg" },
   { id: 5, title: "智能家居控制系统", icon: "src/assets/icons/xianxingfeiji.svg" },
   { id: 6, title: "健康管理应用", icon: "src/assets/icons/xianxinglvhangriji.svg" },
@@ -88,6 +91,26 @@ let gridList = ref([
   { id: 11, title: "在线购物商城", icon: "src/assets/icons/xianxingdaoyu.svg" },
   { id: 12, title: "智能车辆管理系统", icon: "src/assets/icons/xianxingdaoyu.svg" }
 ]);
+
+const starCollection = (id: number) => {
+  const index = gridList.value.findIndex(item => item.id === id);
+  gridList.value[index].isCollection = !gridList.value[index].isCollection;
+};
+
+const modifyName = (project: { id: number; title: string }) => {
+  // Implement logic to modify the name of the project
+  console.log(`Modifying name for project ${project.id}: ${project.title}`);
+};
+
+const cloneProject = (project: { id: number; title: string }) => {
+  // Implement logic to clone the project
+  console.log(`Cloning project ${project.id}: ${project.title}`);
+};
+
+const deleteProject = (project: { id: number; title: string }) => {
+  // Implement logic to delete the project
+  console.log(`Deleting project ${project.id}: ${project.title}`);
+};
 </script>
 
 <style scoped lang="scss">
