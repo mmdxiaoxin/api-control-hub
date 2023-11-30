@@ -37,7 +37,7 @@ import ImportExcel from "@/components/ImportExcel/index.vue";
 import UserDrawer from "@/views/proTable/components/UserDrawer.vue";
 import { ProTableInstance, ColumnProps } from "@/components/ProTable/interface";
 import { CirclePlus, Delete, EditPen, View } from "@element-plus/icons-vue";
-import { getUserList, deleteUser, getUserStatus } from "@/api/modules/user";
+import { getUserList, deleteUser } from "@/api/modules/user";
 
 // ProTable 实例
 const proTable = ref<ProTableInstance>();
@@ -76,11 +76,22 @@ const columns = reactive<ColumnProps<User.ResUserList>[]>([
   },
   { prop: "email", label: "邮箱" },
   {
-    prop: "status",
-    label: "用户状态",
-    enum: getUserStatus,
-    search: { el: "tree-select", props: { filterable: true } },
-    fieldNames: { label: "userLabel", value: "userStatus" }
+    prop: "role",
+    label: "用户权限",
+    render: scope => {
+      let tagType = ""; // 默认标签类型
+
+      // 根据用户的权限（假设这里有一个 getTagType 方法）选择标签类型
+      if (scope.row.role === "管理员") {
+        tagType = "success";
+      } else if (scope.row.role === "团队拥有者") {
+        tagType = "warning";
+      } else if (scope.row.role === "游客") {
+        tagType = "info";
+      }
+
+      return <el-tag type={tagType}>{scope.row.role}</el-tag>;
+    }
   },
   {
     prop: "createTime",
