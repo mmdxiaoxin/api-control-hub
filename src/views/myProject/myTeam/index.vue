@@ -1,38 +1,74 @@
 <template>
-  <div class="card">
-    <div class="card"><h1>我的团队</h1></div>
-    <draggable
-      v-model="gridList"
-      class="card grid-container"
-      item-key="id"
-      animation="300"
-      chosen-class="chosen"
-      force-fallback="true"
-    >
-      <template #item="{ element }">
-        <div :class="'item' + ' ' + 'item-' + element.num">
-          {{ element.num }}
+  <div class="my-team-container card" v-if="!isDetail">
+    <div class="team-container-title"><h1>我的团队</h1></div>
+    <el-divider />
+    <div class="team-box card">
+      <div class="team-item" v-for="team in teams" :key="team.id">
+        <div class="item-title">
+          <div class="item-img">
+            <!-- 使用你的团队图片字段，这里假设是team.imageUrl -->
+            <el-image class="item-img" :src="team.imageUrl" fit="cover">
+              <template #placeholder>
+                <div class="image-slot">Loading<span class="dot">...</span></div>
+              </template>
+              <template #error>
+                <div class="image-slot">
+                  <!-- 使用你的默认图片 -->
+                  <el-icon><Picture /></el-icon>
+                </div>
+              </template>
+            </el-image>
+          </div>
+          {{ team.name }}
+          <!-- 使用你的团队名称字段 -->
         </div>
-      </template>
-    </draggable>
+        <div class="item-operation">
+          <el-button type="info" :icon="Position" circle @click="handleButtonClick('detail', team)" />
+          <el-button type="danger" :icon="Delete" circle @click="handleButtonClick('delete', team)" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
-<script setup lang="ts" name="mySpace">
-import { ref } from "vue";
-import draggable from "vuedraggable";
+<script setup lang="ts">
+import { ref, onMounted } from "vue";
+import { Delete, Position } from "@element-plus/icons-vue";
 
-let gridList = ref([
-  { id: 1, num: 1 },
-  { id: 2, num: 2 },
-  { id: 3, num: 3 },
-  { id: 4, num: 4 },
-  { id: 5, num: 5 },
-  { id: 6, num: 6 },
-  { id: 7, num: 7 },
-  { id: 8, num: 8 },
-  { id: 9, num: 9 }
-]);
+interface Team {
+  id: number;
+  name: string;
+  imageUrl: string;
+}
+
+const teams = ref<Team[]>([]);
+const isDetail = ref(false);
+// 模拟异步获取数据
+onMounted(() => {
+  teams.value = [
+    {
+      id: 1,
+      name: "团队1",
+      imageUrl: "src/assets/icons/xianxingdaoyu.svg"
+    },
+    {
+      id: 2,
+      name: "团队2",
+      imageUrl: "src/assets/icons/xianxingdiqiu.svg"
+    }
+    // 添加更多数据项
+  ];
+});
+
+const handleButtonClick = (action: string, team: Team) => {
+  // 在这里执行与特定团队相关的操作
+  if (action === "delete") {
+    console.log(`Clicked on delete for team: ${team.name}`);
+  } else if (action === "detail") {
+    console.log(`Clicked on Detail for team: ${team.name}`);
+    isDetail.value = true;
+  }
+};
 </script>
 
 <style scoped lang="scss">
