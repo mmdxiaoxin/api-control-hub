@@ -4,7 +4,7 @@
       <h1>个人空间</h1>
       <el-tag style="margin-left: 20px" :type="getTagType(workPlace.currentRole)">{{ workPlace.currentRole }}</el-tag>
     </div>
-    <el-tabs v-model="activeName" class="my-space-tabs" @tab-click="handleClick">
+    <el-tabs v-model="activeName" class="my-space-tabs">
       <el-tab-pane label="团队项目" name="first">
         <draggable
           v-model="gridList"
@@ -62,7 +62,7 @@
 <script setup lang="ts" name="mySpace">
 import { ref } from "vue";
 import draggable from "vuedraggable";
-import type { DropdownInstance, TabsPaneContext } from "element-plus";
+import type { DropdownInstance } from "element-plus";
 import { getTagType } from "@/utils/workPlace";
 import { useWorkPlaceStore } from "@/stores/modules/workPlace";
 import TeamStatistics from "./components/TeamStatistics.vue";
@@ -74,9 +74,6 @@ const workPlace = useWorkPlaceStore();
 
 const activeName = ref("first");
 const operation = ref<DropdownInstance>();
-const handleClick = (tab: TabsPaneContext, event: Event) => {
-  console.log(tab, event);
-};
 let gridList = ref([
   { id: 1, title: "企业网站建设", icon: "src/assets/icons/xianxingdaoyu.svg", isCollection: true },
   { id: 2, title: "电商平台开发", icon: "src/assets/icons/xianxingdiqiu.svg", isCollection: true },
