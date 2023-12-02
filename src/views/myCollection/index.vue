@@ -19,8 +19,7 @@
           {{ collection.title }}
         </div>
         <div class="collection-item-operation">
-          <el-button :icon="Edit" circle @click="handleButtonClick('edit', collection)" />
-          <el-button type="info" :icon="Message" circle @click="handleButtonClick('detail', collection)" />
+          <el-button :icon="Position" circle @click="handleButtonClick('detail', collection)" />
           <el-button type="warning" :icon="Star" circle @click="handleButtonClick('star', collection)" />
         </div>
       </div>
@@ -30,7 +29,7 @@
 
 <script setup lang="ts" name="myCollection">
 import { ref, onMounted } from "vue";
-import { Edit, Message, Star } from "@element-plus/icons-vue";
+import { Position, Star } from "@element-plus/icons-vue";
 
 interface Collection {
   id: number;
