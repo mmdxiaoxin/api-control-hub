@@ -4,7 +4,7 @@
       <div class="team-name">
         <span v-if="!editMode.teamName">{{ workPlace.teamName }}</span>
         <el-input v-else v-model="workPlace.teamName" style="width: 70%" />
-        <el-button :type="editMode.teamName ? 'success' : 'info'" @click="toggleEditMode('teamName')">
+        <el-button disabled :type="editMode.teamName ? 'success' : 'info'" @click="toggleEditMode('teamName')">
           {{ editMode.teamName ? "保存" : "编辑" }}
         </el-button>
       </div>
