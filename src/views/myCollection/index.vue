@@ -19,7 +19,7 @@
           {{ collection.title }}
         </div>
         <div class="collection-item-operation">
-          <el-button type="primary" :icon="Edit" circle @click="handleButtonClick('edit', collection)" />
+          <el-button :icon="Edit" circle @click="handleButtonClick('edit', collection)" />
           <el-button type="info" :icon="Message" circle @click="handleButtonClick('detail', collection)" />
           <el-button type="warning" :icon="Star" circle @click="handleButtonClick('star', collection)" />
         </div>
