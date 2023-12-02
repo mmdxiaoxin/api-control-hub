@@ -20,10 +20,10 @@
       <el-col :span="4">
         <el-form-item>
           <el-select placeholder="请选择请求方法" v-model="formData.requestMethod">
-            <el-option label="GET" value="GET"></el-option>
-            <el-option label="POST" value="POST"></el-option>
-            <el-option label="DELETE" value="DELETE"></el-option>
-            <el-option label="PUT" value="PUT"></el-option>
+            <el-option label="GET" value="GET" :style="getOptionStyle('GET')">GET</el-option>
+            <el-option label="POST" value="POST" :style="getOptionStyle('POST')">POST</el-option>
+            <el-option label="DELETE" value="DELETE" :style="getOptionStyle('DELETE')">DELETE</el-option>
+            <el-option label="PUT" value="PUT" :style="getOptionStyle('PUT')">PUT</el-option>
           </el-select>
         </el-form-item>
       </el-col>
@@ -137,10 +137,10 @@
                 </el-option>
               </el-select>
             </div>
-            <div v-if="responseBody == ''">
+            <div v-if="isResponseBodyEmpty(responseBody)">
               <el-empty :image-size="70" />
             </div>
-            <!-- JSON 视图，仅在条件满足时显示 -->
+            <!-- JSON 视图，pretty -->
             <JsonViewer
               :value="responseBody"
               copyable
@@ -149,6 +149,14 @@
               :theme="globalStore.isDark ? 'dark' : 'light'"
               v-if="resBodyRadio === 'Pretty' && ResSelect === 'JSON'"
             />
+            <!-- JSON 视图，raw -->
+            <div class="raw-json" v-if="resBodyRadio === 'Raw' && ResSelect === 'JSON'">
+              {{ responseBodyRaw }}
+            </div>
+            <!-- 非 JSON 格式的提示 -->
+            <div v-if="ResSelect !== 'JSON'">
+              <p>暂不支持！</p>
+            </div>
           </div>
         </el-tab-pane>
         <el-tab-pane label="Cookies" name="second">
@@ -176,6 +184,7 @@ import QueryTable from "./QueryTable.vue";
 import { ElMessage } from "element-plus";
 import { Edit } from "@element-plus/icons-vue";
 import { useGlobalStore } from "@/stores/modules/global";
+import { reactiveToJSON } from "@/utils/switchJson";
 const globalStore = useGlobalStore();
 
 const props = defineProps({
@@ -206,6 +215,8 @@ const formData = reactive({
 const queryJsonBody = ref("");
 const queryXmlBody = ref("");
 const queryRawBody = ref("");
+
+//响应体测试数据
 const responseBody = reactive({
   name: "qiu", //字符串
   age: 18, //数组
@@ -214,6 +225,14 @@ const responseBody = reactive({
   arr: [1, 2, 5],
   reg: /ab+c/i
 });
+
+const responseBodyRaw = reactiveToJSON(responseBody);
+
+const isResponseBodyEmpty = (responseBody: any) => {
+  const rawResponseBody = reactiveToJSON(responseBody);
+  return Object.keys(rawResponseBody).length === 0;
+};
+
 //响应头测试数据
 const resHeaders = [
   {
@@ -239,6 +258,22 @@ const activeQuery = ref("first");
 const activeResponse = ref("first");
 const resBodyRadio = ref("Pretty");
 const ResSelect = ref("JSON");
+
+//请求方法配置
+const getOptionStyle = (method: string) => {
+  switch (method) {
+    case "GET":
+      return { color: "#67C23A" }; // Green color for GET
+    case "POST":
+      return { color: "#409EFF" }; // Blue color for POST
+    case "DELETE":
+      return { color: "#F56C6C" }; // Red color for DELETE
+    case "PUT":
+      return { color: "#E6A23C" }; // Yellow color for PUT
+    default:
+      return {}; // Default color
+  }
+};
 
 //响应体格式化显示配置
 const ResFileOption = [
