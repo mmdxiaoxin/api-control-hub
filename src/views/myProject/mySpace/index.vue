@@ -1,8 +1,14 @@
 <template>
   <div class="card my-space-container">
-    <div class="space-container-title">
-      <h1>{{ spaceTitle }}</h1>
-      <el-tag style="margin-left: 20px" :type="getTagType(spaceRole)">{{ spaceRole }}</el-tag>
+    <div class="space-container-header">
+      <span class="space-container-title">
+        <h1>{{ spaceTitle }}</h1>
+        <el-tag style="margin-left: 20px" :type="getTagType(spaceRole)">{{ spaceRole }}</el-tag>
+      </span>
+      <span>
+        <!-- 添加项目按钮 -->
+        <el-button type="primary" @click="addProject" v-if="activeName === 'first'">添加项目</el-button>
+      </span>
     </div>
     <el-tabs v-model="activeName" class="my-space-tabs">
       <el-tab-pane label="团队项目" name="first">
@@ -131,6 +137,36 @@ const modifyName = (project: any) => {
       ElMessage({
         type: "info",
         message: "取消输入"
+      });
+    });
+};
+
+const addProject = () => {
+  // TODO:修改为使用Drawer
+  ElMessageBox.prompt("请输入要添加的项目名称", "添加项目", {
+    confirmButtonText: "确认",
+    cancelButtonText: "取消",
+    inputPattern: /\S/, // 验证规则，确保非空
+    inputErrorMessage: "项目名称不能为空" // 错误信息
+  })
+    .then(({ value }) => {
+      const newId = Math.floor(Math.random() * 1000);
+      const newTitle = value;
+      const addProject = {
+        id: newId,
+        title: newTitle,
+        icon: "src/assets/icons/xianxingdaoyu.svg"
+      };
+      gridList.value.push(addProject);
+      ElMessage({
+        type: "success",
+        message: `添加成功:${addProject.id}: ${addProject.title}`
+      });
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "取消添加"
       });
     });
 };
