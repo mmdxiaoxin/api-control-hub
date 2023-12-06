@@ -31,8 +31,10 @@
 
 <script setup lang="ts">
 import { reactive, ref } from "vue";
+import { ElMessage } from "element-plus";
 
 const props = defineProps({
+  teamId: String,
   teamName: String,
   curNickName: String
 });
@@ -45,6 +47,9 @@ const editMode = reactive({
 });
 
 const toggleEditMode = (field: keyof typeof editMode) => {
+  if (editMode[field]) {
+    ElMessage.success("保存成功");
+  }
   editMode[field] = !editMode[field];
 };
 </script>
@@ -54,9 +59,9 @@ const toggleEditMode = (field: keyof typeof editMode) => {
 .team-name,
 .team-transfer,
 .team-delete {
-  width: 100%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 </style>

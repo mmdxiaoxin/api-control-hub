@@ -2,7 +2,7 @@
   <div class="card my-space-container">
     <div class="space-container-title">
       <h1>{{ spaceTitle }}</h1>
-      <el-tag style="margin-left: 20px" :type="getTagType(workPlace.currentRole)">{{ workPlace.currentRole }}</el-tag>
+      <el-tag style="margin-left: 20px" :type="getTagType(spaceRole)">{{ spaceRole }}</el-tag>
     </div>
     <el-tabs v-model="activeName" class="my-space-tabs">
       <el-tab-pane label="团队项目" name="first">
@@ -21,7 +21,7 @@
                   <img :src="element.icon" alt="图标不存在" />
                 </div>
                 <div class="card-operation">
-                  <el-button :icon="Position" circle></el-button>
+                  <el-button :icon="Position" circle @click="activeProject(element)"></el-button>
                   <el-button
                     :type="element.isCollection ? '' : 'warning'"
                     :icon="Star"
@@ -53,7 +53,7 @@
         <TeamTable />
       </el-tab-pane>
       <el-tab-pane label="团队设置" name="third">
-        <TeamSetting :team-name="spaceTitle" />
+        <TeamSetting :team-name="spaceTitle" :team-id="spaceId" />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -69,11 +69,15 @@ import TeamStatistics from "./components/TeamStatistics.vue";
 import TeamTable from "./components/TeamTable.vue";
 import TeamSetting from "./components/TeamSetting.vue";
 import { Delete, DocumentCopy, More, Position, Star, Document } from "@element-plus/icons-vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
 
 const workPlace = useWorkPlaceStore();
 const route = useRoute();
+const router = useRouter();
 const spaceTitle = ref("个人空间");
+const spaceId = ref("");
+const spaceRole = ref("团队拥有者");
 const activeName = ref("first");
 const operation = ref<DropdownInstance>();
 let gridList = ref([
@@ -90,6 +94,12 @@ let gridList = ref([
   { id: 11, title: "在线购物商城", icon: "src/assets/icons/xianxingdaoyu.svg" },
   { id: 12, title: "智能车辆管理系统", icon: "src/assets/icons/xianxingdaoyu.svg" }
 ]);
+
+const activeProject = (element: any) => {
+  ElMessage.success(`激活项目-${element.title}`);
+  workPlace.setWorkPlace(element.id, spaceId.value, element.title, spaceTitle.value, element.currentRole, element.curNickName);
+  router.push("/projectCollection/index");
+};
 
 const starCollection = (id: number) => {
   const index = gridList.value.findIndex(item => item.id === id);
@@ -112,12 +122,13 @@ const deleteProject = (project: { id: number; title: string }) => {
 };
 
 onMounted(() => {
-  // 使用 useRoute 获取路由参数中的 spaceName
-  const spaceName = route.query.spaceName;
+  const teamId = route.query.id as string;
+  const spaceName = route.query.spaceName as string;
 
   // 使用 spaceName 设置 spaceTitle
   if (spaceName) {
     spaceTitle.value = spaceName;
+    spaceId.value = teamId;
   }
 });
 </script>

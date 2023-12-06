@@ -26,15 +26,15 @@ export const useWorkPlaceStore = defineStore({
       teamId: string,
       projectName: string,
       teamName: string,
-      currentRole: string,
-      curNickName: string
+      currentRole?: string,
+      curNickName?: string
     ) {
       this.projectId = projectId;
       this.teamId = teamId;
       this.projectName = projectName;
       this.teamName = teamName;
-      this.currentRole = currentRole;
-      this.curNickName = curNickName;
+      typeof currentRole === "string" ? (this.currentRole = currentRole) : (this.currentRole = "游客");
+      typeof curNickName === "string" ? (this.curNickName = curNickName) : (this.curNickName = "");
     }
   },
   persist: piniaPersistConfig("apiHub-work-place")
