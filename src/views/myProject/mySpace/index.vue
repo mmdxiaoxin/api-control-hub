@@ -1,10 +1,10 @@
 <template>
   <div class="card my-space-container">
     <div class="space-container-header">
-      <span class="space-container-title">
+      <div class="space-container-title">
         <h1>{{ spaceTitle }}</h1>
         <el-tag style="margin-left: 20px" :type="getTagType(spaceRole)">{{ spaceRole }}</el-tag>
-      </span>
+      </div>
       <span>
         <!-- 添加项目按钮 -->
         <el-button type="primary" @click="addProject" v-if="activeName === 'first'">添加项目</el-button>
@@ -69,14 +69,14 @@
 import { onMounted, ref } from "vue";
 import draggable from "vuedraggable";
 import type { DropdownInstance } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { getTagType } from "@/utils/workPlace";
 import { useWorkPlaceStore } from "@/stores/modules/workPlace";
 import TeamStatistics from "./components/TeamStatistics.vue";
 import TeamTable from "./components/TeamTable.vue";
 import TeamSetting from "./components/TeamSetting.vue";
-import { Delete, DocumentCopy, More, Position, Star, Document } from "@element-plus/icons-vue";
+import { Delete, Document, DocumentCopy, More, Position, Star } from "@element-plus/icons-vue";
 import { useRoute, useRouter } from "vue-router";
-import { ElMessage, ElMessageBox } from "element-plus";
 
 const workPlace = useWorkPlaceStore();
 const route = useRoute();
@@ -151,10 +151,9 @@ const addProject = () => {
   })
     .then(({ value }) => {
       const newId = Math.floor(Math.random() * 1000);
-      const newTitle = value;
       const addProject = {
         id: newId,
-        title: newTitle,
+        title: value,
         icon: "src/assets/icons/xianxingdaoyu.svg"
       };
       gridList.value.push(addProject);
