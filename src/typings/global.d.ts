@@ -5,6 +5,7 @@ declare namespace Menu {
     name: string;
     component?: string | (() => Promise<unknown>);
     redirect?: string;
+    params?: { id: string; spaceName: string };
     meta: MetaProps;
     children?: MenuOptions[];
   }
@@ -13,6 +14,7 @@ declare namespace Menu {
     title: string;
     activeMenu?: string;
     isLink?: string;
+    isOperation?: string;
     isHide: boolean;
     isFull: boolean;
     isAffix: boolean;

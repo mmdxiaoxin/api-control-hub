@@ -22,12 +22,25 @@
 
 <script setup lang="ts">
 import { useRouter } from "vue-router";
+import { ref } from "vue";
 
 defineProps<{ menuList: Menu.MenuOptions[] }>();
+
+const drawerVisible = ref(false);
 
 const router = useRouter();
 const handleClickMenu = (subItem: Menu.MenuOptions) => {
   if (subItem.meta.isLink) return window.open(subItem.meta.isLink, "_blank");
+  if (subItem.meta.isOperation) {
+    drawerVisible.value = true;
+  }
+  if (subItem.params && Object.keys(subItem.params).length > 0) {
+    console.log(subItem.params.spaceName);
+    return router.push({
+      name: subItem.name,
+      query: { id: subItem.params.id, spaceName: subItem.params.spaceName }
+    });
+  }
   router.push(subItem.path);
 };
 </script>

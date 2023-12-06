@@ -1,7 +1,7 @@
 <template>
   <div class="card my-space-container">
     <div class="space-container-title">
-      <h1>个人空间</h1>
+      <h1>{{ spaceTitle }}</h1>
       <el-tag style="margin-left: 20px" :type="getTagType(workPlace.currentRole)">{{ workPlace.currentRole }}</el-tag>
     </div>
     <el-tabs v-model="activeName" class="my-space-tabs">
@@ -35,7 +35,7 @@
                     <template #dropdown>
                       <el-dropdown-menu>
                         <el-dropdown-item :icon="Document" @click="modifyName(element)">修改名称</el-dropdown-item>
-                        <el-dropdown-item :icon="DocumentCopy" @click="cloneProject(element)">克隆项目</el-dropdown-item>
+                        <el-dropdown-item :icon="DocumentCopy" @click="cloneProject(element)">克隆项目 </el-dropdown-item>
                         <el-dropdown-item :icon="Delete" @click="deleteProject(element)">删除项目</el-dropdown-item>
                       </el-dropdown-menu>
                     </template>
@@ -53,14 +53,14 @@
         <TeamTable />
       </el-tab-pane>
       <el-tab-pane label="团队设置" name="third">
-        <TeamSetting />
+        <TeamSetting :team-name="spaceTitle" />
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
 <script setup lang="ts" name="mySpace">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import draggable from "vuedraggable";
 import type { DropdownInstance } from "element-plus";
 import { getTagType } from "@/utils/workPlace";
@@ -69,9 +69,11 @@ import TeamStatistics from "./components/TeamStatistics.vue";
 import TeamTable from "./components/TeamTable.vue";
 import TeamSetting from "./components/TeamSetting.vue";
 import { Delete, DocumentCopy, More, Position, Star, Document } from "@element-plus/icons-vue";
+import { useRoute } from "vue-router";
 
 const workPlace = useWorkPlaceStore();
-
+const route = useRoute();
+const spaceTitle = ref("个人空间");
 const activeName = ref("first");
 const operation = ref<DropdownInstance>();
 let gridList = ref([
@@ -108,6 +110,16 @@ const deleteProject = (project: { id: number; title: string }) => {
   // Implement logic to delete the project
   console.log(`Deleting project ${project.id}: ${project.title}`);
 };
+
+onMounted(() => {
+  // 使用 useRoute 获取路由参数中的 spaceName
+  const spaceName = route.query.spaceName;
+
+  // 使用 spaceName 设置 spaceTitle
+  if (spaceName) {
+    spaceTitle.value = spaceName;
+  }
+});
 </script>
 
 <style scoped lang="scss">
