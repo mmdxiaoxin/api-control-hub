@@ -80,7 +80,7 @@ const spaceId = ref("");
 const spaceRole = ref("团队拥有者");
 const activeName = ref("first");
 const operation = ref<DropdownInstance>();
-let gridList = ref([
+const gridList = ref([
   { id: 1, title: "企业网站建设", icon: "src/assets/icons/xianxingdaoyu.svg", isCollection: true },
   { id: 2, title: "电商平台开发", icon: "src/assets/icons/xianxingdiqiu.svg", isCollection: true },
   { id: 3, title: "社交媒体应用", icon: "src/assets/icons/xianxingditu.svg", isCollection: true },
@@ -115,6 +115,12 @@ const modifyName = (project: any) => {
     inputErrorMessage: "项目名称不能为空" // 错误信息
   })
     .then(({ value }) => {
+      // 在用户确认输入后更新项目的名称
+      const index = gridList.value.findIndex((item: { id: string; title: string; icon: string }) => item.id === project.id);
+      if (index !== -1) {
+        gridList.value[index].title = value;
+      }
+
       ElMessage({
         type: "success",
         message: `修改成功:${value}`
@@ -129,14 +135,44 @@ const modifyName = (project: any) => {
     });
 };
 
-const cloneProject = (project: { id: number; title: string }) => {
-  // Implement logic to clone the project
-  console.log(`Cloning project ${project.id}: ${project.title}`);
+const cloneProject = (project: any) => {
+  const newId = Math.floor(Math.random() * 1000);
+  const newTitle = `${project.title}-副本`;
+  const clonedProject = {
+    id: newId,
+    title: newTitle,
+    icon: project.icon
+  };
+  gridList.value.push(clonedProject);
+  ElMessage({
+    type: "success",
+    message: `克隆成功:${project.id}: ${project.title}`
+  });
 };
 
 const deleteProject = (project: { id: number; title: string }) => {
-  // Implement logic to delete the project
-  console.log(`Deleting project ${project.id}: ${project.title}`);
+  ElMessageBox.confirm(`确认删除项目 ${project.title} 吗？`, "删除项目", {
+    confirmButtonText: "确认",
+    cancelButtonText: "取消",
+    type: "warning"
+  })
+    .then(() => {
+      // 用户确认删除，从 gridList 中移除项目
+      gridList.value = gridList.value.filter(item => item.id !== project.id);
+
+      ElMessage({
+        type: "success",
+        message: `成功删除项目: ${project.title}`
+      });
+
+      console.log(`Deleting project ${project.id}: ${project.title}`);
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "取消删除"
+      });
+    });
 };
 
 onMounted(() => {
