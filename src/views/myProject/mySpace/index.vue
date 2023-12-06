@@ -70,7 +70,7 @@ import TeamTable from "./components/TeamTable.vue";
 import TeamSetting from "./components/TeamSetting.vue";
 import { Delete, DocumentCopy, More, Position, Star, Document } from "@element-plus/icons-vue";
 import { useRoute, useRouter } from "vue-router";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 const workPlace = useWorkPlaceStore();
 const route = useRoute();
@@ -95,9 +95,10 @@ let gridList = ref([
   { id: 12, title: "智能车辆管理系统", icon: "src/assets/icons/xianxingdaoyu.svg" }
 ]);
 
-const activeProject = (element: any) => {
-  ElMessage.success(`激活项目-${element.title}`);
-  workPlace.setWorkPlace(element.id, spaceId.value, element.title, spaceTitle.value, element.currentRole, element.curNickName);
+const activeProject = (project: any) => {
+  ElMessage.success(`激活项目-${project.title}`);
+  //TODO:获取currentRole和curNickName
+  workPlace.setWorkPlace(project.id, spaceId.value, project.title, spaceTitle.value, project.currentRole, project.curNickName);
   router.push("/projectCollection/index");
 };
 
@@ -106,9 +107,26 @@ const starCollection = (id: number) => {
   gridList.value[index].isCollection = !gridList.value[index].isCollection;
 };
 
-const modifyName = (project: { id: number; title: string }) => {
-  // Implement logic to modify the name of the project
-  console.log(`Modifying name for project ${project.id}: ${project.title}`);
+const modifyName = (project: any) => {
+  ElMessageBox.prompt("请输入要修改的项目名称", "修改名称", {
+    confirmButtonText: "确认",
+    cancelButtonText: "取消",
+    inputPattern: /\S/, // 验证规则，确保非空
+    inputErrorMessage: "项目名称不能为空" // 错误信息
+  })
+    .then(({ value }) => {
+      ElMessage({
+        type: "success",
+        message: `修改成功:${value}`
+      });
+      console.log(`Modifying name for project ${project.id}: ${project.title}`);
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "取消输入"
+      });
+    });
 };
 
 const cloneProject = (project: { id: number; title: string }) => {
