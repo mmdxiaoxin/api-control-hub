@@ -116,16 +116,16 @@ const modifyName = (project: any) => {
   })
     .then(({ value }) => {
       // 在用户确认输入后更新项目的名称
-      const index = gridList.value.findIndex((item: { id: string; title: string; icon: string }) => item.id === project.id);
+      const index = gridList.value.findIndex((item: any) => item.id === project.id);
       if (index !== -1) {
         gridList.value[index].title = value;
       }
-
+      //TODO:连接后端项目修改
+      console.log(`Modifying name for project ${project.id}: ${project.title}`);
       ElMessage({
         type: "success",
         message: `修改成功:${value}`
       });
-      console.log(`Modifying name for project ${project.id}: ${project.title}`);
     })
     .catch(() => {
       ElMessage({
@@ -143,6 +143,7 @@ const cloneProject = (project: any) => {
     title: newTitle,
     icon: project.icon
   };
+  //TODO:连接后端项目添加
   gridList.value.push(clonedProject);
   ElMessage({
     type: "success",
@@ -164,7 +165,7 @@ const deleteProject = (project: { id: number; title: string }) => {
         type: "success",
         message: `成功删除项目: ${project.title}`
       });
-
+      //TODO:连接后端项目删除
       console.log(`Deleting project ${project.id}: ${project.title}`);
     })
     .catch(() => {
