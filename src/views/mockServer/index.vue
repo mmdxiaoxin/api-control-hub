@@ -193,7 +193,7 @@ const downloadFile = async () => {
 const dialogRef = ref<InstanceType<typeof ImportExcel> | null>(null);
 const batchAdd = () => {
   const params = {
-    title: "用户",
+    title: "接口",
     tempApi: exportUserInfo,
     importApi: BatchAddUser,
     getTableList: proTable.value?.getTableList
@@ -218,19 +218,16 @@ const openDrawer = (title: string, row: Partial<MockServer.ResMockList> = {}) =>
 <style scoped lang="scss">
 .expand-content {
   margin: 10px;
-
   .expand-item {
     display: flex;
     align-items: center;
     margin-bottom: 5px;
-
     .label {
-      font-weight: bold;
       margin-right: 10px;
+      font-weight: bold;
     }
-
     .value {
-      color: #333;
+      color: #333333;
     }
   }
 }
