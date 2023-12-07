@@ -3,7 +3,7 @@
     <div class="space-container-header">
       <div class="space-container-title">
         <h1>{{ spaceTitle }}</h1>
-        <el-tag style="margin-left: 20px" :type="getTagType(spaceRole)">{{ spaceRole }}</el-tag>
+        <el-tag style="margin-left: 20px" :type="getRoleTagType(spaceRole)">{{ spaceRole }}</el-tag>
       </div>
       <span>
         <!-- 添加项目按钮 -->
@@ -70,7 +70,7 @@ import { onMounted, ref } from "vue";
 import draggable from "vuedraggable";
 import type { DropdownInstance } from "element-plus";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { getTagType } from "@/utils/workPlace";
+import { getRoleTagType } from "@/utils/workPlace";
 import { useWorkPlaceStore } from "@/stores/modules/workPlace";
 import TeamStatistics from "./components/TeamStatistics.vue";
 import TeamTable from "./components/TeamTable.vue";
