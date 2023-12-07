@@ -3,7 +3,7 @@
     <!-- 接口标题和编辑按钮 -->
     <el-row :gutter="20" style="margin-bottom: 20px">
       <el-col :span="20">
-        <span class="text"> {{ props.apiTitle }} <el-button :icon="Edit" circle size="small" /></span>
+        <span class="text"> {{ apiName }} <el-button :icon="Edit" circle size="small" @click="modifyName(apiName)" /></span>
       </el-col>
       <el-col :span="4" class="right-aligned">
         <!-- 保存按钮 -->
@@ -30,7 +30,7 @@
       <el-col :span="16">
         <el-form-item>
           <el-input placeholder="请输入接口 URL" clearable v-model="formData.apiUrl">
-            <template #prepend>Http://</template>
+            <template #prepend>{{ "http://" }}</template>
           </el-input>
         </el-form-item>
       </el-col>
@@ -181,15 +181,18 @@ import { reactive, ref } from "vue";
 import { JsonViewer } from "vue3-json-viewer";
 import "vue3-json-viewer/dist/index.css";
 import QueryTable from "./QueryTable.vue";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { Edit } from "@element-plus/icons-vue";
 import { useGlobalStore } from "@/stores/modules/global";
 import { reactiveToJSON } from "@/utils/switchJson";
+import { getOptionStyle } from "@/utils/workPlace";
 const globalStore = useGlobalStore();
 
 const props = defineProps({
   apiTitle: String
 });
+
+const apiName = ref(props.apiTitle);
 
 //测试数据
 const queryParams = [{ key: "param1", value: "value1", description: "描述1" }];
@@ -259,47 +262,38 @@ const activeResponse = ref("first");
 const resBodyRadio = ref("Pretty");
 const ResSelect = ref("JSON");
 
-//请求方法配置
-const getOptionStyle = (method: string) => {
-  switch (method) {
-    case "GET":
-      return { color: "#67C23A" }; // Green color for GET
-    case "POST":
-      return { color: "#409EFF" }; // Blue color for POST
-    case "DELETE":
-      return { color: "#F56C6C" }; // Red color for DELETE
-    case "PUT":
-      return { color: "#E6A23C" }; // Yellow color for PUT
-    default:
-      return {}; // Default color
-  }
-};
-
-//响应体格式化显示配置
+// 响应体格式化显示配置
 const ResFileOption = [
-  {
-    value: "JSON",
-    label: "JSON"
-  },
-  {
-    value: "XML",
-    label: "XML"
-  },
-  {
-    value: "HTML",
-    label: "HTML"
-  },
-  {
-    value: "TEXT",
-    label: "TEXT"
-  },
-  {
-    value: "AUTO",
-    label: "AUTO"
-  }
+  { value: "JSON", label: "JSON" },
+  { value: "XML", label: "XML" },
+  { value: "HTML", label: "HTML" },
+  { value: "TEXT", label: "TEXT" },
+  { value: "AUTO", label: "AUTO" }
 ];
-
 // 其他的设置和事件处理函数
+const modifyName = (project: any) => {
+  ElMessageBox.prompt("请输入要修改的接口名称", "修改名称", {
+    confirmButtonText: "确认",
+    cancelButtonText: "取消",
+    inputPattern: /\S/, // 验证规则，确保非空
+    inputErrorMessage: "接口名称不能为空" // 错误信息
+  })
+    .then(({ value }) => {
+      apiName.value = value;
+      //TODO:连接后端项目修改
+      console.log(`Modifying name for directory ${project}`);
+      ElMessage({
+        type: "success",
+        message: `修改成功:${value}`
+      });
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "取消输入"
+      });
+    });
+};
 </script>
 
 <style scoped lang="scss">

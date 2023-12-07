@@ -2,7 +2,9 @@
   <el-container class="project-description card">
     <el-main class="project-content">
       <div class="project-header" @click="saveContent">
-        <span class="text">{{ props.projectTitle }} <el-button :icon="Edit" circle size="small" /></span>
+        <span class="text">
+          {{ projectName }} <el-button :icon="Edit" circle size="small" @click="modifyName(projectName)" />
+        </span>
         <el-tag>项目概览</el-tag>
       </div>
       <el-divider direction="horizontal" style="width: 100%" @click="saveContent" />
@@ -24,13 +26,37 @@ import ApiStatistic from "./ApiStatistic.vue";
 import { Edit } from "@element-plus/icons-vue";
 import { ref } from "vue";
 import WangEditor from "@/components/WangEditor/index.vue";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 const EditMode = ref(false);
 const content = ref("");
 const props = defineProps({
   projectTitle: String
 });
-
+const projectName = ref(props.projectTitle);
+const modifyName = (project: any) => {
+  ElMessageBox.prompt("请输入要修改的项目名称", "修改名称", {
+    confirmButtonText: "确认",
+    cancelButtonText: "取消",
+    inputPattern: /\S/, // 验证规则，确保非空
+    inputErrorMessage: "项目名称不能为空" // 错误信息
+  })
+    .then(({ value }) => {
+      projectName.value = value;
+      //TODO:连接后端项目修改
+      console.log(`Modifying name for project ${project}`);
+      ElMessage({
+        type: "success",
+        message: `修改成功:${value}`
+      });
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "取消输入"
+      });
+    });
+};
 const editContent = () => {
   EditMode.value = true;
 };
