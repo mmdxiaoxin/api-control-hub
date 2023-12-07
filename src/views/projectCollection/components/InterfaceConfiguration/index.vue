@@ -30,13 +30,13 @@
       <el-col :span="16">
         <el-form-item>
           <el-input placeholder="请输入接口 URL" clearable v-model="formData.apiUrl">
-            <template #prepend>{{ "http://" }}</template>
+            <template #prepend>{{ urlPrefix }}</template>
           </el-input>
         </el-form-item>
       </el-col>
       <el-col :span="4" class="right-aligned">
         <!-- 发送按钮 -->
-        <el-button type="primary" @click="console.log('发送数据:', formData)">
+        <el-button type="primary" @click="sendApiForm">
           发送
           <el-icon class="el-icon--right">
             <Connection />
@@ -165,7 +165,7 @@
         <el-tab-pane label="Headers" name="third">
           <div class="response-params">
             <!-- 响应头参数 -->
-            <el-table :data="resHeaders" border style="width: 100%">
+            <el-table :data="responseHeader" border style="width: 100%">
               <el-table-column prop="key" label="key" />
               <el-table-column prop="value" label="Value" />
             </el-table>
@@ -177,7 +177,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { JsonViewer } from "vue3-json-viewer";
 import "vue3-json-viewer/dist/index.css";
 import QueryTable from "./QueryTable.vue";
@@ -186,48 +186,85 @@ import { Edit } from "@element-plus/icons-vue";
 import { useGlobalStore } from "@/stores/modules/global";
 import { reactiveToJSON } from "@/utils/switchJson";
 import { getOptionStyle } from "@/utils/workPlace";
-const globalStore = useGlobalStore();
+import axios, { AxiosError, AxiosResponse } from "axios";
 
 const props = defineProps({
   apiTitle: String
 });
 
-const apiName = ref(props.apiTitle);
+interface QueryParam {
+  key: string;
+  value: string;
+  description: string;
+}
 
-//测试数据
-const queryParams = [{ key: "param1", value: "value1", description: "描述1" }];
-const queryHeaders = [{ key: "header1", value: "value1", description: "描述1" }];
-const queryBodyForm = [{ key: "header1", value: "value1", description: "描述1" }];
-const queryBodyFormX = [{ key: "header1", value: "value1", description: "描述1" }];
+interface QueryHeader {
+  key: string;
+  value: string;
+  description: string;
+}
 
+interface QueryBodyForm {
+  key: string;
+  value: string;
+  description: string;
+}
+
+interface QueryBodyFormX {
+  key: string;
+  value: string;
+  description: string;
+}
+
+interface FormData {
+  requestMethod: string;
+  apiUrl: string;
+  authType: string;
+  queryParams: QueryParam[];
+  queryHeaders: QueryHeader[];
+  queryBodyForm: QueryBodyForm[];
+  queryBodyFormX: QueryBodyFormX[];
+  queryJsonBody: string;
+  queryXmlBody: string;
+  queryRawBody: string;
+}
+
+const globalStore = useGlobalStore();
+
+const apiName = ref("");
+const urlPrefix = ref("http://");
 const formRef = ref(null);
-const formData = reactive({
+const formData = reactive<FormData>({
   requestMethod: "GET",
   apiUrl: "",
   authType: "noAuth",
-  queryParams: queryParams,
-  queryHeaders: queryHeaders,
-  queryBodyForm: queryBodyForm,
-  queryBodyFormX: queryBodyFormX,
   queryJsonBody: "",
+  queryBodyForm: [],
+  queryBodyFormX: [],
+  queryHeaders: [],
+  queryParams: [],
   queryXmlBody: "",
   queryRawBody: ""
-  // 其他表单属性
 });
 
 const queryJsonBody = ref("");
 const queryXmlBody = ref("");
 const queryRawBody = ref("");
-
-//响应体测试数据
 const responseBody = reactive({
-  name: "qiu", //字符串
-  age: 18, //数组
-  isMan: false, //布尔值
-  date: new Date(),
-  arr: [1, 2, 5],
-  reg: /ab+c/i
+  message: "",
+  code: 0,
+  data: null
+  // Add other properties as needed
 });
+const responseHeader = reactive([
+  // Define properties for response headers
+  // Example:
+  { key: "Date", value: "" },
+  { key: "Server", value: "" },
+  { key: "Content-Type", value: "" },
+  { key: "Content-Length", value: "" }
+  // Add other headers as needed
+]);
 
 const responseBodyRaw = reactiveToJSON(responseBody);
 
@@ -236,26 +273,7 @@ const isResponseBodyEmpty = (responseBody: any) => {
   return Object.keys(rawResponseBody).length === 0;
 };
 
-//响应头测试数据
-const resHeaders = [
-  {
-    key: "Date",
-    value: "Thu, 14 Sep 2023 09:24:49 GMT"
-  },
-  {
-    key: "Server",
-    value: "Werkzeug/2.3.3 Python/3.9.16"
-  },
-  {
-    key: "Content-Type",
-    value: "application/json"
-  },
-  {
-    key: "Content-Length",
-    value: "Tom"
-  }
-];
-
+//tab及selector选项配置
 const queryBody = ref(1);
 const activeQuery = ref("first");
 const activeResponse = ref("first");
@@ -294,6 +312,99 @@ const modifyName = (project: any) => {
       });
     });
 };
+
+//接口测试部分
+const parseParams = (params: QueryParam[]) => {
+  const parsedParams: { [key: string]: string } = {};
+  params.forEach(param => {
+    parsedParams[param.key] = param.value;
+  });
+  return parsedParams;
+};
+
+const parseHeaders = (headers: QueryHeader[]) => {
+  const parsedHeaders: { [key: string]: string } = {};
+  headers.forEach(header => {
+    parsedHeaders[header.key] = header.value;
+  });
+  return parsedHeaders;
+};
+
+const parseRequestBody = (formData: FormData) => {
+  switch (formData.requestMethod) {
+    case "POST":
+    case "PUT":
+      if (formData.queryJsonBody) {
+        return JSON.parse(formData.queryJsonBody);
+      } else if (formData.queryXmlBody) {
+        // 解析 XML 的逻辑
+        return formData.queryXmlBody;
+      } else {
+        // 处理其他请求体类型
+        return formData.queryRawBody;
+      }
+    default:
+      return null;
+  }
+};
+
+const sendApiForm = async () => {
+  try {
+    const response: AxiosResponse<any> = await axios({
+      method: formData.requestMethod,
+      url: formData.apiUrl,
+      headers: parseHeaders(formData.queryHeaders),
+      params: parseParams(formData.queryParams),
+      data: parseRequestBody(formData)
+    });
+
+    // 处理响应，例如显示在界面上
+    console.log(response.data);
+
+    // 将 response.data 赋值给 responseBody 对象
+    Object.assign(responseBody, {
+      message: response.data.message || "",
+      code: response.data.code || 0,
+      data: response.data.data || null
+      // Add other properties as needed
+    });
+
+    // 将 response.headers 赋值给 responseHeader 对象
+    responseHeader.forEach(header => {
+      header.value = response.headers[header.key.toLowerCase()] || "";
+    });
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      const axiosError: AxiosError = error;
+
+      if (axiosError.response) {
+        Object.assign(responseBody, {
+          message: axiosError.response.statusText || "",
+          code: axiosError.response.status,
+          data: axiosError.response.data || null
+        });
+
+        // Update response headers for error case
+        responseHeader.forEach(header => {
+          header.value = axiosError.response.headers[header.key.toLowerCase()] || "";
+        });
+      } else if (axiosError.request) {
+        // The request was made, but no response was received
+        ElMessage.error("Request:" + axiosError.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        ElMessage.error("Error message:" + axiosError.message);
+      }
+    } else {
+      // This block will be executed if the error is not an AxiosError
+      ElMessage.error(error);
+    }
+  }
+};
+
+onMounted(() => {
+  apiName.value = props.apiTitle as string;
+});
 </script>
 
 <style scoped lang="scss">
