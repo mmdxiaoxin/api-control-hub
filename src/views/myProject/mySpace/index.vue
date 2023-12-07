@@ -34,7 +34,7 @@
                     circle
                     @click="starCollection(element.id)"
                   ></el-button>
-                  <el-dropdown ref="operation">
+                  <el-dropdown ref="operation" trigger="click">
                     <span class="el-dropdown-link">
                       <el-button :icon="More" text></el-button>
                     </span>
