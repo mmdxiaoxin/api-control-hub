@@ -4,7 +4,7 @@
     <el-table :data="tableData" border style="width: 100%">
       <el-table-column label="方法" width="180">
         <template #default="{ row }">
-          <el-tag :type="getTagType(row.method)">{{ row.method }}</el-tag>
+          <el-tag :type="getMethodTagType(row.method)">{{ row.method }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="apiName" label="接口名称" />
@@ -14,6 +14,7 @@
 
 <script setup lang="ts">
 import { Edit } from "@element-plus/icons-vue";
+import { getMethodTagType } from "@/utils/workPlace";
 
 const props = defineProps({
   directoryTitle: String
@@ -37,21 +38,6 @@ const tableData = [
     apiName: "接口4"
   }
 ];
-
-const getTagType = (method: string) => {
-  switch (method) {
-    case "GET":
-      return "success";
-    case "POST":
-      return "primary";
-    case "PUT":
-      return "warning";
-    case "DELETE":
-      return "danger";
-    default:
-      return "info";
-  }
-};
 </script>
 
 <style scoped lang="scss">

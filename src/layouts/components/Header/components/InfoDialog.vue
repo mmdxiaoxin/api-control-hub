@@ -7,7 +7,7 @@
             <el-avatar class="mr-3" :size="32" :src="useStore.userInfo.avatar" />
             <span style="margin-left: 20px" v-if="!editMode">{{ useStore.userInfo.name }}</span>
             <el-input v-else v-model="editedUserInfo.name" style="max-width: 30%; margin-left: 20px" />
-            <el-tag style="margin-left: 20px" :type="getTagType(workPlace.currentRole)">{{ workPlace.currentRole }}</el-tag>
+            <el-tag style="margin-left: 20px" :type="getRoleTagType(workPlace.currentRole)">{{ workPlace.currentRole }}</el-tag>
           </div>
         </template>
         <template #extra>
@@ -40,7 +40,7 @@
 import { ref } from "vue";
 import { useUserStore } from "@/stores/modules/user";
 import { useWorkPlaceStore } from "@/stores/modules/workPlace";
-import { getTagType } from "@/utils/workPlace";
+import { getRoleTagType } from "@/utils/workPlace";
 
 const useStore = useUserStore();
 const workPlace = useWorkPlaceStore();
@@ -78,11 +78,10 @@ defineExpose({ openDialog });
 .items-center {
   display: flex;
   align-items: center;
-
   .descriptions {
     width: 100%;
-    border: #575757 1px solid;
     min-height: 250px;
+    border: #575757 1px solid;
   }
 }
 </style>
