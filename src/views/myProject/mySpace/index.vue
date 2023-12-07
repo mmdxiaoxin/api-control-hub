@@ -87,7 +87,7 @@ const spaceRole = ref("团队拥有者");
 const activeName = ref("first");
 const operation = ref<DropdownInstance>();
 const gridList = ref([
-  { id: 1, title: "企业网站建设", icon: "src/assets/icons/xianxingdaoyu.svg", isCollection: true },
+  { id: 1, title: "农业监控系统", icon: "src/assets/icons/xianxingdaoyu.svg", isCollection: true },
   { id: 2, title: "电商平台开发", icon: "src/assets/icons/xianxingdiqiu.svg", isCollection: true },
   { id: 3, title: "社交媒体应用", icon: "src/assets/icons/xianxingditu.svg", isCollection: true },
   { id: 4, title: "在线教育平台", icon: "src/assets/icons/xianxingfanchuan.svg" },

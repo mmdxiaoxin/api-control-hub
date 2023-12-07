@@ -18,7 +18,7 @@
 import { Edit } from "@element-plus/icons-vue";
 import { getMethodTagType } from "@/utils/workPlace";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 const props = defineProps({
   directoryTitle: String
@@ -66,6 +66,10 @@ const modifyName = (project: any) => {
       });
     });
 };
+
+onMounted(() => {
+  directoryName.value = props.directoryTitle as string;
+});
 </script>
 
 <style scoped lang="scss">

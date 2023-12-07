@@ -3,7 +3,8 @@
     <el-main class="project-content">
       <div class="project-header" @click="saveContent">
         <span class="text">
-          {{ projectName }} <el-button :icon="Edit" circle size="small" @click="modifyName(projectName)" />
+          {{ ShowMode ? props.projectTitle : projectName }}
+          <el-button :icon="Edit" circle size="small" @click="modifyName(projectName)" />
         </span>
         <el-tag>项目概览</el-tag>
       </div>
@@ -24,14 +25,18 @@
 <script setup lang="ts">
 import ApiStatistic from "./ApiStatistic.vue";
 import { Edit } from "@element-plus/icons-vue";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import WangEditor from "@/components/WangEditor/index.vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 
 const EditMode = ref(false);
+const ShowMode = ref(true);
 const content = ref("");
 const props = defineProps({
-  projectTitle: String
+  projectTitle: {
+    type: String,
+    required: true
+  }
 });
 const projectName = ref(props.projectTitle);
 const modifyName = (project: any) => {
@@ -42,6 +47,7 @@ const modifyName = (project: any) => {
     inputErrorMessage: "项目名称不能为空" // 错误信息
   })
     .then(({ value }) => {
+      ShowMode.value = false;
       projectName.value = value;
       //TODO:连接后端项目修改
       console.log(`Modifying name for project ${project}`);
@@ -63,6 +69,10 @@ const editContent = () => {
 const saveContent = () => {
   EditMode.value = false;
 };
+
+onMounted(() => {
+  projectName.value = props.projectTitle;
+});
 </script>
 
 <style scoped lang="scss">
