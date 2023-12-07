@@ -147,14 +147,14 @@
               boxed
               sort
               :theme="globalStore.isDark ? 'dark' : 'light'"
-              v-if="resBodyRadio === 'Pretty' && ResSelect === 'JSON'"
+              v-if="resBodyRadio === 'Pretty' && ResSelect === 'JSON' && !isResponseBodyEmpty(responseBody)"
             />
             <!-- JSON 视图，raw -->
-            <div class="raw-json" v-if="resBodyRadio === 'Raw' && ResSelect === 'JSON'">
+            <div class="raw-json" v-if="resBodyRadio === 'Raw' && ResSelect === 'JSON' && !isResponseBodyEmpty(responseBody)">
               {{ responseBodyRaw }}
             </div>
             <!-- 非 JSON 格式的提示 -->
-            <div v-if="ResSelect !== 'JSON'">
+            <div v-if="ResSelect !== 'JSON' && !isResponseBodyEmpty(responseBody)">
               <p>暂不支持！</p>
             </div>
           </div>
@@ -177,7 +177,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, watch } from "vue";
 import { JsonViewer } from "vue3-json-viewer";
 import "vue3-json-viewer/dist/index.css";
 import QueryTable from "./QueryTable.vue";
@@ -266,11 +266,12 @@ const responseHeader = reactive([
   // Add other headers as needed
 ]);
 
+// 将响应体转换为 JSON 字符串
 const responseBodyRaw = reactiveToJSON(responseBody);
 
+//检查响应体是否为空
 const isResponseBodyEmpty = (responseBody: any) => {
-  const rawResponseBody = reactiveToJSON(responseBody);
-  return Object.keys(rawResponseBody).length === 0;
+  return responseBody.code === 0;
 };
 
 //tab及selector选项配置
@@ -405,6 +406,13 @@ const sendApiForm = async () => {
 onMounted(() => {
   apiName.value = props.apiTitle as string;
 });
+
+watch(
+  () => props.apiTitle,
+  newVal => {
+    apiName.value = newVal as string;
+  }
+);
 </script>
 
 <style scoped lang="scss">
