@@ -1,6 +1,14 @@
 <template>
-  <div class="my-team-container card" v-if="!isDetail">
-    <div class="team-container-title"><h1>我的团队</h1></div>
+  <div class="my-team-container card">
+    <div class="team-container-header">
+      <div class="team-container-title">
+        <h1>团队设置</h1>
+      </div>
+      <span>
+        <!-- 添加项目按钮 -->
+        <el-button type="primary" @click="addTeamSpace" style="margin-right: 20px">添加团队</el-button>
+      </span>
+    </div>
     <el-divider />
     <div class="team-box card">
       <div class="team-item" v-for="team in teams" :key="team.id">
@@ -42,7 +50,6 @@ interface Team {
 }
 
 const teams = ref<Team[]>([]);
-const isDetail = ref(false);
 // 模拟异步获取数据
 onMounted(() => {
   teams.value = [
@@ -66,8 +73,12 @@ const handleButtonClick = (action: string, team: Team) => {
     console.log(`Clicked on delete for team: ${team.name}`);
   } else if (action === "detail") {
     console.log(`Clicked on Detail for team: ${team.name}`);
-    isDetail.value = true;
   }
+};
+
+const addTeamSpace = () => {
+  // 在这里执行添加团队的操作
+  console.log("Clicked on addTeamSpace");
 };
 </script>
 
