@@ -98,6 +98,22 @@ export namespace User {
     children?: ResDepartment[];
   }
 }
+//项目管理模块
+export namespace ProjectServer {
+  export interface ReqProjectParams {
+    teamId: string;
+  }
+
+  export interface ResProjectItem {
+    id: string;
+    name: string;
+    isCollection: boolean;
+    description?: string;
+    creator?: string;
+    createTime?: string;
+    updateTime?: string;
+  }
+}
 
 //Mock服务模块
 export namespace MockServer {

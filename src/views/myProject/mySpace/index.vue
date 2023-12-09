@@ -29,7 +29,7 @@
                 <div class="card-operation">
                   <el-button :icon="Position" circle @click="activeProject(element)"></el-button>
                   <el-button
-                    :type="element.isCollection ? '' : 'warning'"
+                    :type="!element.isCollection ? '' : 'warning'"
                     :icon="Star"
                     circle
                     @click="starCollection(element.id)"
@@ -77,6 +77,8 @@ import TeamTable from "./components/TeamTable.vue";
 import TeamSetting from "./components/TeamSetting.vue";
 import { Delete, Document, DocumentCopy, More, Position, Star } from "@element-plus/icons-vue";
 import { useRoute, useRouter } from "vue-router";
+import { ProjectServer } from "@/api/interface";
+import { getProjectList } from "@/api/modules/projectServer";
 
 const workPlace = useWorkPlaceStore();
 const route = useRoute();
@@ -86,20 +88,18 @@ const spaceId = ref("");
 const spaceRole = ref("团队拥有者");
 const activeName = ref("first");
 const operation = ref<DropdownInstance>();
-const gridList = ref([
-  { id: 1, title: "农业监控系统", icon: "src/assets/icons/xianxingdaoyu.svg", isCollection: true },
-  { id: 2, title: "电商平台开发", icon: "src/assets/icons/xianxingdiqiu.svg", isCollection: true },
-  { id: 3, title: "社交媒体应用", icon: "src/assets/icons/xianxingditu.svg", isCollection: true },
-  { id: 4, title: "在线教育平台", icon: "src/assets/icons/xianxingfanchuan.svg" },
-  { id: 5, title: "智能家居控制系统", icon: "src/assets/icons/xianxingfeiji.svg" },
-  { id: 6, title: "健康管理应用", icon: "src/assets/icons/xianxinglvhangriji.svg" },
-  { id: 7, title: "旅游信息平台", icon: "src/assets/icons/xianxingtianqiyubao.svg" },
-  { id: 8, title: "智能物流系统", icon: "src/assets/icons/xianxingxiangjipaizhao.svg" },
-  { id: 9, title: "人才招聘平台", icon: "src/assets/icons/xianxingxiarilengyin.svg" },
-  { id: 10, title: "金融数据分析工具", icon: "src/assets/icons/xianxingyoulun.svg" },
-  { id: 11, title: "在线购物商城", icon: "src/assets/icons/xianxingdaoyu.svg" },
-  { id: 12, title: "智能车辆管理系统", icon: "src/assets/icons/xianxingdaoyu.svg" }
-]);
+const gridList = ref<ProjectServer.ResProjectItem[]>([]);
+
+const useProjectList = async (params: ProjectServer.ReqProjectParams) => {
+  try {
+    const { data } = await getProjectList(params);
+    const gridListRes = data;
+    console.log(data);
+    gridList.value = gridListRes;
+  } catch (error) {
+    ElMessage.error("获取项目列表失败");
+  }
+};
 
 const activeProject = (project: any) => {
   ElMessage.success(`激活项目-${project.title}`);
@@ -108,9 +108,10 @@ const activeProject = (project: any) => {
   router.push("/projectCollection/index");
 };
 
-const starCollection = (id: number) => {
-  const index = gridList.value.findIndex(item => item.id === id);
+const starCollection = (projectId: string) => {
+  const index = gridList.value.findIndex(item => item.id === projectId);
   gridList.value[index].isCollection = !gridList.value[index].isCollection;
+  if (gridList.value[index].isCollection) ElMessage.success("收藏成功");
 };
 
 const modifyName = (project: any) => {
@@ -214,7 +215,7 @@ const deleteProject = (project: { id: number; title: string }) => {
 onMounted(() => {
   const teamId = route.query.id as string;
   const spaceName = route.query.spaceName as string;
-
+  useProjectList({ teamId });
   // 使用 spaceName 设置 spaceTitle
   if (spaceName) {
     spaceTitle.value = spaceName;
