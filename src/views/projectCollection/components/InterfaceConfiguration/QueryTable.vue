@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 
@@ -73,6 +73,13 @@ const removeQueryParam = row => {
     emit("removeQueryParam", localQueryParams.value);
   }
 };
+
+watch(
+  () => props.queryParams,
+  newVal => {
+    localQueryParams.value = newVal;
+  }
+);
 </script>
 
 <style scoped lang="scss">

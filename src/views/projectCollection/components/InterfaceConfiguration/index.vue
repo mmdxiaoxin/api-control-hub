@@ -202,7 +202,6 @@ import { useGlobalStore } from "@/stores/modules/global";
 import { getOptionStyle } from "@/utils/workPlace";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { getHttpConfig } from "@/api/modules/httpServer";
-import { HttpServer } from "@/api/interface";
 
 const props = defineProps({
   apiTitle: String,
@@ -418,8 +417,9 @@ const sendApiForm = async () => {
 const useHttpApiConfig = async (reqApiId: string) => {
   try {
     const { data } = await getHttpConfig({ apiId: reqApiId });
-    const resFormData: HttpServer.ResHttpConfig = data;
+    const resFormData = data;
     if (resFormData) {
+      apiName.value = data.name;
       formData.requestMethod = resFormData.requestMethod;
       formData.apiUrl = resFormData.apiUrl;
       formData.authType = resFormData.authType;
@@ -451,13 +451,6 @@ onMounted(() => {
   apiName.value = props.apiTitle as string;
   useHttpApiConfig(props.apiId as string);
 });
-
-watch(
-  () => props.apiTitle,
-  newVal => {
-    apiName.value = newVal as string;
-  }
-);
 
 watch(
   () => props.apiId,
