@@ -39,7 +39,7 @@
                 content="可以在项目的环境设置中更改(暂不支持...)"
               >
                 <template #reference>
-                  <div ref="prefixRef" @click="onClickOutside">{{ urlPrefix }}</div>
+                  <div>{{ urlPrefix }}</div>
                 </template>
               </el-popover>
             </template>
@@ -204,7 +204,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, unref, watch } from "vue";
+import { onMounted, reactive, ref, watch } from "vue";
 import { JsonViewer } from "vue3-json-viewer";
 import "vue3-json-viewer/dist/index.css";
 import QueryTable from "./QueryTable.vue";
@@ -424,11 +424,6 @@ const sendApiForm = async () => {
       ElMessage.error(error);
     }
   }
-};
-const prefixRef = ref();
-const popoverRef = ref();
-const onClickOutside = () => {
-  unref(popoverRef).popperRef?.delayHide?.();
 };
 
 const useHttpApiConfig = async (reqApiId: string) => {
