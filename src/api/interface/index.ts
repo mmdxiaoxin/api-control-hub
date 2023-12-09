@@ -107,6 +107,7 @@ export namespace ProjectServer {
   export interface ResProjectItem {
     id: string;
     name: string;
+    icon: string;
     isCollection: boolean;
     description?: string;
     creator?: string;

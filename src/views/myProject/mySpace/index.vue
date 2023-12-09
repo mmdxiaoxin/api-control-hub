@@ -53,7 +53,7 @@
                   </el-dropdown>
                 </div>
               </div>
-              <div class="card-title">{{ element.title || "Error: Title not provided" }}</div>
+              <div class="card-title">{{ element.name || "Error: Title not provided" }}</div>
               <el-tag class="card-tag">{{ element.role || "HTTP" }}</el-tag>
             </div>
           </template>
@@ -109,9 +109,9 @@ const useProjectList = async (params: ProjectServer.ReqProjectParams) => {
 };
 
 const activeProject = (project: any) => {
-  ElMessage.success(`激活项目-${project.title}`);
+  ElMessage.success(`激活项目-${project.name}`);
   //TODO:获取currentRole和curNickName
-  workPlace.setWorkPlace(project.id, spaceId.value, project.title, spaceTitle.value, project.currentRole, project.curNickName);
+  workPlace.setWorkPlace(project.id, spaceId.value, project.name, spaceTitle.value, project.currentRole, project.curNickName);
   router.push("/projectCollection/index");
 };
 
@@ -132,10 +132,10 @@ const modifyName = (project: any) => {
       // 在用户确认输入后更新项目的名称
       const index = gridList.value.findIndex((item: any) => item.id === project.id);
       if (index !== -1) {
-        gridList.value[index].title = value;
+        gridList.value[index].name = value;
       }
       //TODO:连接后端项目修改
-      console.log(`Modifying name for project ${project.id}: ${project.title}`);
+      console.log(`Modifying name for project ${project.id}: ${project.name}`);
       ElMessage({
         type: "success",
         message: `修改成功:${value}`
@@ -160,14 +160,15 @@ const addProject = () => {
     .then(({ value }) => {
       const newId = Math.floor(Math.random() * 1000);
       const addProject = {
-        id: newId,
-        title: value,
-        icon: "src/assets/icons/xianxingdaoyu.svg"
+        id: `${newId}`,
+        name: value,
+        icon: "src/assets/icons/xianxingdaoyu.svg",
+        isCollection: false
       };
       gridList.value.push(addProject);
       ElMessage({
         type: "success",
-        message: `添加成功:${addProject.id}: ${addProject.title}`
+        message: `添加成功:${addProject.id}: ${addProject.name}`
       });
     })
     .catch(() => {
@@ -180,22 +181,23 @@ const addProject = () => {
 
 const cloneProject = (project: any) => {
   const newId = Math.floor(Math.random() * 1000);
-  const newTitle = `${project.title}-副本`;
+  const newTitle = `${project.name}-副本`;
   const clonedProject = {
-    id: newId,
-    title: newTitle,
-    icon: project.icon
+    id: `${newId}`,
+    name: newTitle,
+    icon: project.icon,
+    isCollection: false
   };
   //TODO:连接后端项目添加
   gridList.value.push(clonedProject);
   ElMessage({
     type: "success",
-    message: `克隆成功:${project.id}: ${project.title}`
+    message: `克隆成功:${project.id}: ${project.name}`
   });
 };
 
-const deleteProject = (project: { id: string; title: string }) => {
-  ElMessageBox.confirm(`确认删除项目 ${project.title} 吗？`, "删除项目", {
+const deleteProject = (project: { id: string; name: string }) => {
+  ElMessageBox.confirm(`确认删除项目 ${project.name} 吗？`, "删除项目", {
     confirmButtonText: "确认",
     cancelButtonText: "取消",
     type: "warning"
@@ -206,10 +208,10 @@ const deleteProject = (project: { id: string; title: string }) => {
 
       ElMessage({
         type: "success",
-        message: `成功删除项目: ${project.title}`
+        message: `成功删除项目: ${project.name}`
       });
       //TODO:连接后端项目删除
-      console.log(`Deleting project ${project.id}: ${project.title}`);
+      console.log(`Deleting project ${project.id}: ${project.name}`);
     })
     .catch(() => {
       ElMessage({
