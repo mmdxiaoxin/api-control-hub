@@ -12,6 +12,10 @@
     </div>
     <el-tabs v-model="activeName" class="my-space-tabs">
       <el-tab-pane label="团队项目" name="first">
+        <template #default v-if="loading">
+          <!-- 骨架屏覆盖 -->
+          <el-skeleton :rows="5" animated />
+        </template>
         <draggable
           v-model="gridList"
           class="card grid-container"
@@ -19,6 +23,7 @@
           animation="300"
           chosen-class="chosen"
           force-fallback="true"
+          v-if="!loading"
         >
           <template #item="{ element }">
             <div class="card-item">
@@ -88,6 +93,7 @@ const spaceId = ref("");
 const spaceRole = ref("团队拥有者");
 const activeName = ref("first");
 const operation = ref<DropdownInstance>();
+const loading = ref(true); // 控制是否显示骨架屏
 const gridList = ref<ProjectServer.ResProjectItem[]>([]);
 
 const useProjectList = async (params: ProjectServer.ReqProjectParams) => {
@@ -95,6 +101,7 @@ const useProjectList = async (params: ProjectServer.ReqProjectParams) => {
     const { data } = await getProjectList(params);
     const gridListRes = data;
     console.log(data);
+    loading.value = false;
     gridList.value = gridListRes;
   } catch (error) {
     ElMessage.error("获取项目列表失败");
@@ -215,7 +222,7 @@ const deleteProject = (project: { id: string; title: string }) => {
 onMounted(() => {
   const teamId = route.query.id as string;
   const spaceName = route.query.spaceName as string;
-  useProjectList({ teamId });
+  setTimeout(() => useProjectList({ teamId }), 500);
   // 使用 spaceName 设置 spaceTitle
   if (spaceName) {
     spaceTitle.value = spaceName;
