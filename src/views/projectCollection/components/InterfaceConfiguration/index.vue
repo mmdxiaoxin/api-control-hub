@@ -410,7 +410,7 @@ const sendApiForm = async () => {
 
         // Update response headers for error case
         responseHeader.forEach(header => {
-          header.value = axiosError.response.headers[header.key.toLowerCase()] || "";
+          header.value = axiosError.response?.headers[header.key.toLowerCase()] || "";
         });
       } else if (axiosError.request) {
         // The request was made, but no response was received
