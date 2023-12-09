@@ -32,7 +32,7 @@
   <el-button @click="addQueryParam" style="width: 100%" :icon="Plus">添加参数</el-button>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
@@ -43,7 +43,7 @@ const props = defineProps({
 const emit = defineEmits(["update:queryParams", "addQueryParam", "removeQueryParam"]);
 
 // 创建本地变量，将其与父组件的 prop 进行双向绑定
-const localQueryParams = ref(props.queryParams);
+const localQueryParams = ref<Array<any>>(props.queryParams || []);
 
 const addQueryParam = () => {
   // 添加新的参数行，并将其设为编辑状态
@@ -52,11 +52,11 @@ const addQueryParam = () => {
   emit("addQueryParam", localQueryParams.value);
 };
 
-const startEdit = row => {
+const startEdit = (row: any) => {
   row.isEditing = true;
 };
 
-const saveEdit = row => {
+const saveEdit = (row: any) => {
   // 检查是否有 key 属性，如果没有就不可以保存
   if (row.key === "") {
     ElMessage.error("参数名不能为空");
@@ -66,7 +66,7 @@ const saveEdit = row => {
   emit("update:queryParams", localQueryParams.value);
 };
 
-const removeQueryParam = row => {
+const removeQueryParam = (row: any) => {
   const index = localQueryParams.value.indexOf(row);
   if (index !== -1) {
     localQueryParams.value.splice(index, 1);
@@ -75,8 +75,8 @@ const removeQueryParam = row => {
 };
 
 watch(
-  () => props.queryParams,
-  newVal => {
+  () => props.queryParams!,
+  (newVal: any) => {
     localQueryParams.value = newVal;
   }
 );
