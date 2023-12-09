@@ -30,7 +30,19 @@
       <el-col :span="16">
         <el-form-item>
           <el-input placeholder="请输入接口 URL" clearable v-model="formData.apiUrl">
-            <template #prepend>{{ urlPrefix }}</template>
+            <template #prepend>
+              <el-popover
+                placement="top-start"
+                title="URL前缀"
+                :width="200"
+                trigger="hover"
+                content="可以在项目的环境设置中更改(暂不支持...)"
+              >
+                <template #reference>
+                  <div ref="prefixRef" @click="onClickOutside">{{ urlPrefix }}</div>
+                </template>
+              </el-popover>
+            </template>
           </el-input>
         </el-form-item>
       </el-col>
@@ -192,7 +204,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, watch } from "vue";
+import { onMounted, reactive, ref, unref, watch } from "vue";
 import { JsonViewer } from "vue3-json-viewer";
 import "vue3-json-viewer/dist/index.css";
 import QueryTable from "./QueryTable.vue";
@@ -412,6 +424,11 @@ const sendApiForm = async () => {
       ElMessage.error(error);
     }
   }
+};
+const prefixRef = ref();
+const popoverRef = ref();
+const onClickOutside = () => {
+  unref(popoverRef).popperRef?.delayHide?.();
 };
 
 const useHttpApiConfig = async (reqApiId: string) => {
