@@ -30,7 +30,7 @@
         @check="handleCheckChange"
         @node-drop="handleDrop"
       >
-        <template #default="{ node, data }">
+        <template #default="{ node, data: nodeData }">
           <span class="el-tree-node__label custom-tree-node">
             <span>{{ node.label }}</span>
             <el-dropdown trigger="click">
@@ -39,16 +39,16 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item :icon="FolderAdd" @click="addDirectory(data)" v-if="data.isApi === undefined">
+                  <el-dropdown-item :icon="FolderAdd" @click="addDirectory(nodeData)" v-if="nodeData.isApi === undefined">
                     子目录添加
                   </el-dropdown-item>
-                  <el-dropdown-item :icon="DocumentAdd" @click="addApi(data)" v-if="data.isApi === undefined">
+                  <el-dropdown-item :icon="DocumentAdd" @click="addApi(nodeData)" v-if="nodeData.isApi === undefined">
                     接口添加
                   </el-dropdown-item>
-                  <el-dropdown-item :icon="DocumentCopy" @click="duplicateApi(data)" v-if="data.isApi !== undefined">
+                  <el-dropdown-item :icon="DocumentCopy" @click="duplicateApi(nodeData)" v-if="nodeData.isApi !== undefined">
                     克隆
                   </el-dropdown-item>
-                  <el-dropdown-item :icon="Delete" v-if="data.isProject === undefined" @click="removeNode(node, data)">
+                  <el-dropdown-item :icon="Delete" v-if="nodeData.isProject === undefined" @click="removeNode(node, nodeData)">
                     删除
                   </el-dropdown-item>
                 </el-dropdown-menu>
