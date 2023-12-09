@@ -144,6 +144,11 @@ export namespace MockServer {
 
 //接口管理模块
 export namespace HttpServer {
+  export interface ReqHttpParams {
+    projectId: string;
+    projectName: string;
+  }
+
   export interface ResCollectionList {
     id: string;
     name: string;

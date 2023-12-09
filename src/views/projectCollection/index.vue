@@ -21,6 +21,8 @@ import ProjectOverview from "./components/ProjectOverview/index.vue";
 import CatalogOverview from "./components/CatalogOverview/index.vue";
 import InterfaceConfiguration from "./components/InterfaceConfiguration/index.vue";
 import { getHttpCollectionList } from "@/api/modules/httpServer";
+import { HttpServer } from "@/api/interface";
+import { useWorkPlaceStore } from "@/stores/modules/workPlace";
 
 const treeFilterValue = reactive({ CollectionId: "1" });
 const initParam = reactive({ departmentId: "" });
@@ -30,6 +32,7 @@ const isProject = ref(true);
 const isDirectory = ref(false);
 const isApi = ref(false);
 const pageTitle = ref("");
+const workPlace = useWorkPlaceStore();
 
 const judgeList = (data: any) => {
   isProject.value = !!data.isProject;
@@ -43,16 +46,16 @@ const changeTreeFilter = (val: { id: string; treeCurrentData: any }) => {
   judgeList(val.treeCurrentData);
 };
 
-const treeFilterData = ref<any>([]);
-const getTreeFilter = async () => {
-  const { data } = await getHttpCollectionList();
+const treeFilterData = ref<HttpServer.ResCollectionList[]>([]);
+const useTreeFilterData = async () => {
+  const { data } = await getHttpCollectionList({ projectId: workPlace.projectId, projectName: workPlace.projectName });
   treeFilterData.value = data;
   initParam.departmentId = treeFilterData.value[0].id;
   pageTitle.value = treeFilterData.value[0].name;
 };
 
 onMounted(() => {
-  getTreeFilter();
+  useTreeFilterData();
 });
 </script>
 

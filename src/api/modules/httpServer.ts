@@ -7,6 +7,6 @@ import { HttpServer } from "@/api/interface";
  */
 
 // 获取项目列表
-export const getHttpCollectionList = () => {
-  return http.get<HttpServer.ResCollectionList[]>(PORT1 + `/http/collection/list`);
+export const getHttpCollectionList = (params: HttpServer.ReqHttpParams) => {
+  return http.post<HttpServer.ResCollectionList[]>(PORT1 + `/http/collection/list`, params);
 };
