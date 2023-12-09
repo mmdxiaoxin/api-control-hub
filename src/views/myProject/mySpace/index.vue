@@ -187,7 +187,7 @@ const cloneProject = (project: any) => {
   });
 };
 
-const deleteProject = (project: { id: number; title: string }) => {
+const deleteProject = (project: { id: string; title: string }) => {
   ElMessageBox.confirm(`确认删除项目 ${project.title} 吗？`, "删除项目", {
     confirmButtonText: "确认",
     cancelButtonText: "取消",
