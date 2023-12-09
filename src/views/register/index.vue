@@ -37,7 +37,7 @@
         </el-form>
         <div class="register-btn">
           <el-button :icon="CircleClose" round size="large" @click="backToLogin"> 返回</el-button>
-          <el-button :icon="UserFilled" round size="large" type="primary" :loading="loading" @click="register(registerForm)">
+          <el-button :icon="UserFilled" round size="large" type="primary" :loading="loading" @click="register(registerFormRef)">
             注册
           </el-button>
         </div>
