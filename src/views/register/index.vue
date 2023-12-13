@@ -57,8 +57,20 @@ type FormInstance = InstanceType<typeof ElForm>;
 const loading = ref(false);
 const registerFormRef = ref<FormInstance>();
 const registerRules: { [key: string]: FormItemRule[] } = {
-  username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-  password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+  username: [
+    { required: true, message: "请输入用户名", trigger: "blur" },
+    { min: 4, max: 12, message: "用户名长度必须为4-12位", trigger: "blur" },
+    { pattern: /^[A-Za-z0-9]+$/, message: "用户名只能包含字母和数字", trigger: "blur" }
+  ],
+  password: [
+    { required: true, message: "请输入密码", trigger: "blur" },
+    { min: 6, max: 18, message: "密码长度必须为6-18位", trigger: "blur" },
+    {
+      pattern: /^[A-Za-z0-9.!@#$%^&*()-+=/?:;'",`~]+$/,
+      message: "密码只能包含字母、数字以及特定字符 . ! @ # $ % ^ & * ( ) - + = / ? ; ' : \" , . ` ~",
+      trigger: "blur"
+    }
+  ],
   confirm: [
     { required: true, message: "请输入密码", trigger: "blur" },
     {
