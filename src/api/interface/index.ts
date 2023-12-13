@@ -125,6 +125,14 @@ export namespace MockServer {
     mockStatus: number;
   }
 
+  export interface ReqAddMock {
+    mockMethod: string;
+    mockURL: string;
+    mockDescription: string;
+    mockStatus: number;
+    mockContent: string;
+  }
+
   export interface ResMockList {
     id: string;
     mockMethod: string;

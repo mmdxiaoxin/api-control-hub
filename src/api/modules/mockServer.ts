@@ -30,3 +30,13 @@ export const deleteMock = (params: { id: string[] }) => {
 export const changeMockStatus = (params: { id: string; mockStatus: number }) => {
   return http.post(PORT1 + `/mock/change`, params);
 };
+
+// 添加mock接口
+export const addMock = (params: MockServer.ReqAddMock) => {
+  return http.post(PORT1 + `/mock/add`, params);
+};
+
+// 更新mock接口
+export const updateMock = (params: MockServer.ReqAddMock) => {
+  return http.post(PORT1 + `/mock/update`, params);
+};

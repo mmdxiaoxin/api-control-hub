@@ -15,3 +15,18 @@ export const getHttpCollectionList = (params: HttpServer.ReqHttpParams) => {
 export const getHttpConfig = (params: HttpServer.ReqHttpConfig) => {
   return http.post<HttpServer.ResHttpConfig>(PORT1 + `/http/config`, params);
 };
+
+//更新接口配置
+export const updateHttpConfig = (params: HttpServer.ReqHttpConfig) => {
+  return http.post<HttpServer.ResHttpConfig>(PORT1 + `/http/config/update`, params);
+};
+
+//添加接口配置
+export const addHttpConfig = (params: HttpServer.ReqHttpConfig) => {
+  return http.post<HttpServer.ResHttpConfig>(PORT1 + `/http/config/add`, params);
+};
+
+//删除接口配置
+export const deleteHttpConfig = (params: HttpServer.ReqHttpConfig) => {
+  return http.post<HttpServer.ResHttpConfig>(PORT1 + `/http/config/delete`, params);
+};

@@ -14,3 +14,8 @@ export const uploadImg = (params: FormData) => {
 export const uploadVideo = (params: FormData) => {
   return http.post<Upload.ResFileUrl>(PORT1 + `/file/upload/video`, params);
 };
+
+// 表格文件上传
+export const uploadFile = (params: FormData) => {
+  return http.post<Upload.ResFileUrl>(PORT1 + `/file/upload/excel`, params);
+};
