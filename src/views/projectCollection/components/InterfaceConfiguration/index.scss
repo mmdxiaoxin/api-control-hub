@@ -11,13 +11,21 @@
     margin-top: 20px;
   }
   .interface-response {
+    position: relative;
     height: calc(100% - 300px);
     margin-top: 10px;
-    .response-time {
-      position: relative;
-      top: 0;
-      right: 0;
-      margin-bottom: 20px;
+    .response-status {
+      position: absolute;
+      top: 20px;
+      right: 10px;
+      display: flex;
+      .status-item {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        margin-right: 10px;
+        font-size: 12px;
+      }
     }
     .response-body {
       height: 100%;

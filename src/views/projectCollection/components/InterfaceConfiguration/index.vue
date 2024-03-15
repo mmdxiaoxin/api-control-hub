@@ -199,6 +199,20 @@
           </div>
         </el-tab-pane>
       </el-tabs>
+      <div class="response-status">
+        <div class="status-item">
+          <span>Status:</span>
+          <p>{{ responseStatus.status }}</p>
+        </div>
+        <div class="status-item">
+          <span>Time:</span>
+          <p>{{ responseStatus.time }}</p>
+        </div>
+        <div class="status-item">
+          <span>Size:</span>
+          <p>{{ responseStatus.size }}</p>
+        </div>
+      </div>
     </div>
   </el-form>
 </template>
@@ -214,54 +228,22 @@ import { useGlobalStore } from "@/stores/modules/global";
 import { getOptionStyle } from "@/utils/workPlace";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { getHttpConfig } from "@/api/modules/httpServer";
+import { QueryParam, QueryHeader, FormData } from "./interfaces";
 
 const props = defineProps({
   apiTitle: String,
   apiId: String
 });
-console.log(props.apiId);
-
-interface QueryParam {
-  key: string;
-  value: string;
-  description: string;
-}
-
-interface QueryHeader {
-  key: string;
-  value: string;
-  description: string;
-}
-
-interface QueryBodyForm {
-  key: string;
-  value: string;
-  description: string;
-}
-
-interface QueryBodyFormX {
-  key: string;
-  value: string;
-  description: string;
-}
-
-interface FormData {
-  requestMethod: string;
-  apiUrl: string;
-  authType: string;
-  queryParams: QueryParam[];
-  queryHeaders: QueryHeader[];
-  queryBodyForm: QueryBodyForm[];
-  queryBodyFormX: QueryBodyFormX[];
-  queryJsonBody: string;
-  queryXmlBody: string;
-  queryRawBody: string;
-}
 
 const globalStore = useGlobalStore();
 
+// 接口名称
 const apiName = ref("");
+
+// URL 前缀
 const urlPrefix = ref("http://");
+
+// 表单数据
 const formRef = ref(null);
 const formData = reactive<FormData>({
   requestMethod: "GET",
@@ -276,20 +258,26 @@ const formData = reactive<FormData>({
   queryRawBody: ""
 });
 
+//响应体响应情况
+const responseStatus = reactive({
+  status: 0,
+  time: "0",
+  size: "0B"
+});
+
+// 响应体应该接收的数据
 const responseBody = reactive({
   message: "",
   code: 0,
   data: null
-  // Add other properties as needed
 });
+
+// 响应头应该接收的数据
 const responseHeader = reactive([
-  // Define properties for response headers
-  // Example:
   { key: "Date", value: "" },
   { key: "Server", value: "" },
   { key: "Content-Type", value: "" },
   { key: "Content-Length", value: "" }
-  // Add other headers as needed
 ]);
 
 //检查响应体是否为空
@@ -312,6 +300,7 @@ const ResFileOption = [
   { value: "TEXT", label: "TEXT" },
   { value: "AUTO", label: "AUTO" }
 ];
+
 // 其他的设置和事件处理函数
 const modifyName = (project: any) => {
   ElMessageBox.prompt("请输入要修改的接口名称", "修改名称", {
@@ -374,6 +363,7 @@ const parseRequestBody = (formData: FormData) => {
 
 const sendApiForm = async () => {
   try {
+    const startTime = Date.now();
     const response: AxiosResponse<any> = await axios({
       method: formData.requestMethod,
       url: formData.apiUrl,
@@ -381,18 +371,21 @@ const sendApiForm = async () => {
       params: parseParams(formData.queryParams),
       data: parseRequestBody(formData)
     });
-
-    // 处理响应，例如显示在界面上
-    console.log(response.data);
-
-    // 将 response.data 赋值给 responseBody 对象
+    const endTime = Date.now();
+    const responseTime = endTime - startTime;
+    // 获取响应体
     Object.assign(responseBody, {
       message: response.data.message || "",
       code: response.data.code || 0,
       data: response.data.data || null
-      // Add other properties as needed
+      // 根据需要添加其他属性
     });
-
+    // 获取响应状态
+    Object.assign(responseStatus, {
+      status: response.status,
+      time: formatTime(responseTime) || "0",
+      size: formatBytes(response.headers["content-length"] || "0")
+    });
     // 将 response.headers 赋值给 responseHeader 对象
     responseHeader.forEach(header => {
       header.value = response.headers[header.key.toLowerCase()] || "";
@@ -408,19 +401,19 @@ const sendApiForm = async () => {
           data: axiosError.response.data || null
         });
 
-        // Update response headers for error case
+        // 更新错误情况的响应标头
         responseHeader.forEach(header => {
           header.value = axiosError.response?.headers[header.key.toLowerCase()] || "";
         });
       } else if (axiosError.request) {
-        // The request was made, but no response was received
+        // 已提出请求，但未收到任何响应
         ElMessage.error("Request:" + axiosError.request);
       } else {
-        // Something happened in setting up the request that triggered an Error
+        // 设置请求时发生了触发错误的问题
         ElMessage.error("Error message:" + axiosError.message);
       }
     } else {
-      // This block will be executed if the error is not an AxiosError
+      // 如果错误不是AxiosError，将执行此块
       ElMessage.error(error);
     }
   }
@@ -443,6 +436,7 @@ const useHttpApiConfig = async (reqApiId: string) => {
       formData.queryXmlBody = resFormData.queryXmlBody;
       formData.queryRawBody = resFormData.queryRawBody;
     } else {
+      // 如果没有找到配置，将表单重置为默认值
       formData.requestMethod = "GET";
       formData.apiUrl = "";
       formData.authType = "noAuth";
@@ -457,6 +451,21 @@ const useHttpApiConfig = async (reqApiId: string) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+const formatBytes = (bytes: string) => {
+  const bytesInt = parseInt(bytes);
+  if (bytesInt === 0) return "0B";
+  const k = 1024;
+  const sizes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  const i = Math.floor(Math.log(bytesInt) / Math.log(k));
+  return (bytesInt / Math.pow(k, i)).toPrecision(3) + sizes[i];
+};
+
+const formatTime = (milliseconds: number) => {
+  if (milliseconds < 1000) return `${milliseconds}ms`;
+  else if (milliseconds < 60 * 1000) return `${(milliseconds / 1000).toPrecision(3)}s`;
+  else return `${(milliseconds / 60000).toPrecision(3)}min`;
 };
 
 onMounted(() => {
