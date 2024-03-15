@@ -2,65 +2,59 @@
   width: calc(100% - 260px);
   height: 100%;
   padding: 3%;
-
   .right-aligned {
     display: flex;
     justify-content: flex-end;
   }
-
   .interface-query {
-    margin-top: 20px;
     max-height: 300px;
+    margin-top: 20px;
   }
-
   .interface-response {
-    margin-top: 10px;
     height: calc(100% - 300px);
-
+    margin-top: 10px;
+    .response-time {
+      position: relative;
+      top: 0;
+      right: 0;
+      margin-bottom: 20px;
+    }
     .response-body {
       height: 100%;
-
       .res-body-toolBar {
         display: flex;
-        justify-content: space-between;
+        flex-flow: row wrap;
         align-items: center;
-        flex-direction: row;
-        flex-wrap: wrap;
+        justify-content: space-between;
         margin-bottom: 20px;
+        .tool-bar-select {
+          max-width: 20%;
+        }
       }
-
       .response-body-content {
         width: 99%;
         min-height: 200px;
         overflow: auto;
         border: #6b778c 1px solid;
-
-
         .string {
           color: green;
         }
-
         .number {
           color: darkorange;
         }
-
         .boolean {
           color: blue;
         }
-
         .null {
           color: magenta;
         }
-
         .key {
           color: red;
         }
       }
-
       .raw-json {
         white-space: pre;
       }
     }
   }
 }
-

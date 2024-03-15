@@ -157,7 +157,7 @@
                 <el-radio-button label="Raw" />
                 <el-radio-button label="Preview" />
               </el-radio-group>
-              <el-select v-model="ResSelect" size="small" v-if="resBodyRadio === 'Pretty'">
+              <el-select v-model="ResSelect" size="small" v-if="resBodyRadio === 'Pretty'" class="tool-bar-select">
                 <!-- 选择响应体格式 -->
                 <el-option v-for="item in ResFileOption" :key="item.value" :label="item.label" :value="item.value">
                   <span>{{ item.label }}</span>
