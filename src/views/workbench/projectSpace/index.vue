@@ -61,7 +61,9 @@
       </el-tab-pane>
       <el-tab-pane label="成员/权限" name="second">
         <TeamStatistics />
-        <TeamTable />
+        <div class="member-table">
+          <TeamTable />
+        </div>
       </el-tab-pane>
       <el-tab-pane label="团队设置" name="third">
         <TeamSetting :team-name="spaceTitle" :team-id="spaceId" />
