@@ -3,15 +3,13 @@
   .space-container-header {
     display: flex;
     flex-wrap: nowrap;
-    align-items: center;
+    place-items: center flex-start;
     justify-content: space-between;
-    justify-items: flex-start;
     width: 100%;
     .space-container-title {
       display: flex;
       flex-wrap: nowrap;
-      align-items: center;
-      justify-items: flex-start;
+      place-items: center flex-start;
     }
   }
   .my-space-tabs > .el-tabs__content {

@@ -112,7 +112,7 @@ const activeProject = (project: any) => {
   ElMessage.success(`激活项目-${project.name}`);
   //TODO:获取currentRole和curNickName
   workPlace.setWorkPlace(project.id, spaceId.value, project.name, spaceTitle.value, project.currentRole, project.curNickName);
-  router.push("/projectCollection/index");
+  router.push("/apiManagement/index");
 };
 
 const starCollection = (projectId: string) => {

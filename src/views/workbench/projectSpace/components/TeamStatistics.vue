@@ -65,23 +65,19 @@ const props = defineProps({
 .statistic-card {
   width: 100%;
   margin-bottom: 20px;
-
   .el-statistic {
+    padding: 10px;
     background-color: var(--el-bg-color-page);
     border-radius: 8px;
-    padding: 10px;
-
     .icon-style {
       font-size: 16px;
       color: var(--el-color-primary);
       vertical-align: middle;
     }
   }
-
   .el-row {
     margin: -10px; // 根据内边距修正
   }
-
   .el-col {
     padding: 10px;
   }
