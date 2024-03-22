@@ -68,7 +68,7 @@ import { AllowDropType, NodeDropType } from "element-plus/es/components/tree/src
 import type Node from "element-plus/es/components/tree/src/model/node";
 import type { DragEvents } from "element-plus/es/components/tree/src/model/useDragNode";
 import { TreeNodeData } from "element-plus/es/components/tree-v2/src/types";
-import { useWorkPlaceStore } from "@/stores/modules/workbench";
+import { useWorkbenchStore } from "@/stores/modules/workbench";
 import { ArrowRight, Delete, More, FolderAdd, DocumentAdd, DocumentCopy } from "@element-plus/icons-vue";
 
 // 接收父组件参数并设置默认值
@@ -100,7 +100,7 @@ const defaultProps = {
   label: props.label
 };
 
-const useWorkPlace = useWorkPlaceStore();
+const useWorkPlace = useWorkbenchStore();
 
 const treeRef = ref<InstanceType<typeof ElTree>>();
 const treeCurrentData = ref<TreeNodeData>();

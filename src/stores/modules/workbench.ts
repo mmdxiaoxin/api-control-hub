@@ -1,7 +1,8 @@
 import { defineStore } from "pinia";
 import piniaPersistConfig from "@/stores/helper/persist";
+import { getWorkBenchApi } from "@/api/modules/project";
 
-export const useWorkPlaceStore = defineStore({
+export const useWorkbenchStore = defineStore({
   id: "apiHub-work-place",
   state: (): {
     projectId: string;
@@ -11,11 +12,11 @@ export const useWorkPlaceStore = defineStore({
     currentRole: string;
     curNickName: string;
   } => ({
-    projectId: "0000001",
-    projectName: "农业监控系统",
-    teamId: "000001",
-    teamName: "个人空间",
-    currentRole: "团队拥有者",
+    projectId: "",
+    projectName: "",
+    teamId: "",
+    teamName: "",
+    currentRole: "",
     curNickName: ""
   }),
   getters: {},
@@ -35,6 +36,10 @@ export const useWorkPlaceStore = defineStore({
       this.teamName = teamName;
       typeof currentRole === "string" ? (this.currentRole = currentRole) : (this.currentRole = "游客");
       typeof curNickName === "string" ? (this.curNickName = curNickName) : (this.curNickName = "");
+    },
+    async getWorkBench() {
+      const { data } = await getWorkBenchApi();
+      this.setWorkPlace(data.projectId, data.teamId, data.projectName, data.teamName, data.currentRole, data.curNickName);
     }
   },
   persist: piniaPersistConfig("apiHub-work-place")

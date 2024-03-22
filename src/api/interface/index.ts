@@ -122,6 +122,15 @@ export namespace ProjectServer {
     createTime?: string;
     updateTime?: string;
   }
+
+  export interface ResWorkBench {
+    projectId: string;
+    projectName: string;
+    teamId: string;
+    teamName: string;
+    currentRole: string;
+    curNickName: string;
+  }
 }
 
 //Mock服务模块

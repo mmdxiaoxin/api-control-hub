@@ -22,7 +22,7 @@ import CatalogOverview from "./components/CatalogOverview/index.vue";
 import InterfaceConfiguration from "./components/InterfaceConfiguration/index.vue";
 import { getHttpCollectionList } from "@/api/modules/http";
 import { HttpServer } from "@/api/interface";
-import { useWorkPlaceStore } from "@/stores/modules/workbench";
+import { useWorkbenchStore } from "@/stores/modules/workbench";
 
 const treeFilterValue = reactive({ CollectionId: "1" });
 const initParam = reactive({ departmentId: "" });
@@ -33,7 +33,7 @@ const isDirectory = ref(false);
 const isApi = ref(false);
 const curId = ref("");
 const pageTitle = ref("");
-const workPlace = useWorkPlaceStore();
+const workPlace = useWorkbenchStore();
 
 const judgeList = (data: any) => {
   isProject.value = !!data.isProject;

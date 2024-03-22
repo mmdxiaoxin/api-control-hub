@@ -76,7 +76,7 @@ import draggable from "vuedraggable";
 import type { DropdownInstance } from "element-plus";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { getRoleTagType } from "@/utils/workPlace";
-import { useWorkPlaceStore } from "@/stores/modules/workbench";
+import { useWorkbenchStore } from "@/stores/modules/workbench";
 import TeamStatistics from "./components/TeamStatistics.vue";
 import TeamTable from "./components/TeamTable.vue";
 import TeamSetting from "./components/TeamSetting.vue";
@@ -85,7 +85,7 @@ import { useRoute, useRouter } from "vue-router";
 import { ProjectServer } from "@/api/interface";
 import { getProjectList } from "@/api/modules/project";
 
-const workPlace = useWorkPlaceStore();
+const workPlace = useWorkbenchStore();
 const route = useRoute();
 const router = useRouter();
 const spaceTitle = ref("个人空间");

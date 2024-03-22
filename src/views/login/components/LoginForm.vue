@@ -55,9 +55,11 @@ import { initDynamicRouter } from "@/routers/modules/dynamicRouter";
 import { CircleClose, UserFilled } from "@element-plus/icons-vue";
 import type { ElForm } from "element-plus";
 import md5 from "md5";
+import { useWorkbenchStore } from "@/stores/modules/workbench";
 
 const router = useRouter();
 const userStore = useUserStore();
+const workbenchStore = useWorkbenchStore();
 const tabsStore = useTabsStore();
 const keepAliveStore = useKeepAliveStore();
 
@@ -85,6 +87,7 @@ const login = (formEl: FormInstance | undefined) => {
       const { data } = await loginApi({ ...loginForm, password: md5(loginForm.password) });
       userStore.setToken(data.access_token);
       await userStore.getUserInfo();
+      await workbenchStore.getWorkBench();
 
       // 2.添加动态路由
       await initDynamicRouter();
