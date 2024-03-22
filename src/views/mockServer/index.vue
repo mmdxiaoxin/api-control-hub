@@ -81,7 +81,7 @@ import ImportExcel from "@/components/ImportExcel/index.vue";
 import { ProTableInstance, ColumnProps } from "@/components/ProTable/interface";
 import { CirclePlus, Delete, EditPen, Download, Upload, View } from "@element-plus/icons-vue";
 import { deleteUser, editUser, addUser, exportUserInfo, BatchAddUser } from "@/api/modules/user";
-import { changeMockStatus, getMockList, getMockStatus } from "@/api/modules/mockServer";
+import { changeMockStatus, getMockList, getMockStatus } from "@/api/modules/mock";
 import MockDrawer from "@/views/mockServer/components/MockDrawer.vue";
 
 const baseURL = "https://mock.presstime.cn/mock/6534b86affb279f23e01859d/api-control-hub";

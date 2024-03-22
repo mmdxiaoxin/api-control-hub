@@ -227,7 +227,7 @@ import { Edit } from "@element-plus/icons-vue";
 import { useGlobalStore } from "@/stores/modules/global";
 import { getOptionStyle } from "@/utils/workPlace";
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { getHttpConfig } from "@/api/modules/httpServer";
+import { getHttpConfig } from "@/api/modules/http";
 import { QueryParam, QueryHeader, FormData } from "./interfaces";
 
 const props = defineProps({

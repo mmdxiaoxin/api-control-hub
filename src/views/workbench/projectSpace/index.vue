@@ -61,9 +61,7 @@
       </el-tab-pane>
       <el-tab-pane label="成员/权限" name="second">
         <TeamStatistics />
-        <div class="member-table">
-          <TeamTable />
-        </div>
+        <TeamTable />
       </el-tab-pane>
       <el-tab-pane label="团队设置" name="third">
         <TeamSetting :team-name="spaceTitle" :team-id="spaceId" />
@@ -78,14 +76,14 @@ import draggable from "vuedraggable";
 import type { DropdownInstance } from "element-plus";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { getRoleTagType } from "@/utils/workPlace";
-import { useWorkPlaceStore } from "@/stores/modules/workPlace";
+import { useWorkPlaceStore } from "@/stores/modules/workbench";
 import TeamStatistics from "./components/TeamStatistics.vue";
 import TeamTable from "./components/TeamTable.vue";
 import TeamSetting from "./components/TeamSetting.vue";
 import { Delete, Document, DocumentCopy, More, Position, Star } from "@element-plus/icons-vue";
 import { useRoute, useRouter } from "vue-router";
 import { ProjectServer } from "@/api/interface";
-import { getProjectList } from "@/api/modules/projectServer";
+import { getProjectList } from "@/api/modules/project";
 
 const workPlace = useWorkPlaceStore();
 const route = useRoute();

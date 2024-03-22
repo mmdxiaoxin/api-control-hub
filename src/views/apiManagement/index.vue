@@ -20,9 +20,9 @@ import ApiTreeFilter from "./components/ApiTreeFilter/index.vue";
 import ProjectOverview from "./components/ProjectOverview/index.vue";
 import CatalogOverview from "./components/CatalogOverview/index.vue";
 import InterfaceConfiguration from "./components/InterfaceConfiguration/index.vue";
-import { getHttpCollectionList } from "@/api/modules/httpServer";
+import { getHttpCollectionList } from "@/api/modules/http";
 import { HttpServer } from "@/api/interface";
-import { useWorkPlaceStore } from "@/stores/modules/workPlace";
+import { useWorkPlaceStore } from "@/stores/modules/workbench";
 
 const treeFilterValue = reactive({ CollectionId: "1" });
 const initParam = reactive({ departmentId: "" });

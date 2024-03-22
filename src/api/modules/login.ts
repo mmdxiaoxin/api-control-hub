@@ -28,3 +28,8 @@ export const getAuthButtonListApi = () => {
 export const logoutApi = () => {
   return http.post(PORT1 + `/logout`);
 };
+
+//获取用户信息
+export const getUserInfoApi = () => {
+  return http.get<Login.ResUserInfo>(PORT1 + `/user/info`);
+};
