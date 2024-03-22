@@ -1,23 +1,33 @@
 import { defineStore } from "pinia";
 import { UserState } from "@/stores/interface";
 import piniaPersistConfig from "@/stores/helper/persist";
+import { getUserInfoApi } from "@/api/modules/login";
 
 export const useUserStore = defineStore({
   id: "apiHub-user",
   state: (): {
-    userInfo: { phone: string; name: string; description: string; avatar: string; email: string };
+    userInfo: {
+      phone: string;
+      name: string;
+      description: string;
+      avatar: string;
+      email: string;
+    };
     token: string;
   } => ({
     token: "",
     userInfo: {
-      name: "小新AI",
-      email: "782446723@qq.com",
-      phone: "18888888888",
-      avatar: "src/assets/images/avatar.gif",
-      description: "嗨嗨嗨，测试"
+      name: "",
+      email: "",
+      phone: "",
+      avatar: "",
+      description: ""
     }
   }),
-  getters: {},
+  getters: {
+    userInfoGet: state => state.userInfo,
+    tokenGet: state => state.token
+  },
   actions: {
     // Set Token
     setToken(token: string) {
@@ -26,6 +36,10 @@ export const useUserStore = defineStore({
     // Set setUserInfo
     setUserInfo(userInfo: UserState["userInfo"]) {
       this.userInfo = userInfo;
+    },
+    async getUserInfo() {
+      const { data } = await getUserInfoApi();
+      this.setUserInfo(data);
     }
   },
   persist: piniaPersistConfig("apiHub-user")
