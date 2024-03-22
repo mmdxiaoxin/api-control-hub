@@ -39,7 +39,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useUserStore } from "@/stores/modules/user";
-import { useWorkPlaceStore } from "@/stores/modules/workPlace";
+import { useWorkPlaceStore } from "@/stores/modules/workbench";
 import { getRoleTagType } from "@/utils/workPlace";
 
 const useStore = useUserStore();
