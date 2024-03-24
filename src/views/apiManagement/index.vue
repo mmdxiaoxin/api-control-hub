@@ -26,9 +26,10 @@ const treeFilterValue = reactive({ CollectionId: "1" });
 const initParam = reactive({ departmentId: "" });
 
 const apiCollectionTreeRef = ref(null);
-const currentComponent = ref<any>(null);
 
-const judgeList = (data: any) => {
+//组件选择
+const currentComponent = ref<any>(null);
+const selectComponents = (data: any) => {
   switch (data) {
     case "project":
       currentComponent.value = ProjectOverview;
@@ -53,7 +54,7 @@ const workbench = useWorkbenchStore();
 const changeTreeFilter = (val: { id: string; treeCurrentData: any }) => {
   treeFilterValue.CollectionId = val.id;
   selectedId.value = val.id;
-  judgeList(val.treeCurrentData.type);
+  selectComponents(val.treeCurrentData.type);
 };
 
 //获取树形选择器数据
@@ -63,7 +64,7 @@ const useTreeFilterData = async () => {
   treeFilterData.value = data;
   initParam.departmentId = treeFilterData.value[0].id;
   selectedId.value = treeFilterData.value[0].id;
-  judgeList(treeFilterData.value[0].type);
+  selectComponents(treeFilterData.value[0].type);
 };
 
 onMounted(() => {
