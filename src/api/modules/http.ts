@@ -7,7 +7,7 @@ import { HttpServer } from "@/api/interface";
  */
 
 // 获取接口树形列表
-export const getHttpTreeList = (params: HttpServer.ReqHttpParams) => {
+export const getHttpTreeList = (params: { projectId: string }) => {
   return http.post<HttpServer.ResTreeList[]>(PORT1 + `/http/tree/list`, params);
 };
 
