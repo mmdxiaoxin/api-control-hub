@@ -6,9 +6,9 @@ import { HttpServer } from "@/api/interface";
  * @name 接口管理模块
  */
 
-// 获取项目列表
-export const getHttpCollectionList = (params: HttpServer.ReqHttpParams) => {
-  return http.post<HttpServer.ResCollectionList[]>(PORT1 + `/http/collection/list`, params);
+// 获取接口树形列表
+export const getHttpTreeList = (params: HttpServer.ReqHttpParams) => {
+  return http.post<HttpServer.ResTreeList[]>(PORT1 + `/http/tree/list`, params);
 };
 
 //获取接口配置
@@ -29,4 +29,9 @@ export const addHttpConfig = (params: HttpServer.ReqHttpConfig) => {
 //删除接口配置
 export const deleteHttpConfig = (params: HttpServer.ReqHttpConfig) => {
   return http.post<HttpServer.ResHttpConfig>(PORT1 + `/http/config/delete`, params);
+};
+
+//获取接口目录
+export const getHttpDirectory = (params: { directoryId: string }) => {
+  return http.post<HttpServer.ResHttpDirectory>(PORT1 + `/http/directory`, params);
 };

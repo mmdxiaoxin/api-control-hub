@@ -231,8 +231,7 @@ import { getHttpConfig } from "@/api/modules/http";
 import { QueryParam, QueryHeader, FormData } from "./interfaces";
 
 const props = defineProps({
-  apiTitle: String,
-  apiId: String
+  itemId: String
 });
 
 const globalStore = useGlobalStore();
@@ -469,12 +468,11 @@ const formatTime = (milliseconds: number) => {
 };
 
 onMounted(() => {
-  apiName.value = props.apiTitle as string;
-  useHttpApiConfig(props.apiId as string);
+  useHttpApiConfig(props.itemId as string);
 });
 
 watch(
-  () => props.apiId,
+  () => props.itemId,
   newVal => {
     useHttpApiConfig(typeof newVal === "string" ? newVal : "");
   }

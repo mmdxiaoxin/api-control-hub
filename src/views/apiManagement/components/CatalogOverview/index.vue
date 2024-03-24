@@ -19,11 +19,12 @@ import { Edit } from "@element-plus/icons-vue";
 import { getMethodTagType } from "@/utils/workPlace";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { onMounted, ref } from "vue";
+import { getHttpDirectory } from "@/api/modules/http";
 
 const props = defineProps({
-  directoryTitle: String
+  itemId: String
 });
-const directoryName = ref(props.directoryTitle);
+const directoryName = ref(props.itemId);
 const tableData = [
   {
     method: "GET",
@@ -67,8 +68,13 @@ const modifyName = (project: any) => {
     });
 };
 
+const useDirectoryData = async () => {
+  const { data } = await getHttpDirectory({ directoryId: props.itemId });
+  directoryName.value = data.directoryName;
+};
+
 onMounted(() => {
-  directoryName.value = props.directoryTitle as string;
+  useDirectoryData();
 });
 </script>
 

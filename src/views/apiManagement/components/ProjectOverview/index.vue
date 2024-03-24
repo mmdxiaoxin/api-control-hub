@@ -3,7 +3,7 @@
     <el-main class="project-content">
       <div class="project-header" @click="saveContent">
         <span class="text">
-          {{ ShowMode ? props.projectTitle : projectName }}
+          {{ projectName }}
           <el-button :icon="Edit" circle size="small" @click="modifyName(projectName)" />
         </span>
         <el-tag>项目概览</el-tag>
@@ -25,20 +25,21 @@
 <script setup lang="ts">
 import ApiStatistic from "./ApiStatistic.vue";
 import { Edit } from "@element-plus/icons-vue";
-import { onMounted, ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import WangEditor from "@/components/WangEditor/index.vue";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { getProjectDetail } from "@/api/modules/project";
 
 const EditMode = ref(false);
 const ShowMode = ref(true);
 const content = ref("");
 const props = defineProps({
-  projectTitle: {
+  itemId: {
     type: String,
     required: true
   }
 });
-const projectName = ref(props.projectTitle);
+const projectName = ref();
 const modifyName = (project: any) => {
   ElMessageBox.prompt("请输入要修改的项目名称", "修改名称", {
     confirmButtonText: "确认",
@@ -70,8 +71,13 @@ const saveContent = () => {
   EditMode.value = false;
 };
 
-onMounted(() => {
-  projectName.value = props.projectTitle;
+const useProjectDetail = async () => {
+  const { data } = await getProjectDetail({ projectId: props.itemId });
+  projectName.value = data.name;
+};
+
+onBeforeMount(() => {
+  useProjectDetail();
 });
 </script>
 

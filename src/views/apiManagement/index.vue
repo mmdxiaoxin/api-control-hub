@@ -8,19 +8,17 @@
       :default-value="initParam.departmentId"
       @change="changeTreeFilter"
     />
-    <ProjectOverview v-if="isProject" :project-title="pageTitle" />
-    <CatalogOverview v-if="isDirectory" :directory-title="pageTitle" />
-    <InterfaceConfiguration v-if="isApi" :api-title="pageTitle" :api-id="curId" />
+    <component :is="currentComponent" :item-id="selectedId" />
   </div>
 </template>
 
-<script setup lang="ts" name="treeFilter">
+<script setup lang="ts" name="api-management">
 import { reactive, ref, onMounted } from "vue";
 import ApiTreeFilter from "./components/ApiTreeFilter/index.vue";
 import ProjectOverview from "./components/ProjectOverview/index.vue";
-import CatalogOverview from "./components/CatalogOverview/index.vue";
+import DirectoryOverview from "./components/CatalogOverview/index.vue";
 import InterfaceConfiguration from "./components/InterfaceConfiguration/index.vue";
-import { getHttpCollectionList } from "@/api/modules/http";
+import { getHttpTreeList } from "@/api/modules/http";
 import { HttpServer } from "@/api/interface";
 import { useWorkbenchStore } from "@/stores/modules/workbench";
 
@@ -28,32 +26,44 @@ const treeFilterValue = reactive({ CollectionId: "1" });
 const initParam = reactive({ departmentId: "" });
 
 const apiCollectionTreeRef = ref(null);
-const isProject = ref(true);
-const isDirectory = ref(false);
-const isApi = ref(false);
-const curId = ref("");
-const pageTitle = ref("");
-const workPlace = useWorkbenchStore();
+const currentComponent = ref<any>(null);
 
 const judgeList = (data: any) => {
-  isProject.value = !!data.isProject;
-  isDirectory.value = !!data.isDirectory;
-  isApi.value = !!data.isApi;
+  switch (data) {
+    case "project":
+      currentComponent.value = ProjectOverview;
+      break;
+    case "dir":
+      currentComponent.value = DirectoryOverview;
+      break;
+    case "api":
+      currentComponent.value = InterfaceConfiguration;
+      break;
+    default:
+      currentComponent.value = null;
+  }
 };
+//选中的id
+const selectedId = ref("");
 
+//工作台store
+const workbench = useWorkbenchStore();
+
+//树形选择器值改变操作
 const changeTreeFilter = (val: { id: string; treeCurrentData: any }) => {
   treeFilterValue.CollectionId = val.id;
-  curId.value = val.id;
-  pageTitle.value = val.treeCurrentData.name;
-  judgeList(val.treeCurrentData);
+  selectedId.value = val.id;
+  judgeList(val.treeCurrentData.type);
 };
 
-const treeFilterData = ref<HttpServer.ResCollectionList[]>([]);
+//获取树形选择器数据
+const treeFilterData = ref<HttpServer.ResTreeList[]>([]);
 const useTreeFilterData = async () => {
-  const { data } = await getHttpCollectionList({ projectId: workPlace.projectId, projectName: workPlace.projectName });
+  const { data } = await getHttpTreeList({ itemId: workbench.projectId, projectName: workbench.projectName });
   treeFilterData.value = data;
   initParam.departmentId = treeFilterData.value[0].id;
-  pageTitle.value = treeFilterData.value[0].name;
+  selectedId.value = treeFilterData.value[0].id;
+  judgeList(treeFilterData.value[0].type);
 };
 
 onMounted(() => {

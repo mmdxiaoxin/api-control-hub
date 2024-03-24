@@ -36,9 +36,11 @@ export namespace Login {
     username: string;
     password: string;
   }
+
   export interface ResLogin {
     access_token: string;
   }
+
   export interface ResAuthButtons {
     [key: string]: string[];
   }
@@ -72,6 +74,7 @@ export namespace User {
     createTime: string[];
     status: number;
   }
+
   export interface ResUserList {
     id: string;
     username: string;
@@ -87,19 +90,23 @@ export namespace User {
     photo: any[];
     children?: ResUserList[];
   }
+
   export interface ResStatus {
     userLabel: string;
     userValue: number;
   }
+
   export interface ResGender {
     genderLabel: string;
     genderValue: number;
   }
+
   export interface ResDepartment {
     id: string;
     name: string;
     children?: ResDepartment[];
   }
+
   export interface ResRole {
     id: string;
     name: string;
@@ -130,6 +137,17 @@ export namespace ProjectServer {
     teamName: string;
     currentRole: string;
     curNickName: string;
+  }
+
+  export interface ResProjectDetail {
+    id: string;
+    name: string;
+    icon: string;
+    isCollection: boolean;
+    description: string;
+    creator: string;
+    createTime: string;
+    updateTime: string;
   }
 }
 
@@ -179,13 +197,16 @@ export namespace HttpServer {
     apiId: string;
   }
 
-  export interface ResCollectionList {
+  export interface ResTreeList {
     id: string;
     name: string;
-    isProject?: boolean;
-    isDirectory?: boolean;
-    isApi?: boolean;
-    children?: ResCollectionList[];
+    type: string;
+    children?: ResTreeList[];
+  }
+
+  export interface ResHttpDirectory {
+    name: string;
+    children?: Object;
   }
 
   interface QueryParam {

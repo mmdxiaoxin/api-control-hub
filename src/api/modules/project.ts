@@ -35,3 +35,8 @@ export const deleteProject = (params: { id: string[] }) => {
 export const getWorkBenchApi = () => {
   return http.post<ProjectServer.ResWorkBench>(PORT1 + `/project/workbench`);
 };
+
+//获取项目详情
+export const getProjectDetail = (params: { projectId: string }) => {
+  return http.post<ProjectServer.ResProjectDetail>(PORT1 + `/project/detail`, params);
+};
