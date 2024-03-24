@@ -60,7 +60,7 @@ const changeTreeFilter = (val: { id: string; treeCurrentData: any }) => {
 //获取树形选择器数据
 const treeFilterData = ref<HttpServer.ResTreeList[]>([]);
 const useTreeFilterData = async () => {
-  const { data } = await getHttpTreeList({ projectId: workbench.projectId.value });
+  const { data } = await getHttpTreeList({ projectId: workbench.projectId });
   treeFilterData.value = data;
   initParam.departmentId = treeFilterData.value[0].id;
   selectedId.value = treeFilterData.value[0].id;
