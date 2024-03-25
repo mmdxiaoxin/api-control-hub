@@ -7,6 +7,7 @@ api-control-hub 一款基于[Geeker Admin](https://github.com/HalseySpicy/Geeker
 ### 在线预览 👀
 
 - Link：~~http://39.106.60.63:8848/~~
+- 模拟后台：[mmdxiaoxin/api-control-hub-node-server: api-control-hub的后端服务，使用nodejs搭建 (github.com)](https://github.com/mmdxiaoxin/api-control-hub-node-server)
 
 ### 代码仓库 ⭐
 
