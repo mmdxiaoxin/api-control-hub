@@ -200,7 +200,7 @@ export namespace HttpServer {
   }
 
   export interface ResHttpDirectory {
-    name: string;
+    directoryName: string;
     children?: Object;
   }
 

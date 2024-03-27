@@ -69,7 +69,7 @@ const modifyName = (project: any) => {
 };
 
 const useDirectoryData = async () => {
-  const { data } = await getHttpDirectory({ directoryId: props.itemId });
+  const { data } = await getHttpDirectory({ directoryId: props.itemId || "" });
   directoryName.value = data.directoryName;
 };
 
