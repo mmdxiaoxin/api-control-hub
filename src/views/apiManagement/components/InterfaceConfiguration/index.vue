@@ -229,6 +229,7 @@ import { getOptionStyle } from "@/utils/workPlace";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { getHttpConfig } from "@/api/modules/http";
 import { QueryParam, QueryHeader, FormData } from "./interfaces";
+import { formatBytes, formatTime } from "@/utils/apiConfig";
 
 const props = defineProps({
   itemId: String
@@ -450,21 +451,6 @@ const useHttpApiConfig = async (reqApiId: string) => {
   } catch (error) {
     console.log(error);
   }
-};
-
-const formatBytes = (bytes: string) => {
-  const bytesInt = parseInt(bytes);
-  if (bytesInt === 0) return "0B";
-  const k = 1024;
-  const sizes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-  const i = Math.floor(Math.log(bytesInt) / Math.log(k));
-  return (bytesInt / Math.pow(k, i)).toPrecision(3) + sizes[i];
-};
-
-const formatTime = (milliseconds: number) => {
-  if (milliseconds < 1000) return `${milliseconds}ms`;
-  else if (milliseconds < 60 * 1000) return `${(milliseconds / 1000).toPrecision(3)}s`;
-  else return `${(milliseconds / 60000).toPrecision(3)}min`;
 };
 
 onMounted(() => {
