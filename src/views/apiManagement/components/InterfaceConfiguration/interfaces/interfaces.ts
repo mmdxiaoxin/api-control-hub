@@ -22,7 +22,7 @@ export interface QueryBodyFormX {
   description: string;
 }
 
-export interface FormData {
+export interface ApiFormData {
   requestMethod: string;
   apiUrl: string;
   authType: string;
