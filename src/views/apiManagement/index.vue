@@ -8,7 +8,10 @@
       :default-value="initParam.departmentId"
       @change="changeTreeFilter"
     />
-    <component :is="currentComponent" :item-id="selectedId" />
+    <!-- 使用 v-if 来动态渲染组件 -->
+    <ProjectOverview v-if="currentComponent === 'project'" :item-id="selectedId" />
+    <DirectoryOverview v-if="currentComponent === 'dir'" :item-id="selectedId" />
+    <InterfaceConfiguration v-if="currentComponent === 'api'" :item-id="selectedId" />
   </div>
 </template>
 
@@ -26,19 +29,18 @@ const treeFilterValue = reactive({ CollectionId: "1" });
 const initParam = reactive({ departmentId: "" });
 
 const apiCollectionTreeRef = ref(null);
-
 //组件选择
 const currentComponent = ref<any>(null);
 const selectComponents = (data: any) => {
   switch (data) {
     case "project":
-      currentComponent.value = ProjectOverview;
+      currentComponent.value = "project";
       break;
     case "dir":
-      currentComponent.value = DirectoryOverview;
+      currentComponent.value = "dir";
       break;
     case "api":
-      currentComponent.value = InterfaceConfiguration;
+      currentComponent.value = "api";
       break;
     default:
       currentComponent.value = null;
