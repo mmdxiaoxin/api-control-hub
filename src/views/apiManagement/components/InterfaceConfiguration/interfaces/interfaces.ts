@@ -34,3 +34,13 @@ export interface ApiFormData {
   queryXmlBody: string;
   queryRawBody: string;
 }
+
+export interface ResponseData {
+  [key: string]: unknown;
+}
+
+export interface ResponseStatus {
+  status: number;
+  time: string;
+  size: string;
+}

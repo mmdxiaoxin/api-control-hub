@@ -43,7 +43,7 @@
     </el-col>
     <el-col :span="4" class="right-aligned">
       <!-- 发送按钮 -->
-      <el-button type="primary">
+      <el-button type="primary" @click="sendRequest">
         发送
         <el-icon class="el-icon--right">
           <Connection />
@@ -134,6 +134,8 @@ import { Edit } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 import { getOptionStyle } from "@/utils/workPlace";
 import { useHttpConfigStore } from "@/stores/modules/httpConfig";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { formatBytes, formatTime } from "@/utils/apiConfig";
 
 const queryBody = ref(1);
 const activeQuery = ref("first");
@@ -142,7 +144,66 @@ const httpConfig = useHttpConfigStore();
 const apiName = computed(() => httpConfig.apiName);
 const baseUrl = computed(() => httpConfig.baseUrl);
 const requestForm = computed(() => httpConfig.requestForm);
-// 将解构的属性包装成响应式变量
+
+// 发送请求函数
+const sendRequest = async () => {
+  // 根据请求方法配置生成axios请求配置
+  const axiosConfig: AxiosRequestConfig = {
+    method: requestForm.value.requestMethod,
+    url: requestForm.value.apiUrl,
+    baseURL: baseUrl.value,
+    // 根据请求参数配置生成params或者data
+    [requestForm.value.requestMethod === "GET" ? "params" : "data"]: (() => {
+      switch (queryBody.value) {
+        case 1:
+          return null;
+        case 2:
+          return requestForm.value.queryBodyForm;
+        case 3:
+          return requestForm.value.queryBodyFormX;
+        case 4:
+          return JSON.parse(requestForm.value.queryJsonBody);
+        case 5:
+          return requestForm.value.queryXmlBody;
+        case 6:
+          return requestForm.value.queryRawBody;
+        default:
+          return null;
+      }
+    })(),
+    // 根据请求头参数配置生成请求头
+    headers: (() => {
+      return requestForm.value.queryHeaders.reduce(
+        (acc, cur) => {
+          acc[cur.key] = cur.value;
+          return acc;
+        },
+        {} as Record<string, string>
+      );
+    })()
+  };
+
+  try {
+    // 发送请求
+    const startTime = new Date().getTime();
+    const response: AxiosResponse = await axios(axiosConfig);
+    const endTime = new Date().getTime();
+    console.log(axiosConfig);
+    const time = endTime - startTime;
+    // 处理响应
+    httpConfig.setResponsePanel(response.data);
+    httpConfig.setResponseStatus({
+      status: response.status,
+      size: formatBytes(response.headers["content-length"]),
+      time: formatTime(time)
+    });
+    httpConfig.setResponseHeaders(response.headers);
+    console.log(response);
+  } catch (error) {
+    // 处理错误
+    console.error(error);
+  }
+};
 </script>
 
 <style scoped lang="scss">

@@ -2,34 +2,33 @@
 import { ResFileOption } from "@/views/apiManagement/components/InterfaceConfiguration/common/config";
 import { JsonViewer } from "vue3-json-viewer";
 import "vue3-json-viewer/dist/index.css";
-import { reactive, ref } from "vue";
+import { computed, ref } from "vue";
 import { useGlobalStore } from "@/stores/modules/global";
+import { useHttpConfigStore } from "@/stores/modules/httpConfig";
 
 const activeResponse = ref("first");
 const resBodyRadio = ref("Pretty");
 const ResSelect = ref("JSON");
 
 const globalStore = useGlobalStore();
+const httpConfig = useHttpConfigStore();
 
 //响应体响应情况
-const responseStatus = reactive({
-  status: 0,
-  time: "0",
-  size: "0B"
-});
+const responseStatus = computed(() => httpConfig.responseStatus);
 
 // 响应体应该接收的数据
-const responseBody = reactive({
-  message: "",
-  code: 0,
-  data: null
-});
+const responseBody = computed(() => httpConfig.responsePanel);
 
 // 响应头应该接收的数据
-const responseHeader = reactive([
-  { key: "Content-Type", value: "" },
-  { key: "Content-Length", value: "" }
-]);
+const responseHeader = computed(() => {
+  const header = httpConfig.responseHeaders;
+  return Object.keys(header).map(key => {
+    return {
+      key,
+      value: header[key]
+    };
+  });
+});
 </script>
 
 <template>

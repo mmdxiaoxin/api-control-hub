@@ -1,5 +1,9 @@
 import { defineStore } from "pinia";
-import { ApiFormData } from "@/views/apiManagement/components/InterfaceConfiguration/interfaces/interfaces";
+import {
+  ApiFormData,
+  ResponseData,
+  ResponseStatus
+} from "@/views/apiManagement/components/InterfaceConfiguration/interfaces/interfaces";
 import piniaPersistConfigSession from "@/stores/helper/persist-session";
 import { getHttpConfigApi } from "@/api/modules/http";
 export const useHttpConfigStore = defineStore({
@@ -8,6 +12,9 @@ export const useHttpConfigStore = defineStore({
     apiName: string;
     baseUrl: string;
     requestForm: ApiFormData;
+    responsePanel: ResponseData;
+    responseStatus: ResponseStatus;
+    responseHeaders: ResponseData;
   } {
     return {
       apiName: "",
@@ -23,13 +30,23 @@ export const useHttpConfigStore = defineStore({
         queryParams: [],
         queryXmlBody: "",
         queryRawBody: ""
-      }
+      },
+      responsePanel: {},
+      responseStatus: {
+        status: 0,
+        time: "0ms",
+        size: "0B"
+      },
+      responseHeaders: {}
     };
   },
   getters: {
     apiNameGet: state => state.apiName,
     baseUrlGet: state => state.baseUrl,
-    requestFormGet: state => state.requestForm
+    requestFormGet: state => state.requestForm,
+    responseStatusGet: state => state.responseStatus,
+    responsePanelGet: state => state.responsePanel,
+    responseHeadersGet: state => state.responseHeaders
   },
   actions: {
     setBaseUrl(url: string) {
@@ -40,6 +57,15 @@ export const useHttpConfigStore = defineStore({
     },
     setApiName(name: string) {
       this.apiName = name;
+    },
+    setResponsePanel(response: ResponseData) {
+      this.responsePanel = response;
+    },
+    setResponseStatus(status: ResponseStatus) {
+      this.responseStatus = status;
+    },
+    setResponseHeaders(headers: ResponseData) {
+      this.responseHeaders = headers;
     },
     async getHttpConfig(reqApi: string) {
       const { data } = await getHttpConfigApi({ apiId: reqApi });
