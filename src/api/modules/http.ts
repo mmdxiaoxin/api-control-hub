@@ -12,7 +12,7 @@ export const getHttpTreeList = (params: { projectId: string }) => {
 };
 
 //获取接口配置
-export const getHttpConfig = (params: HttpServer.ReqHttpConfig) => {
+export const getHttpConfigApi = (params: HttpServer.ReqHttpConfig) => {
   return http.post<HttpServer.ResHttpConfig>(PORT1 + `/http/config`, params);
 };
 
