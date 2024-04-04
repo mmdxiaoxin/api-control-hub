@@ -9,7 +9,7 @@
           <el-tag :type="getMethodTagType(row.method)">{{ row.method }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="apiName" label="接口名称" />
+      <el-table-column prop="name" label="接口名称" />
     </el-table>
   </div>
 </template>
@@ -25,24 +25,7 @@ const props = defineProps({
   itemId: String
 });
 const directoryName = ref(props.itemId);
-const tableData = [
-  {
-    method: "GET",
-    apiName: "接口1"
-  },
-  {
-    method: "POST",
-    apiName: "接口2"
-  },
-  {
-    method: "PUT",
-    apiName: "接口3"
-  },
-  {
-    method: "DELETE",
-    apiName: "接口4"
-  }
-];
+const tableData = ref();
 
 const modifyName = (project: any) => {
   ElMessageBox.prompt("请输入要修改的目录名称", "修改名称", {
@@ -71,6 +54,7 @@ const modifyName = (project: any) => {
 const useDirectoryData = async () => {
   const { data } = await getHttpDirectory({ directoryId: props.itemId || "" });
   directoryName.value = data.directoryName;
+  tableData.value = data.children ?? [];
 };
 
 onMounted(() => {
