@@ -35,7 +35,7 @@
             content="可以在项目的环境设置中更改(暂不支持...)"
           >
             <template #reference>
-              <div>{{ baseUrl }}</div>
+              <div>{{ baseUrl == "" ? "前缀" : baseUrl }}</div>
             </template>
           </el-popover>
         </template>

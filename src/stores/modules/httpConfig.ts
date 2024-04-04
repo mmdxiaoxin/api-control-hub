@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import {
-  ApiFormData,
+  RequestData,
   ResponseData,
   ResponseStatus
 } from "@/views/apiManagement/components/InterfaceConfiguration/interfaces/interfaces";
@@ -11,7 +11,7 @@ export const useHttpConfigStore = defineStore({
   state(): {
     apiName: string;
     baseUrl: string;
-    requestForm: ApiFormData;
+    requestForm: RequestData;
     responsePanel: ResponseData;
     responseStatus: ResponseStatus;
     responseHeaders: ResponseData;
@@ -52,7 +52,7 @@ export const useHttpConfigStore = defineStore({
     setBaseUrl(url: string) {
       this.baseUrl = url;
     },
-    setRequestForm(form: ApiFormData) {
+    setRequestForm(form: RequestData) {
       this.requestForm = form;
     },
     setApiName(name: string) {
@@ -69,7 +69,7 @@ export const useHttpConfigStore = defineStore({
     },
     async getHttpConfig(reqApi: string) {
       const { data } = await getHttpConfigApi({ apiId: reqApi });
-      const resFormData: ApiFormData = {
+      const resFormData: RequestData = {
         requestMethod: "GET",
         apiUrl: "",
         authType: "noAuth",
