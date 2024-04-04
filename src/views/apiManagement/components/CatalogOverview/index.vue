@@ -18,11 +18,15 @@
 import { Edit } from "@element-plus/icons-vue";
 import { getMethodTagType } from "@/utils/workPlace";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { getHttpDirectory } from "@/api/modules/http";
 
 const props = defineProps({
-  itemId: String
+  itemId: {
+    type: String,
+    required: true,
+    default: ""
+  }
 });
 const directoryName = ref(props.itemId);
 const tableData = ref();
@@ -60,6 +64,15 @@ const useDirectoryData = async () => {
 onMounted(() => {
   useDirectoryData();
 });
+
+watch(
+  () => props.itemId,
+  (newValue, oldValue) => {
+    if (newValue !== oldValue) {
+      useDirectoryData();
+    }
+  }
+);
 </script>
 
 <style scoped lang="scss">
