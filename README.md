@@ -83,20 +83,20 @@ pnpm commit
 ### 项目截图 📷
 
 - 登陆界面
-  ![登陆界面](public/images/img.png)
+  ![登陆界面](./public/images/img.png)
 
 - 项目管理
-  ![项目管理](public/images/img1.png)
+  ![项目管理](./public/images/img1.png)
 
 - 接口管理
-  ![接口管理](public/images/img2.png)
+  ![接口管理](./public/images/img2.png)
 
 - Mock服务
-  ![Mock服务](public/images/img3.png)
+  ![Mock服务](./public/images/img3.png)
 
 - 夜间模式
 
-  ![夜间主题展示](public/images/img4.png)
+  ![夜间主题展示](./public/images/img4.png)
 
 ### 文件资源目录 📚
 
