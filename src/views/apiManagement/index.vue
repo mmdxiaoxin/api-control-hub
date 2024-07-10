@@ -9,7 +9,7 @@
       @change="handleTreeChange"
     />
     <component :is="currentView" v-if="currentView" :item-id="selectedId" />
-    <el-empty v-else class="card" style=" flex: 1;height: 100%"></el-empty>
+    <el-empty v-else class="card" style="flex: 1; height: 100%"></el-empty>
   </div>
 </template>
 
