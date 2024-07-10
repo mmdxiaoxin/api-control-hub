@@ -1,22 +1,20 @@
 <template>
   <div class="content-box">
     <ApiTreeFilter
-      ref="apiCollectionTreeRef"
+      ref="treeRef"
       label="name"
       title="项目集合"
-      :data="treeFilterData"
-      :default-value="initParam.departmentId"
-      @change="changeTreeFilter"
+      :data="treeData"
+      :default-value="initialValue"
+      @change="handleTreeChange"
     />
-    <!-- 使用 v-if 来动态渲染组件 -->
-    <ProjectOverview v-if="currentComponent === 'project'" :item-id="selectedId" />
-    <DirectoryOverview v-if="currentComponent === 'dir'" :item-id="selectedId" />
-    <InterfaceConfiguration v-if="currentComponent === 'api'" :item-id="selectedId" />
+    <component :is="currentView" v-if="currentView" :item-id="selectedId" />
+    <el-empty v-else class="card" style=" flex: 1;height: 100%"></el-empty>
   </div>
 </template>
 
 <script setup lang="ts" name="api-management">
-import { reactive, ref, onMounted } from "vue";
+import { ref } from "vue";
 import ApiTreeFilter from "./components/ApiTreeFilter/index.vue";
 import ProjectOverview from "./components/ProjectOverview/index.vue";
 import DirectoryOverview from "./components/CatalogOverview/index.vue";
@@ -25,40 +23,42 @@ import { getHttpTreeList } from "@/api/modules/http";
 import { HttpServer } from "@/api/interface";
 import { useWorkbenchStore } from "@/stores/modules/workbench";
 
-const treeFilterValue = reactive({ CollectionId: "1" });
-const initParam = reactive({ departmentId: "" });
-
-const apiCollectionTreeRef = ref(null);
-
-//组件选择
-const currentComponent = ref<any>(null);
-
-//选中的id
+const treeRef = ref(null);
+const initialValue = ref("");
 const selectedId = ref("");
-
-//工作台store
+const currentView = ref();
 const workbench = useWorkbenchStore();
 
-//树形选择器值改变操作
-const changeTreeFilter = (val: { id: string; treeCurrentData: any }) => {
-  treeFilterValue.CollectionId = val.id;
+const treeData = ref<HttpServer.ResTreeList[]>([]);
+
+const handleTreeChange = (val: { id: string; type: string }) => {
   selectedId.value = val.id;
-  currentComponent.value = val.treeCurrentData.type;
+  currentView.value = getViewComponent(val.type);
 };
 
-//获取树形选择器数据
-const treeFilterData = ref<HttpServer.ResTreeList[]>([]);
-const useTreeFilterData = async () => {
+const getViewComponent = (type: string) => {
+  switch (type) {
+    case "project":
+      return ProjectOverview;
+    case "dir":
+      return DirectoryOverview;
+    case "api":
+      return InterfaceConfiguration;
+    default:
+      return null;
+  }
+};
+
+const fetchTreeData = async () => {
   const { data } = await getHttpTreeList({ projectId: workbench.projectId });
-  treeFilterData.value = data;
-  initParam.departmentId = treeFilterData.value[0].id;
-  selectedId.value = treeFilterData.value[0].id;
-  currentComponent.value = treeFilterData.value[0].type;
+  treeData.value = data || [];
+  if (treeData.value.length > 0) {
+    initialValue.value = treeData.value[0].id;
+    handleTreeChange(treeData.value[0]);
+  }
 };
 
-onMounted(() => {
-  useTreeFilterData();
-});
+fetchTreeData();
 </script>
 
 <style scoped lang="scss">
