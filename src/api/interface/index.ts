@@ -188,15 +188,21 @@ export namespace MockServer {
 
 //接口管理模块
 export namespace HttpServer {
+  interface Config {
+    id: number;
+    api_name: string;
+  }
+
   export interface ReqHttpConfig {
     apiId: string;
   }
 
   export interface ResTreeList {
-    id: string;
-    name: string;
+    id: number;
+    category_name: string;
+    children: ResTreeList[];
+    configs: Config[];
     type: string;
-    children?: ResTreeList[];
   }
 
   export interface ResHttpDirectory {

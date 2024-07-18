@@ -1,64 +1,106 @@
 <template>
   <div class="content-box">
     <ApiTreeFilter
-      ref="treeRef"
-      label="name"
-      title="项目集合"
-      :data="treeData"
+      ref="filterRef"
       :default-value="initialValue"
+      :tree-data="treeData"
       @change="handleTreeChange"
     />
-    <component :is="currentView" v-if="currentView" :item-id="selectedId" />
+    <component
+      :is="currentView"
+      v-if="currentView"
+      :item-id="`${selectedId}`"
+    />
     <el-empty v-else class="card" style="flex: 1; height: 100%"></el-empty>
   </div>
 </template>
 
 <script setup lang="ts" name="api-management">
-import { ref } from "vue";
+import { markRaw, ref } from "vue";
 import ApiTreeFilter from "./components/ApiTreeFilter/index.vue";
 import ProjectOverview from "./components/ProjectOverview/index.vue";
 import DirectoryOverview from "./components/CatalogOverview/index.vue";
 import InterfaceConfiguration from "./components/InterfaceConfiguration/index.vue";
 import { getHttpTreeList } from "@/api/modules/http";
-import { HttpServer } from "@/api/interface";
 import { useWorkbenchStore } from "@/stores/modules/workbench";
+import { HttpServer } from "@/api/interface";
+import { generateUUID } from "@/utils";
 
-const treeRef = ref(null);
-const initialValue = ref("");
-const selectedId = ref("");
+const filterRef = ref<InstanceType<typeof ApiTreeFilter> | null>(null);
+const initialValue = ref();
+const treeData = ref();
+const selectedId = ref();
 const currentView = ref();
 const workbench = useWorkbenchStore();
 
-const treeData = ref<HttpServer.ResTreeList[]>([]);
-
-const handleTreeChange = (val: { id: string; type: string }) => {
-  selectedId.value = val.id;
-  currentView.value = getViewComponent(val.type);
+const handleTreeChange = (val: { id: string; treeCurrentData: any }) => {
+  selectedId.value = val.treeCurrentData.item_id;
+  currentView.value = getViewComponent(val.treeCurrentData.type);
 };
-
 const getViewComponent = (type: string) => {
   switch (type) {
     case "project":
-      return ProjectOverview;
+      return markRaw(ProjectOverview);
     case "dir":
-      return DirectoryOverview;
+      return markRaw(DirectoryOverview);
     case "api":
-      return InterfaceConfiguration;
+      return markRaw(InterfaceConfiguration);
     default:
       return null;
   }
 };
 
-const fetchTreeData = async () => {
-  const { data } = await getHttpTreeList({ projectId: workbench.projectId });
-  treeData.value = data || [];
-  if (treeData.value.length > 0) {
-    initialValue.value = treeData.value[0].id;
-    handleTreeChange(treeData.value[0]);
-  }
-};
+interface TreeNode {
+  id: number | string;
+  item_id: number;
+  label: string;
+  children: TreeNode[];
+  type?: string;
+}
 
+const fetchTreeData = async () => {
+  const response = await getHttpTreeList({ projectId: workbench.projectId });
+  treeData.value = [convertToTreeNode(response.data)];
+  initialValue.value = treeData.value[0].id;
+  handleTreeChange({
+    id: treeData.value[0].item_id,
+    treeCurrentData: treeData.value[0]
+  });
+};
 fetchTreeData();
+
+function convertToTreeNode(resTreeList: HttpServer.ResTreeList): TreeNode {
+  // 创建一个新的 TreeNode 对象
+  const treeNode: TreeNode = {
+    id: generateUUID(),
+    item_id: resTreeList.id,
+    label: resTreeList.category_name,
+    children: [],
+    type: resTreeList.type
+  };
+
+  // 转换 children
+  if (resTreeList.children) {
+    treeNode.children = resTreeList.children.map(child =>
+      convertToTreeNode(child)
+    );
+  }
+
+  // 转换 configs 并加入到 children 中
+  if (resTreeList.configs) {
+    treeNode.children = treeNode.children.concat(
+      resTreeList.configs.map(config => ({
+        id: generateUUID(),
+        item_id: config.id,
+        label: config.api_name,
+        children: [],
+        type: "api"
+      }))
+    );
+  }
+
+  return treeNode;
+}
 </script>
 
 <style scoped lang="scss">
