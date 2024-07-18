@@ -17,6 +17,7 @@ stats.html
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
+output
 .idea
 .DS_Store
 *.suo
