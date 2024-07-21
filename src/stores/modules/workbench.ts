@@ -34,12 +34,23 @@ export const useWorkbenchStore = defineStore({
       this.teamId = teamId;
       this.projectName = projectName;
       this.teamName = teamName;
-      typeof currentRole === "string" ? (this.currentRole = currentRole) : (this.currentRole = "游客");
-      typeof curNickName === "string" ? (this.curNickName = curNickName) : (this.curNickName = "");
+      typeof currentRole === "string"
+        ? (this.currentRole = currentRole)
+        : (this.currentRole = "游客");
+      typeof curNickName === "string"
+        ? (this.curNickName = curNickName)
+        : (this.curNickName = "");
     },
     async getWorkBench() {
       const { data } = await getWorkBenchApi();
-      this.setWorkPlace(data.projectId, data.teamId, data.projectName, data.teamName, data.currentRole, data.curNickName);
+      this.setWorkPlace(
+        data.projectId,
+        data.teamId,
+        data.projectName,
+        data.teamName,
+        data.currentRole,
+        data.curNickName
+      );
     }
   },
   persist: piniaPersistConfig("apiHub-work-place")
