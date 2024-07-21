@@ -1,64 +1,106 @@
 <template>
   <div class="content-box">
     <ApiTreeFilter
-      ref="apiCollectionTreeRef"
-      label="name"
-      title="项目集合"
-      :data="treeFilterData"
-      :default-value="initParam.departmentId"
-      @change="changeTreeFilter"
+      ref="filterRef"
+      :default-value="initialValue"
+      :tree-data="treeData"
+      @change="handleTreeChange"
     />
-    <!-- 使用 v-if 来动态渲染组件 -->
-    <ProjectOverview v-if="currentComponent === 'project'" :item-id="selectedId" />
-    <DirectoryOverview v-if="currentComponent === 'dir'" :item-id="selectedId" />
-    <InterfaceConfiguration v-if="currentComponent === 'api'" :item-id="selectedId" />
+    <component
+      :is="currentView"
+      v-if="currentView"
+      :item-id="`${selectedId}`"
+    />
+    <el-empty v-else class="card" style="flex: 1; height: 100%"></el-empty>
   </div>
 </template>
 
 <script setup lang="ts" name="api-management">
-import { reactive, ref, onMounted } from "vue";
+import { markRaw, ref } from "vue";
 import ApiTreeFilter from "./components/ApiTreeFilter/index.vue";
 import ProjectOverview from "./components/ProjectOverview/index.vue";
 import DirectoryOverview from "./components/CatalogOverview/index.vue";
 import InterfaceConfiguration from "./components/InterfaceConfiguration/index.vue";
 import { getHttpTreeList } from "@/api/modules/http";
-import { HttpServer } from "@/api/interface";
 import { useWorkbenchStore } from "@/stores/modules/workbench";
+import { HttpServer } from "@/api/interface";
+import { generateUUID } from "@/utils";
 
-const treeFilterValue = reactive({ CollectionId: "1" });
-const initParam = reactive({ departmentId: "" });
-
-const apiCollectionTreeRef = ref(null);
-
-//组件选择
-const currentComponent = ref<any>(null);
-
-//选中的id
-const selectedId = ref("");
-
-//工作台store
+const filterRef = ref<InstanceType<typeof ApiTreeFilter> | null>(null);
+const initialValue = ref();
+const treeData = ref();
+const selectedId = ref();
+const currentView = ref();
 const workbench = useWorkbenchStore();
 
-//树形选择器值改变操作
-const changeTreeFilter = (val: { id: string; treeCurrentData: any }) => {
-  treeFilterValue.CollectionId = val.id;
-  selectedId.value = val.id;
-  currentComponent.value = val.treeCurrentData.type;
+const handleTreeChange = (val: { id: string; treeCurrentData: any }) => {
+  selectedId.value = val.treeCurrentData.item_id;
+  currentView.value = getViewComponent(val.treeCurrentData.type);
+};
+const getViewComponent = (type: string) => {
+  switch (type) {
+    case "project":
+      return markRaw(ProjectOverview);
+    case "dir":
+      return markRaw(DirectoryOverview);
+    case "api":
+      return markRaw(InterfaceConfiguration);
+    default:
+      return null;
+  }
 };
 
-//获取树形选择器数据
-const treeFilterData = ref<HttpServer.ResTreeList[]>([]);
-const useTreeFilterData = async () => {
-  const { data } = await getHttpTreeList({ projectId: workbench.projectId });
-  treeFilterData.value = data;
-  initParam.departmentId = treeFilterData.value[0].id;
-  selectedId.value = treeFilterData.value[0].id;
-  currentComponent.value = treeFilterData.value[0].type;
-};
+interface TreeNode {
+  id: number | string;
+  item_id: number;
+  label: string;
+  children: TreeNode[];
+  type?: string;
+}
 
-onMounted(() => {
-  useTreeFilterData();
-});
+const fetchTreeData = async () => {
+  const response = await getHttpTreeList({ projectId: workbench.projectId });
+  treeData.value = [convertToTreeNode(response.data)];
+  initialValue.value = treeData.value[0].id;
+  handleTreeChange({
+    id: treeData.value[0].item_id,
+    treeCurrentData: treeData.value[0]
+  });
+};
+fetchTreeData();
+
+function convertToTreeNode(resTreeList: HttpServer.ResTreeList): TreeNode {
+  // 创建一个新的 TreeNode 对象
+  const treeNode: TreeNode = {
+    id: generateUUID(),
+    item_id: resTreeList.id,
+    label: resTreeList.category_name,
+    children: [],
+    type: resTreeList.type
+  };
+
+  // 转换 children
+  if (resTreeList.children) {
+    treeNode.children = resTreeList.children.map(child =>
+      convertToTreeNode(child)
+    );
+  }
+
+  // 转换 configs 并加入到 children 中
+  if (resTreeList.configs) {
+    treeNode.children = treeNode.children.concat(
+      resTreeList.configs.map(config => ({
+        id: generateUUID(),
+        item_id: config.id,
+        label: config.api_name,
+        children: [],
+        type: "api"
+      }))
+    );
+  }
+
+  return treeNode;
+}
 </script>
 
 <style scoped lang="scss">
