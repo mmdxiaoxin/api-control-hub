@@ -2,7 +2,10 @@
   <!-- 接口标题和编辑按钮 -->
   <el-row :gutter="20" style="margin-bottom: 20px">
     <el-col :span="20">
-      <span class="text"> {{ apiName }} <el-button :icon="Edit" circle size="small" /></span>
+      <span class="text">
+        {{ apiName }}
+        <el-button :icon="Edit" circle size="small" />
+      </span>
     </el-col>
     <el-col :span="4" class="right-aligned">
       <!-- 保存按钮 -->
@@ -17,15 +20,33 @@
   <el-row :gutter="20">
     <!-- 请求方法和接口 URL -->
     <el-col :span="4">
-      <el-select placeholder="请选择请求方法" v-model="requestForm.requestMethod">
-        <el-option label="GET" value="GET" :style="getOptionStyle('GET')">GET</el-option>
-        <el-option label="POST" value="POST" :style="getOptionStyle('POST')">POST</el-option>
-        <el-option label="DELETE" value="DELETE" :style="getOptionStyle('DELETE')">DELETE</el-option>
-        <el-option label="PUT" value="PUT" :style="getOptionStyle('PUT')">PUT</el-option>
+      <el-select
+        placeholder="请选择请求方法"
+        v-model="requestForm.requestMethod"
+      >
+        <el-option label="GET" value="GET" :style="getOptionStyle('GET')">
+          GET
+        </el-option>
+        <el-option label="POST" value="POST" :style="getOptionStyle('POST')">
+          POST
+        </el-option>
+        <el-option
+          label="DELETE"
+          value="DELETE"
+          :style="getOptionStyle('DELETE')"
+          >DELETE
+        </el-option>
+        <el-option label="PUT" value="PUT" :style="getOptionStyle('PUT')">
+          PUT
+        </el-option>
       </el-select>
     </el-col>
     <el-col :span="16">
-      <el-input placeholder="请输入接口 URL" clearable v-model="requestForm.apiUrl">
+      <el-input
+        placeholder="请输入接口 URL"
+        clearable
+        v-model="requestForm.apiUrl"
+      >
         <template #prepend>
           <el-popover
             placement="top-start"
@@ -63,7 +84,10 @@
       <el-tab-pane label="Auth" name="second">
         <div class="query-params">
           <!-- 鉴权类型选择 -->
-          <el-select placeholder="请选择请求类型" v-model="requestForm.authType">
+          <el-select
+            placeholder="请选择请求类型"
+            v-model="requestForm.authType"
+          >
             <el-option label="No Auth" value="noAuth"></el-option>
             <el-option label="从父级继承" value="father"></el-option>
           </el-select>
@@ -128,7 +152,7 @@
 </template>
 
 <script setup lang="ts">
-import QueryTable from "@/views/apiManagement/components/InterfaceConfiguration/components/QueryTable.vue";
+import QueryTable from "@/views/http-client/components/InterfaceConfiguration/components/QueryTable.vue";
 import { computed, ref } from "vue";
 import { Edit } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
@@ -211,6 +235,7 @@ const sendRequest = async () => {
   display: flex;
   justify-content: flex-end;
 }
+
 .interface-query {
   max-height: 300px;
   margin-top: 20px;

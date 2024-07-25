@@ -4,13 +4,27 @@
       <div class="project-header" @click="saveContent">
         <span class="text">
           {{ projectName }}
-          <el-button :icon="Edit" circle size="small" @click="modifyName(projectName)" />
+          <el-button
+            :icon="Edit"
+            circle
+            size="small"
+            @click="modifyName(projectName)"
+          />
         </span>
         <el-tag>项目概览</el-tag>
       </div>
-      <el-divider direction="horizontal" style="width: 100%" @click="saveContent" />
+      <el-divider
+        direction="horizontal"
+        style="width: 100%"
+        @click="saveContent"
+      />
       <ApiStatistic @click="saveContent" />
-      <div class="content-view" v-html="content" v-if="!EditMode" @click="editContent"></div>
+      <div
+        class="content-view"
+        v-html="content"
+        v-if="!EditMode"
+        @click="editContent"
+      ></div>
       <WangEditor v-else v-model:value="content" height="300px" />
     </el-main>
     <el-divider direction="vertical" style="height: 100%" />
@@ -82,5 +96,5 @@ onBeforeMount(() => {
 </script>
 
 <style scoped lang="scss">
-@import "./index.scss";
+@import "index";
 </style>

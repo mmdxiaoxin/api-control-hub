@@ -22,14 +22,26 @@
     <el-table-column label="操作">
       <template #default="scope">
         <div class="operation">
-          <el-button v-if="!scope.row.isEditing" type="primary" @click="startEdit(scope.row)">修改</el-button>
-          <el-button v-else type="success" @click="saveEdit(scope.row)">保存</el-button>
-          <el-button type="danger" @click="removeQueryParam(scope.row)">删除</el-button>
+          <el-button
+            v-if="!scope.row.isEditing"
+            type="primary"
+            @click="startEdit(scope.row)"
+          >
+            修改
+          </el-button>
+          <el-button v-else type="success" @click="saveEdit(scope.row)">
+            保存
+          </el-button>
+          <el-button type="danger" @click="removeQueryParam(scope.row)">
+            删除
+          </el-button>
         </div>
       </template>
     </el-table-column>
   </el-table>
-  <el-button @click="addQueryParam" style="width: 100%" :icon="Plus">添加参数</el-button>
+  <el-button @click="addQueryParam" style="width: 100%" :icon="Plus">
+    添加参数
+  </el-button>
 </template>
 
 <script setup lang="ts">
@@ -40,7 +52,11 @@ import { ElMessage } from "element-plus";
 const props = defineProps({
   queryParams: Array
 });
-const emit = defineEmits(["update:queryParams", "addQueryParam", "removeQueryParam"]);
+const emit = defineEmits([
+  "update:queryParams",
+  "addQueryParam",
+  "removeQueryParam"
+]);
 
 // 创建本地变量，将其与父组件的 prop 进行双向绑定
 const localQueryParams = ref<Array<any>>(props.queryParams || []);

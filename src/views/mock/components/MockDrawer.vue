@@ -82,7 +82,7 @@
 
 <script setup lang="ts" name="MockDrawer">
 import { ref, reactive } from "vue";
-import { mockStatus } from "@/utils/dict";
+import type { mockStatus } from "@/utils/dict";
 import { ElMessage, FormInstance } from "element-plus";
 import { Mock } from "@/api/interface";
 

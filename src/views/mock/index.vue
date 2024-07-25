@@ -144,7 +144,7 @@ import {
   getMockList,
   getMockStatus
 } from "@/api/modules/mock";
-import MockDrawer from "@/views/mockServer/components/MockDrawer.vue";
+import MockDrawer from "@/views/mock/components/MockDrawer.vue";
 
 const baseURL =
   "https://mock.presstime.cn/mock/6534b86affb279f23e01859d/api-control-hub";

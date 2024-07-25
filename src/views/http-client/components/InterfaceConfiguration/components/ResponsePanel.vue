@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ResFileOption } from "@/views/apiManagement/components/InterfaceConfiguration/common/config";
+import { ResFileOption } from "@/views/http-client/components/InterfaceConfiguration/common/config";
 import { JsonViewer } from "vue3-json-viewer";
 import "vue3-json-viewer/dist/index.css";
 import { computed, ref } from "vue";
@@ -43,9 +43,19 @@ const responseHeader = computed(() => {
               <el-radio-button label="Raw" />
               <el-radio-button label="Preview" />
             </el-radio-group>
-            <el-select v-model="ResSelect" size="small" v-if="resBodyRadio === 'Pretty'" class="tool-bar-select">
+            <el-select
+              v-model="ResSelect"
+              size="small"
+              v-if="resBodyRadio === 'Pretty'"
+              class="tool-bar-select"
+            >
               <!-- 选择响应体格式 -->
-              <el-option v-for="item in ResFileOption" :key="item.value" :label="item.label" :value="item.value">
+              <el-option
+                v-for="item in ResFileOption"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
                 <span>{{ item.label }}</span>
               </el-option>
             </el-select>
@@ -60,10 +70,21 @@ const responseHeader = computed(() => {
             boxed
             sort
             :theme="globalStore.isDark ? 'dark' : 'light'"
-            v-if="resBodyRadio === 'Pretty' && ResSelect === 'JSON' && responseStatus.status !== 0"
+            v-if="
+              resBodyRadio === 'Pretty' &&
+              ResSelect === 'JSON' &&
+              responseStatus.status !== 0
+            "
           />
           <!-- JSON 视图，raw -->
-          <div class="raw-json" v-if="resBodyRadio === 'Raw' && ResSelect === 'JSON' && responseStatus.status !== 0">
+          <div
+            class="raw-json"
+            v-if="
+              resBodyRadio === 'Raw' &&
+              ResSelect === 'JSON' &&
+              responseStatus.status !== 0
+            "
+          >
             {{ responseBody }}
           </div>
           <!-- 非 JSON 格式的提示 -->

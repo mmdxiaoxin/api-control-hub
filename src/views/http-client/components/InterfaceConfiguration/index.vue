@@ -8,8 +8,8 @@
 </template>
 
 <script setup lang="ts">
-import RequestForm from "@/views/apiManagement/components/InterfaceConfiguration/components/RequestForm.vue";
-import ResponsePanel from "@/views/apiManagement/components/InterfaceConfiguration/components/ResponsePanel.vue";
+import RequestForm from "@/views/http-client/components/InterfaceConfiguration/components/RequestForm.vue";
+import ResponsePanel from "@/views/http-client/components/InterfaceConfiguration/components/ResponsePanel.vue";
 import { useHttpConfigStore } from "@/stores/modules/httpConfig";
 import { onMounted, watch } from "vue";
 
