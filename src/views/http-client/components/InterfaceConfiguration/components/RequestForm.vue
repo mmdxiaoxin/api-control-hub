@@ -121,11 +121,9 @@
               <QueryTable v-model:queryParams="requestForm.queryBodyFormX" />
             </div>
             <div v-if="queryBody === 4">
-              <el-input
-                v-model="requestForm.queryJsonBody"
-                :autosize="{ minRows: 6, maxRows: 10 }"
-                type="textarea"
-                placeholder="Please input"
+              <BodyEditor
+                :model-value="requestForm.queryJsonBody"
+                language="json"
               />
             </div>
             <div v-if="queryBody === 5">
@@ -160,6 +158,7 @@ import { getOptionStyle } from "@/utils/workPlace";
 import { useHttpConfigStore } from "@/stores/modules/httpConfig";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { formatBytes, formatTime } from "@/utils/apiConfig";
+import BodyEditor from "@/views/http-client/components/InterfaceConfiguration/components/BodyEditor.vue";
 
 const queryBody = ref(1);
 const activeQuery = ref("first");

@@ -17,9 +17,9 @@
 
 <script setup lang="ts" name="api-management">
 import { markRaw, ref } from "vue";
-import ApiTreeFilter from "./components/ApiTreeFilter/index.vue";
+import ApiTreeFilter from "./components/TreeFilter.vue";
 import ProjectOverview from "./components/ProjectOverview/index.vue";
-import DirectoryOverview from "./components/CatalogOverview/index.vue";
+import DirectoryOverview from "./components/CatalogOverview.vue";
 import InterfaceConfiguration from "./components/InterfaceConfiguration/index.vue";
 import { getHttpTreeList } from "@/api/modules/http";
 import { useWorkbenchStore } from "@/stores/modules/workbench";
