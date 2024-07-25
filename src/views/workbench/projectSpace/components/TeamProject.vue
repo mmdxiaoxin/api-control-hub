@@ -36,8 +36,8 @@
                     >克隆项目
                   </el-dropdown-item>
                   <el-dropdown-item :icon="Delete" command="delete">
-                    删除项目</el-dropdown-item
-                  >
+                    删除项目
+                  </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -54,7 +54,7 @@
 <script setup lang="ts">
 import { DropdownInstance, ElMessage } from "element-plus";
 import { ref, watch } from "vue";
-import type { ProjectServer } from "@/api/interface";
+import type { Projects } from "@/api/interface";
 import {
   Delete,
   DocumentCopy,
@@ -70,11 +70,11 @@ const router = useRouter();
 const workBench = useWorkbenchStore();
 const operation = ref<DropdownInstance>();
 const props = defineProps<{
-  gridList: ProjectServer.ResProjectItem[];
+  gridList: Projects.ResItem[];
   loading: boolean;
 }>();
 
-const itemList = ref<ProjectServer.ResProjectItem[]>([]);
+const itemList = ref<Projects.ResItem[]>([]);
 watch(
   () => props.gridList,
   newVal => {
@@ -83,7 +83,7 @@ watch(
   { immediate: true }
 );
 
-function handleJump(item: ProjectServer.ResProjectItem) {
+function handleJump(item: Projects.ResItem) {
   workBench.projectId = item.id;
   workBench.projectName = item.name;
   router.push("/apiManagement/index");

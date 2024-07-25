@@ -44,7 +44,7 @@ import { ElMessageBox } from "element-plus";
 import { getRoleTagType } from "@/utils/workPlace";
 import { useRoute } from "vue-router";
 import { getProjectList } from "@/api/modules/project";
-import { ProjectServer } from "@/api/interface";
+import { Projects } from "@/api/interface";
 import { useWorkbenchStore } from "@/stores/modules/workbench";
 
 const route = useRoute();
@@ -54,7 +54,7 @@ workBench.teamId = teamId as string;
 workBench.teamName = teamName as string;
 const spaceRole = ref("团队拥有者");
 const activeName = ref("projectList");
-const projectList = ref<ProjectServer.ResProjectItem[]>([]);
+const projectList = ref<Projects.ResItem[]>([]);
 const loading = ref(false);
 
 const addProject = () => {

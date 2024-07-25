@@ -114,12 +114,8 @@ export namespace User {
   }
 }
 //项目管理模块
-export namespace ProjectServer {
-  export interface ReqProjectParams {
-    teamId: string;
-  }
-
-  export interface ResProjectItem {
+export namespace Projects {
+  export interface ResItem {
     id: string;
     name: string;
     icon: string;
@@ -139,7 +135,7 @@ export namespace ProjectServer {
     curNickName: string;
   }
 
-  export interface ResProjectDetail {
+  export interface ResDetail {
     id: string;
     name: string;
     icon: string;
@@ -152,15 +148,15 @@ export namespace ProjectServer {
 }
 
 //Mock服务模块
-export namespace MockServer {
-  export interface ReqMockParams extends ReqPage {
+export namespace Mock {
+  export interface ReqParams extends ReqPage {
     mockMethod: string;
     mockURL: string;
     mockDescription: string;
     mockStatus: number;
   }
 
-  export interface ReqAddMock {
+  export interface ReqAdd {
     mockMethod: string;
     mockURL: string;
     mockDescription: string;
@@ -168,7 +164,7 @@ export namespace MockServer {
     mockContent: string;
   }
 
-  export interface ResMockList {
+  export interface ResList {
     id: string;
     mockMethod: string;
     mockURL: string;
@@ -187,21 +183,21 @@ export namespace MockServer {
 }
 
 //接口管理模块
-export namespace HttpServer {
+export namespace Http {
   interface Config {
     id: number;
     api_name: string;
   }
 
-  export interface ResTreeList {
+  export interface ResTree {
     id: number;
     category_name: string;
-    children: ResTreeList[];
+    children: ResTree[];
     configs: Config[];
     type: string;
   }
 
-  export interface ResHttpDirectory {
+  export interface ResDirectory {
     directoryName: string;
     children?: Object;
   }
@@ -230,7 +226,7 @@ export namespace HttpServer {
     description: string;
   }
 
-  export interface ResHttpConfig {
+  export interface ResConfig {
     name: string;
     requestMethod: string;
     apiUrl: string;

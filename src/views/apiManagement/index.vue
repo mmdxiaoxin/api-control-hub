@@ -23,7 +23,7 @@ import DirectoryOverview from "./components/CatalogOverview/index.vue";
 import InterfaceConfiguration from "./components/InterfaceConfiguration/index.vue";
 import { getHttpTreeList } from "@/api/modules/http";
 import { useWorkbenchStore } from "@/stores/modules/workbench";
-import { HttpServer } from "@/api/interface";
+import { Http } from "@/api/interface";
 import { generateUUID } from "@/utils";
 
 const filterRef = ref<InstanceType<typeof ApiTreeFilter> | null>(null);
@@ -69,7 +69,7 @@ const fetchTreeData = async () => {
 };
 fetchTreeData();
 
-function convertToTreeNode(resTreeList: HttpServer.ResTreeList): TreeNode {
+function convertToTreeNode(resTreeList: Http.ResTree): TreeNode {
   // 创建一个新的 TreeNode 对象
   const treeNode: TreeNode = {
     id: generateUUID(),

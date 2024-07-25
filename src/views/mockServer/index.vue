@@ -14,9 +14,29 @@
     >
       <!-- 表格 header 按钮 -->
       <template #tableHeader="scope">
-        <el-button v-if="BUTTONS.add" type="primary" :icon="CirclePlus" @click="openDrawer('新增')">新增接口</el-button>
-        <el-button v-if="BUTTONS.import" type="primary" :icon="Upload" plain @click="batchAdd">导入接口</el-button>
-        <el-button v-if="BUTTONS.export" type="primary" :icon="Download" plain @click="downloadFile">导出接口</el-button>
+        <el-button
+          v-if="BUTTONS.add"
+          type="primary"
+          :icon="CirclePlus"
+          @click="openDrawer('新增')"
+          >新增接口
+        </el-button>
+        <el-button
+          v-if="BUTTONS.import"
+          type="primary"
+          :icon="Upload"
+          plain
+          @click="batchAdd"
+          >导入接口
+        </el-button>
+        <el-button
+          v-if="BUTTONS.export"
+          type="primary"
+          :icon="Download"
+          plain
+          @click="downloadFile"
+          >导出接口
+        </el-button>
         <el-button
           v-if="BUTTONS.delete"
           type="danger"
@@ -47,21 +67,46 @@
       </template>
       <!-- usernameHeader -->
       <template #usernameHeader="scope">
-        <el-button type="primary" @click="ElMessage.success('我是通过作用域插槽渲染的表头')">
+        <el-button
+          type="primary"
+          @click="ElMessage.success('我是通过作用域插槽渲染的表头')"
+        >
           {{ scope.column.label }}
         </el-button>
       </template>
       <!-- createTime -->
       <template #createTime="scope">
-        <el-button type="primary" link @click="ElMessage.success('我是通过作用域插槽渲染的内容')">
+        <el-button
+          type="primary"
+          link
+          @click="ElMessage.success('我是通过作用域插槽渲染的内容')"
+        >
           {{ scope.row.createTime }}
         </el-button>
       </template>
       <!-- 表格操作 -->
       <template #operation="scope">
-        <el-button type="primary" link :icon="View" @click="openDrawer('查看', scope.row)">查看</el-button>
-        <el-button type="primary" link :icon="EditPen" @click="openDrawer('编辑', scope.row)">编辑</el-button>
-        <el-button type="primary" link :icon="Delete" @click="deleteAccount(scope.row)">删除</el-button>
+        <el-button
+          type="primary"
+          link
+          :icon="View"
+          @click="openDrawer('查看', scope.row)"
+          >查看
+        </el-button>
+        <el-button
+          type="primary"
+          link
+          :icon="EditPen"
+          @click="openDrawer('编辑', scope.row)"
+          >编辑
+        </el-button>
+        <el-button
+          type="primary"
+          link
+          :icon="Delete"
+          @click="deleteAccount(scope.row)"
+          >删除
+        </el-button>
       </template>
     </ProTable>
     <MockDrawer ref="drawerRef" />
@@ -71,7 +116,7 @@
 
 <script setup lang="tsx" name="useProTable">
 import { ref, reactive } from "vue";
-import { MockServer } from "@/api/interface";
+import { Mock } from "@/api/interface";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useDownload } from "@/hooks/useDownload";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
@@ -79,12 +124,30 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import ProTable from "@/components/ProTable/index.vue";
 import ImportExcel from "@/components/ImportExcel/index.vue";
 import { ProTableInstance, ColumnProps } from "@/components/ProTable/interface";
-import { CirclePlus, Delete, EditPen, Download, Upload, View } from "@element-plus/icons-vue";
-import { deleteUser, editUser, addUser, exportUserInfo, BatchAddUser } from "@/api/modules/user";
-import { changeMockStatus, getMockList, getMockStatus } from "@/api/modules/mock";
+import {
+  CirclePlus,
+  Delete,
+  EditPen,
+  Download,
+  Upload,
+  View
+} from "@element-plus/icons-vue";
+import {
+  deleteUser,
+  editUser,
+  addUser,
+  exportUserInfo,
+  BatchAddUser
+} from "@/api/modules/user";
+import {
+  changeMockStatus,
+  getMockList,
+  getMockStatus
+} from "@/api/modules/mock";
 import MockDrawer from "@/views/mockServer/components/MockDrawer.vue";
 
-const baseURL = "https://mock.presstime.cn/mock/6534b86affb279f23e01859d/api-control-hub";
+const baseURL =
+  "https://mock.presstime.cn/mock/6534b86affb279f23e01859d/api-control-hub";
 
 // ProTable 实例
 const proTable = ref<ProTableInstance>();
@@ -107,7 +170,7 @@ const dataCallback = (data: any) => {
 };
 
 // 表格配置项
-const columns = reactive<ColumnProps<MockServer.ResMockList>[]>([
+const columns = reactive<ColumnProps<Mock.ResList>[]>([
   { type: "selection", fixed: "left", width: 70 },
   { type: "expand", label: "", width: 85 },
   {
@@ -116,9 +179,12 @@ const columns = reactive<ColumnProps<MockServer.ResMockList>[]>([
     render: scope => {
       let tag;
       if (scope.row.mockMethod === "GET") tag = <el-tag>GET</el-tag>;
-      else if (scope.row.mockMethod === "POST") tag = <el-tag type="warning">POST</el-tag>;
-      else if (scope.row.mockMethod === "PUT") tag = <el-tag type="success">PUT</el-tag>;
-      else if (scope.row.mockMethod === "DELETE") tag = <el-tag type="danger">DELETE</el-tag>;
+      else if (scope.row.mockMethod === "POST")
+        tag = <el-tag type="warning">POST</el-tag>;
+      else if (scope.row.mockMethod === "PUT")
+        tag = <el-tag type="success">PUT</el-tag>;
+      else if (scope.row.mockMethod === "DELETE")
+        tag = <el-tag type="danger">DELETE</el-tag>;
       return <span>{tag}</span>;
     }
   },
@@ -143,7 +209,9 @@ const columns = reactive<ColumnProps<MockServer.ResMockList>[]>([
               onClick={() => changeStatus(scope.row)}
             />
           ) : (
-            <el-tag type={scope.row.mockStatus ? "success" : "danger"}>{scope.row.mockStatus ? "启用" : "禁用"}</el-tag>
+            <el-tag type={scope.row.mockStatus ? "success" : "danger"}>
+              {scope.row.mockStatus ? "启用" : "禁用"}
+            </el-tag>
           )}
         </>
       );
@@ -153,15 +221,25 @@ const columns = reactive<ColumnProps<MockServer.ResMockList>[]>([
 ]);
 
 // 表格拖拽排序
-const sortTable = ({ newIndex, oldIndex }: { newIndex?: number; oldIndex?: number }) => {
+const sortTable = ({
+  newIndex,
+  oldIndex
+}: {
+  newIndex?: number;
+  oldIndex?: number;
+}) => {
   console.log(newIndex, oldIndex);
   console.log(proTable.value?.tableData);
   ElMessage.success("修改列表排序成功");
 };
 
 // 删除mock接口信息
-const deleteAccount = async (params: MockServer.ResMockList) => {
-  await useHandleData(deleteUser, { id: [params.id] }, `删除【${params.mockDescription}】接口`);
+const deleteAccount = async (params: Mock.ResList) => {
+  await useHandleData(
+    deleteUser,
+    { id: [params.id] },
+    `删除【${params.mockDescription}】接口`
+  );
   proTable.value?.getTableList();
 };
 
@@ -173,7 +251,7 @@ const batchDelete = async (id: string[]) => {
 };
 
 // 切换用户状态
-const changeStatus = async (row: MockServer.ResMockList) => {
+const changeStatus = async (row: Mock.ResList) => {
   await useHandleData(
     changeMockStatus,
     { id: row.id, mockStatus: row.mockStatus == 1 ? 0 : 1 },
@@ -184,7 +262,9 @@ const changeStatus = async (row: MockServer.ResMockList) => {
 
 // 导出用户列表
 const downloadFile = async () => {
-  ElMessageBox.confirm("确认导出用户数据?", "温馨提示", { type: "warning" }).then(() =>
+  ElMessageBox.confirm("确认导出用户数据?", "温馨提示", {
+    type: "warning"
+  }).then(() =>
     useDownload(exportUserInfo, "用户列表", proTable.value?.searchParam)
   );
 };
@@ -203,7 +283,7 @@ const batchAdd = () => {
 
 // 打开 drawer(新增、查看、编辑)
 const drawerRef = ref<InstanceType<typeof MockDrawer> | null>(null);
-const openDrawer = (title: string, row: Partial<MockServer.ResMockList> = {}) => {
+const openDrawer = (title: string, row: Partial<Mock.ResList> = {}) => {
   const params = {
     title,
     isView: title === "查看",
