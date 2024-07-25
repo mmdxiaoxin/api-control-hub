@@ -193,10 +193,6 @@ export namespace HttpServer {
     api_name: string;
   }
 
-  export interface ReqHttpConfig {
-    apiId: string;
-  }
-
   export interface ResTreeList {
     id: number;
     category_name: string;

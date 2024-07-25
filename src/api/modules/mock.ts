@@ -8,12 +8,18 @@ import http from "@/api";
 
 // 获取mock接口列表
 export const getMockList = (params: MockServer.ReqMockParams) => {
-  return http.post<ResPage<MockServer.ResMockList>>(PORT1 + `/mock/list`, params);
+  return http.post<ResPage<MockServer.ResMockList>>(
+    PORT1 + `/mock/list`,
+    params
+  );
 };
 
 // 获取树形mock接口列表
 export const getMockTreeList = (params: MockServer.ReqMockParams) => {
-  return http.post<ResPage<MockServer.ResMockList>>(PORT1 + `/mock/tree/list`, params);
+  return http.post<ResPage<MockServer.ResMockList>>(
+    PORT1 + `/mock/tree/list`,
+    params
+  );
 };
 
 // 获取mock接口状态字典
@@ -27,7 +33,10 @@ export const deleteMock = (params: { id: string[] }) => {
 };
 
 // 切换接口状态
-export const changeMockStatus = (params: { id: string; mockStatus: number }) => {
+export const changeMockStatus = (params: {
+  id: string;
+  mockStatus: number;
+}) => {
   return http.post(PORT1 + `/mock/change`, params);
 };
 

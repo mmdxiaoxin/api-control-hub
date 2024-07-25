@@ -12,12 +12,12 @@ export const getHttpTreeList = (params: { projectId: string }) => {
 };
 
 //获取接口配置
-export const getHttpConfigApi = (params: HttpServer.ReqHttpConfig) => {
+export const getHttpConfigApi = (params: { apiId: string }) => {
   return http.post<HttpServer.ResHttpConfig>(PORT1 + `/http/config`, params);
 };
 
 //更新接口配置
-export const updateHttpConfig = (params: HttpServer.ReqHttpConfig) => {
+export const updateHttpConfig = (params: { apiId: string }) => {
   return http.post<HttpServer.ResHttpConfig>(
     PORT1 + `/http/config/update`,
     params
@@ -25,7 +25,7 @@ export const updateHttpConfig = (params: HttpServer.ReqHttpConfig) => {
 };
 
 //添加接口配置
-export const addHttpConfig = (params: HttpServer.ReqHttpConfig) => {
+export const addHttpConfig = (params: { apiId: string }) => {
   return http.post<HttpServer.ResHttpConfig>(
     PORT1 + `/http/config/add`,
     params
@@ -33,7 +33,7 @@ export const addHttpConfig = (params: HttpServer.ReqHttpConfig) => {
 };
 
 //删除接口配置
-export const deleteHttpConfig = (params: HttpServer.ReqHttpConfig) => {
+export const deleteHttpConfig = (params: { apiId: string }) => {
   return http.post<HttpServer.ResHttpConfig>(
     PORT1 + `/http/config/delete`,
     params

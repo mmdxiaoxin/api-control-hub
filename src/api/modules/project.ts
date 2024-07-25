@@ -7,8 +7,11 @@ import { ProjectServer } from "@/api/interface";
  */
 
 //获取项目列表(含参)
-export const getProjectList = (params: ProjectServer.ReqProjectParams) => {
-  return http.post<ProjectServer.ResProjectItem[]>(PORT1 + `/project/list`, params);
+export const getProjectList = (params: { teamId: string }) => {
+  return http.post<ProjectServer.ResProjectItem[]>(
+    PORT1 + `/project/list`,
+    params
+  );
 };
 
 //项目添加
@@ -38,5 +41,8 @@ export const getWorkBenchApi = () => {
 
 //获取项目详情
 export const getProjectDetail = (params: { projectId: string }) => {
-  return http.post<ProjectServer.ResProjectDetail>(PORT1 + `/project/detail`, params);
+  return http.post<ProjectServer.ResProjectDetail>(
+    PORT1 + `/project/detail`,
+    params
+  );
 };
