@@ -86,7 +86,7 @@ watch(
 function handleJump(item: Projects.ResItem) {
   workBench.projectId = item.id;
   workBench.projectName = item.name;
-  router.push("/apiManagement/index");
+  router.push("/http-client");
 }
 
 const handleStar = (projectId: string) => {
