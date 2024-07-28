@@ -39,9 +39,9 @@ const responseHeader = computed(() => {
         <div class="response-body">
           <div class="res-body-toolBar">
             <el-radio-group v-model="resBodyRadio" size="small">
-              <el-radio-button label="Pretty" />
-              <el-radio-button label="Raw" />
-              <el-radio-button label="Preview" />
+              <el-radio-button value="Pretty">Pretty</el-radio-button>
+              <el-radio-button value="Raw">Raw</el-radio-button>
+              <el-radio-button value="Preview">Preview</el-radio-button>
             </el-radio-group>
             <el-select
               v-model="ResSelect"
