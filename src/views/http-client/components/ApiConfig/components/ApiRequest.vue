@@ -6,20 +6,14 @@
         placeholder="请选择请求方法"
         v-model="requestForm.requestMethod"
       >
-        <el-option label="GET" value="GET" :style="getOptionStyle('GET')">
-          GET
-        </el-option>
-        <el-option label="POST" value="POST" :style="getOptionStyle('POST')">
-          POST
-        </el-option>
         <el-option
-          label="DELETE"
-          value="DELETE"
-          :style="getOptionStyle('DELETE')"
-          >DELETE
-        </el-option>
-        <el-option label="PUT" value="PUT" :style="getOptionStyle('PUT')">
-          PUT
+          v-for="option in requestMethodOptions"
+          :key="option.value"
+          :label="option.label"
+          :value="option.value"
+          :style="getOptionStyle(option.value)"
+        >
+          {{ option.label }}
         </el-option>
       </el-select>
     </el-col>
@@ -70,7 +64,7 @@
   <el-row :gutter="16">
     <el-col :span="24">
       <div :style="{ marginTop: '10px' }" class="card">
-        <el-tabs v-model="activeQuery">
+        <el-tabs v-model="queryType">
           <el-tab-pane label="Params" name="query">
             <div class="query-params">
               <!-- 查询参数 -->
@@ -97,34 +91,35 @@
           </el-tab-pane>
           <el-tab-pane label="Body" name="body">
             <div class="query-params">
-              <el-radio-group v-model="queryBody">
-                <el-radio :value="1">none</el-radio>
-                <el-radio :value="2">form-data</el-radio>
-                <el-radio :value="3">x-www-form-urlencoded</el-radio>
-                <el-radio :value="4">json</el-radio>
-                <el-radio :value="5">xml</el-radio>
-                <el-radio :value="6">raw</el-radio>
+              <el-radio-group v-model="bodyType">
+                <el-radio
+                  v-for="(option, index) in bodyOptions"
+                  :key="index"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </el-radio>
               </el-radio-group>
               <!-- 根据选中的 queryBody 显示不同的内容 -->
               <div class="query-body-container">
-                <div v-if="queryBody === 1">
+                <div v-if="bodyType === 1">
                   <el-empty :image-size="70" />
                 </div>
-                <div v-if="queryBody === 2">
+                <div v-if="bodyType === 2">
                   <QueryTable v-model:queryParams="requestForm.queryBodyForm" />
                 </div>
-                <div v-if="queryBody === 3">
+                <div v-if="bodyType === 3">
                   <QueryTable
                     v-model:queryParams="requestForm.queryBodyFormX"
                   />
                 </div>
-                <div v-if="queryBody === 4">
+                <div v-if="bodyType === 4">
                   <BodyEditor
                     :model-value="requestForm.queryJsonBody"
                     language="json"
                   />
                 </div>
-                <div v-if="queryBody === 5">
+                <div v-if="bodyType === 5">
                   <el-input
                     v-model="requestForm.queryXmlBody"
                     :autosize="{ minRows: 6, maxRows: 10 }"
@@ -132,7 +127,7 @@
                     placeholder="Please input"
                   />
                 </div>
-                <div v-if="queryBody === 6">
+                <div v-if="bodyType === 6">
                   <el-input
                     v-model="requestForm.queryRawBody"
                     :autosize="{ minRows: 6, maxRows: 10 }"
@@ -156,11 +151,19 @@ import { onMounted, PropType, ref, watch } from "vue";
 import { getOptionStyle } from "@/utils/workPlace";
 import { Connection, MessageBox } from "@element-plus/icons-vue";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElNotification } from "element-plus";
+import {
+  bodyOptions,
+  requestMethodOptions
+} from "@/views/http-client/components/ApiConfig/config";
+import AxiosService from "@/views/http-client/components/ApiConfig/request";
 
-const queryBody = ref(1);
-const activeQuery = ref("query");
+const queryType = ref("query");
+const bodyType = ref(1);
 
+/**
+ * 请求表单
+ */
 export interface RequestForm {
   requestMethod: string;
   apiUrl: string;
@@ -196,7 +199,7 @@ const props = defineProps({
 
 const baseUrl = ref("");
 const requestForm = ref<RequestForm>(props.initialValues);
-
+const httpInstance = new AxiosService(baseUrl.value);
 onMounted(() => {
   requestForm.value = props.initialValues;
 });
@@ -207,7 +210,10 @@ watch(
   }
 );
 
-// 发送请求函数
+/**
+ * 发送请求
+ */
+const emit = defineEmits(["onSend"]);
 const sendRequest = async () => {
   // 根据请求方法配置生成axios请求配置
   const axiosConfig: AxiosRequestConfig = {
@@ -216,7 +222,7 @@ const sendRequest = async () => {
     baseURL: baseUrl.value,
     // 根据请求参数配置生成params或者data
     [requestForm.value.requestMethod === "GET" ? "params" : "data"]: (() => {
-      switch (queryBody.value) {
+      switch (bodyType.value) {
         case 1:
           return null;
         case 2:
@@ -246,17 +252,14 @@ const sendRequest = async () => {
   };
 
   try {
-    // 发送请求
-    const startTime = new Date().getTime();
-    const response: AxiosResponse = await axios(axiosConfig);
-    const endTime = new Date().getTime();
-
-    const time = endTime - startTime;
+    const response = await httpInstance.sendRequest(axiosConfig);
+    emit("onSend", response);
     // 处理响应
-    console.log(response, time);
+    console.log(response);
   } catch (error) {
     // 处理错误
     console.error(error);
+    emit("onSend", error);
   }
 };
 </script>

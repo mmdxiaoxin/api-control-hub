@@ -2,9 +2,9 @@
   <div class="card http-config">
     <ApiHeader :api-name="apiName" />
     <!-- 请求体 -->
-    <ApiRequest :initial-values="initialValues" />
+    <ApiRequest :initial-values="initialValues" @on-send="handleSend" />
     <!-- 响应体 -->
-    <ApiResponse />
+    <ApiResponse :http-response="httpResp" />
   </div>
 </template>
 
@@ -15,6 +15,10 @@ import { onMounted, ref, watch } from "vue";
 import ApiHeader from "@/views/http-client/components/ApiConfig/components/ApiHeader.vue";
 import { getHttpConfigApi } from "@/api/modules/http";
 import { RequestForm } from "@/views/http-client/components/ApiConfig/components/ApiRequest.vue";
+import {
+  ResponseWithDetails,
+  ResponseWithError
+} from "@/views/http-client/components/ApiConfig/request";
 
 const apiName = ref<string>();
 const initialValues = ref<RequestForm>();
@@ -33,6 +37,11 @@ async function fetchApiConfig(apiId: string) {
   initialValues.value = rest;
 }
 
+const httpResp = ref<ResponseWithDetails | ResponseWithError>();
+function handleSend(response: ResponseWithDetails | ResponseWithError) {
+  httpResp.value = response;
+}
+
 onMounted(() => {
   fetchApiConfig(props.itemId);
 });
@@ -49,6 +58,7 @@ watch(
 <style scoped lang="scss">
 .http-config {
   width: calc(100% - 260px);
+  min-height: 100%;
   padding: 3%;
 }
 </style>
