@@ -1,50 +1,46 @@
 <template>
   <div class="content-box">
-    <ApiTreeFilter
+    <TreeFilter
       ref="filterRef"
       :default-value="initialValue"
       :tree-data="treeData"
-      @change="handleTreeChange"
+      @change="handleChange"
     />
-    <component
-      :is="currentView"
-      v-if="currentView"
-      :item-id="`${selectedId}`"
-    />
+    <component :is="view" v-if="view" :item-id="`${selected}`" />
     <el-empty v-else class="card" style="flex: 1; height: 100%"></el-empty>
   </div>
 </template>
 
 <script setup lang="ts" name="api-management">
 import { markRaw, ref } from "vue";
-import ApiTreeFilter from "./components/TreeFilter.vue";
+import TreeFilter from "./components/TreeFilter.vue";
 import ProjectOverview from "./components/ProjectOverview/index.vue";
-import DirectoryOverview from "./components/DirConfig.vue";
-import InterfaceConfiguration from "./components/ApiConfig/index.vue";
+import DirConfig from "./components/DirConfig.vue";
+import ApiConfig from "./components/ApiConfig/index.vue";
 import { getHttpTreeList } from "@/api/modules/http";
 import { useWorkbenchStore } from "@/stores/modules/workbench";
 import { Http } from "@/api/interface";
 import { generateUUID } from "@/utils";
 
-const filterRef = ref<InstanceType<typeof ApiTreeFilter> | null>(null);
+const filterRef = ref<InstanceType<typeof TreeFilter> | null>(null);
 const initialValue = ref();
 const treeData = ref();
-const selectedId = ref();
-const currentView = ref();
+const selected = ref();
+const view = ref();
 const workbench = useWorkbenchStore();
 
-const handleTreeChange = (val: { id: string; treeCurrentData: any }) => {
-  selectedId.value = val.treeCurrentData.item_id;
-  currentView.value = getViewComponent(val.treeCurrentData.type);
+const handleChange = (val: { id: string; treeCurrentData: any }) => {
+  selected.value = val.treeCurrentData.item_id;
+  view.value = getViewComponent(val.treeCurrentData.type);
 };
 const getViewComponent = (type: string) => {
   switch (type) {
     case "project":
       return markRaw(ProjectOverview);
     case "dir":
-      return markRaw(DirectoryOverview);
+      return markRaw(DirConfig);
     case "api":
-      return markRaw(InterfaceConfiguration);
+      return markRaw(ApiConfig);
     default:
       return null;
   }
@@ -62,7 +58,7 @@ const fetchTreeData = async () => {
   const response = await getHttpTreeList({ projectId: workbench.projectId });
   treeData.value = [convertToTreeNode(response.data)];
   initialValue.value = treeData.value[0].id;
-  handleTreeChange({
+  handleChange({
     id: treeData.value[0].item_id,
     treeCurrentData: treeData.value[0]
   });

@@ -71,13 +71,13 @@
     <el-col :span="24">
       <div :style="{ marginTop: '10px' }" class="card">
         <el-tabs v-model="activeQuery">
-          <el-tab-pane label="Params" name="first">
+          <el-tab-pane label="Params" name="query">
             <div class="query-params">
               <!-- 查询参数 -->
               <QueryTable v-model:queryParams="requestForm.queryParams" />
             </div>
           </el-tab-pane>
-          <el-tab-pane label="Auth" name="second">
+          <el-tab-pane label="Auth" name="auth">
             <div class="query-params">
               <!-- 鉴权类型选择 -->
               <el-select
@@ -89,21 +89,21 @@
               </el-select>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="Headers" name="third">
+          <el-tab-pane label="Headers" name="header">
             <div class="query-params">
               <!-- 请求头参数 -->
               <QueryTable v-model:queryParams="requestForm.queryHeaders" />
             </div>
           </el-tab-pane>
-          <el-tab-pane label="Body" name="fourth">
+          <el-tab-pane label="Body" name="body">
             <div class="query-params">
               <el-radio-group v-model="queryBody">
-                <el-radio :label="1">none</el-radio>
-                <el-radio :label="2">form-data</el-radio>
-                <el-radio :label="3">x-www-form-urlencoded</el-radio>
-                <el-radio :label="4">json</el-radio>
-                <el-radio :label="5">xml</el-radio>
-                <el-radio :label="6">raw</el-radio>
+                <el-radio :value="1">none</el-radio>
+                <el-radio :value="2">form-data</el-radio>
+                <el-radio :value="3">x-www-form-urlencoded</el-radio>
+                <el-radio :value="4">json</el-radio>
+                <el-radio :value="5">xml</el-radio>
+                <el-radio :value="6">raw</el-radio>
               </el-radio-group>
               <!-- 根据选中的 queryBody 显示不同的内容 -->
               <div class="query-body-container">
@@ -152,20 +152,60 @@
 <script setup lang="ts">
 import QueryTable from "./QueryTable.vue";
 import BodyEditor from "./BodyEditor.vue";
-import { computed, ref } from "vue";
+import { onMounted, PropType, ref, watch } from "vue";
 import { getOptionStyle } from "@/utils/workPlace";
 import { Connection, MessageBox } from "@element-plus/icons-vue";
-import { useHttpConfigStore } from "@/stores/modules/httpConfig";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { formatBytes, formatTime } from "@/utils/apiConfig";
 import { ElMessage } from "element-plus";
 
 const queryBody = ref(1);
-const activeQuery = ref("first");
-const httpConfig = useHttpConfigStore();
+const activeQuery = ref("query");
 
-const baseUrl = computed(() => httpConfig.baseUrl);
-const requestForm = computed(() => httpConfig.requestForm);
+export interface RequestForm {
+  requestMethod: string;
+  apiUrl: string;
+  authType: string;
+  queryParams: Array<{ key: string; value: string }>;
+  queryHeaders: Array<{ key: string; value: string }>;
+  queryBodyForm: Array<{ key: string; value: string }>;
+  queryBodyFormX: Array<{ key: string; value: string }>;
+  queryJsonBody: string;
+  queryXmlBody: string;
+  queryRawBody: string;
+}
+
+const props = defineProps({
+  initialValues: {
+    type: Object as PropType<RequestForm>,
+    default: () => {
+      return {
+        requestMethod: "GET",
+        apiUrl: "",
+        authType: "noAuth",
+        queryParams: [],
+        queryHeaders: [],
+        queryBodyForm: [],
+        queryBodyFormX: [],
+        queryJsonBody: "",
+        queryXmlBody: "",
+        queryRawBody: ""
+      };
+    }
+  }
+});
+
+const baseUrl = ref("");
+const requestForm = ref<RequestForm>(props.initialValues);
+
+onMounted(() => {
+  requestForm.value = props.initialValues;
+});
+watch(
+  () => props.initialValues,
+  newVal => {
+    requestForm.value = newVal;
+  }
+);
 
 // 发送请求函数
 const sendRequest = async () => {
@@ -210,17 +250,10 @@ const sendRequest = async () => {
     const startTime = new Date().getTime();
     const response: AxiosResponse = await axios(axiosConfig);
     const endTime = new Date().getTime();
-    console.log(axiosConfig);
+
     const time = endTime - startTime;
     // 处理响应
-    httpConfig.setResponsePanel(response.data);
-    httpConfig.setResponseStatus({
-      status: response.status,
-      size: formatBytes(response.headers["content-length"]),
-      time: formatTime(time)
-    });
-    httpConfig.setResponseHeaders(response.headers);
-    console.log(response);
+    console.log(response, time);
   } catch (error) {
     // 处理错误
     console.error(error);
@@ -228,9 +261,4 @@ const sendRequest = async () => {
 };
 </script>
 
-<style scoped lang="scss">
-.right-aligned {
-  display: flex;
-  justify-content: flex-end;
-}
-</style>
+<style scoped lang="scss"></style>
