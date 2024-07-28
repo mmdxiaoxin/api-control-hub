@@ -1,7 +1,13 @@
 <template>
   <div class="descriptions-box card">
     <span class="text">
-      {{ directoryName }} <el-button :icon="Edit" circle size="small" @click="modifyName(directoryName)" />
+      {{ directoryName }}
+      <el-button
+        :icon="Edit"
+        circle
+        size="small"
+        @click="modifyName(directoryName)"
+      />
     </span>
     <el-table :data="tableData" border style="width: 100%">
       <el-table-column label="方法" width="180">

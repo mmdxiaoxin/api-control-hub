@@ -99,6 +99,6 @@ onBeforeUnmount(() => {
 
 <style scoped>
 div[ref="editorRef"] {
-  border: 1px solid #ddd;
+  border: 1px solid #dddddd;
 }
 </style>

@@ -1,17 +1,21 @@
 <template>
-  <div class="card interface-configuration">
+  <div class="card http-config">
+    <ApiHeader :api-name="apiName" />
     <!-- 请求体 -->
-    <RequestForm />
+    <ApiRequest />
     <!-- 响应体 -->
-    <ResponsePanel />
+    <ApiResponse />
   </div>
 </template>
 
 <script setup lang="ts">
-import RequestForm from "@/views/http-client/components/InterfaceConfiguration/components/RequestForm.vue";
-import ResponsePanel from "@/views/http-client/components/InterfaceConfiguration/components/ResponsePanel.vue";
+import ApiRequest from "./components/ApiRequest.vue";
+import ApiResponse from "./components/ApiResponse.vue";
 import { useHttpConfigStore } from "@/stores/modules/httpConfig";
-import { onMounted, watch } from "vue";
+import { computed, onMounted, watch } from "vue";
+import ApiHeader from "@/views/http-client/components/ApiConfig/components/ApiHeader.vue";
+
+const apiName = computed(() => httpConfig.apiName);
 
 const props = defineProps({
   itemId: {
@@ -38,9 +42,8 @@ watch(
 </script>
 
 <style scoped lang="scss">
-.interface-configuration {
+.http-config {
   width: calc(100% - 260px);
-  height: 100%;
   padding: 3%;
 }
 </style>

@@ -3,8 +3,8 @@
     <div class="filter-header">
       <el-breadcrumb :separator-icon="ArrowRight" style="margin-bottom: 20px">
         <el-breadcrumb-item>{{ workbenchStore.teamName }}</el-breadcrumb-item>
-        <el-breadcrumb-item
-          >{{ workbenchStore.projectName }}
+        <el-breadcrumb-item>
+          {{ workbenchStore.projectName }}
         </el-breadcrumb-item>
       </el-breadcrumb>
       <!-- TODO: 之后完善整个接口系统的需求暂时使用全局项目名称     -->
@@ -175,13 +175,11 @@ defineExpose({ treeRef });
 .filter {
   box-sizing: border-box;
   width: 300px;
-  height: 100%;
+  min-height: 100%;
   padding: 18px;
   margin-right: 10px;
-
   .filter-header {
     margin-bottom: 20px;
-
     .title {
       margin: 0 0 15px;
       font-size: 18px;
@@ -190,30 +188,24 @@ defineExpose({ treeRef });
       letter-spacing: 0.5px;
     }
   }
-
   .el-input {
     margin: 0 0 15px;
   }
-
   .el-scrollbar {
     :deep(.el-tree) {
       height: 70%;
       overflow: auto;
-
       .el-tree-node__content {
         height: 33px;
       }
     }
-
     :deep(.el-tree--highlight-current) {
       .el-tree-node.is-current > .el-tree-node__content {
         background-color: var(--el-color-primary);
-
         .el-tree-node__label,
         .el-tree-node__expand-icon {
           color: white;
         }
-
         .is-leaf {
           color: transparent;
         }
@@ -221,7 +213,6 @@ defineExpose({ treeRef });
     }
   }
 }
-
 .custom-tree-node {
   display: flex;
   flex: 1;
@@ -229,12 +220,10 @@ defineExpose({ treeRef });
   justify-content: space-between;
   padding-right: 8px;
   font-size: 14px;
-
   .el-dropdown-link {
     opacity: 0;
     transition: opacity 0.2s ease;
   }
-
   &:hover {
     .el-dropdown-link {
       opacity: 1;

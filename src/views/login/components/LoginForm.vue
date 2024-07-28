@@ -1,19 +1,30 @@
 <template>
-  <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" size="large">
+  <el-form
+    ref="loginFormRef"
+    :model="loginForm"
+    :rules="loginRules"
+    size="large"
+  >
     <el-form-item prop="username">
       <el-input v-model="loginForm.username" placeholder="用户名：admin / user">
         <template #prefix>
           <el-icon class="el-input__icon">
-            <user />
+            <User />
           </el-icon>
         </template>
       </el-input>
     </el-form-item>
     <el-form-item prop="password">
-      <el-input v-model="loginForm.password" type="password" placeholder="密码：123456" show-password autocomplete="new-password">
+      <el-input
+        v-model="loginForm.password"
+        type="password"
+        placeholder="密码：123456"
+        show-password
+        autocomplete="new-password"
+      >
         <template #prefix>
           <el-icon class="el-input__icon">
-            <lock />
+            <Lock />
           </el-icon>
         </template>
       </el-input>
@@ -29,12 +40,28 @@
     <!-- 忘记密码链接 -->
     <div class="forgot-password-link">
       <span class="link-text">忘记密码？</span>
-      <router-link to="/forgot-password" class="forgot-password-button">找回密码</router-link>
+      <router-link to="/forgot-password" class="forgot-password-button">
+        找回密码
+      </router-link>
     </div>
   </div>
   <div class="login-btn">
-    <el-button :icon="CircleClose" round size="large" @click="resetForm(loginFormRef)"> 重置</el-button>
-    <el-button :icon="UserFilled" round size="large" type="primary" :loading="loading" @click="login(loginFormRef)">
+    <el-button
+      :icon="CircleClose"
+      round
+      size="large"
+      @click="resetForm(loginFormRef)"
+    >
+      重置
+    </el-button>
+    <el-button
+      :icon="UserFilled"
+      round
+      size="large"
+      type="primary"
+      :loading="loading"
+      @click="login(loginFormRef)"
+    >
       登录
     </el-button>
   </div>
@@ -52,7 +79,7 @@ import { useUserStore } from "@/stores/modules/user";
 import { useTabsStore } from "@/stores/modules/tabs";
 import { useKeepAliveStore } from "@/stores/modules/keepAlive";
 import { initDynamicRouter } from "@/routers/modules/dynamicRouter";
-import { CircleClose, UserFilled } from "@element-plus/icons-vue";
+import { CircleClose, UserFilled, User, Lock } from "@element-plus/icons-vue";
 import type { ElForm } from "element-plus";
 import md5 from "md5";
 import { useWorkbenchStore } from "@/stores/modules/workbench";
@@ -84,7 +111,10 @@ const login = (formEl: FormInstance | undefined) => {
     loading.value = true;
     try {
       // 1.执行登录接口
-      const { data } = await loginApi({ ...loginForm, password: md5(loginForm.password) });
+      const { data } = await loginApi({
+        ...loginForm,
+        password: md5(loginForm.password)
+      });
       userStore.setToken(data.access_token);
       await userStore.getUserInfo();
       await workbenchStore.getWorkBench();

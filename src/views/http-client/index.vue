@@ -19,8 +19,8 @@
 import { markRaw, ref } from "vue";
 import ApiTreeFilter from "./components/TreeFilter.vue";
 import ProjectOverview from "./components/ProjectOverview/index.vue";
-import DirectoryOverview from "./components/CatalogOverview.vue";
-import InterfaceConfiguration from "./components/InterfaceConfiguration/index.vue";
+import DirectoryOverview from "./components/DirConfig.vue";
+import InterfaceConfiguration from "./components/ApiConfig/index.vue";
 import { getHttpTreeList } from "@/api/modules/http";
 import { useWorkbenchStore } from "@/stores/modules/workbench";
 import { Http } from "@/api/interface";
@@ -104,5 +104,9 @@ function convertToTreeNode(resTreeList: Http.ResTree): TreeNode {
 </script>
 
 <style scoped lang="scss">
-@import "index";
+.content-box {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
 </style>

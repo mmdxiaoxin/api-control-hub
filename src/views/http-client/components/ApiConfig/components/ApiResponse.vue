@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ResFileOption } from "@/views/http-client/components/InterfaceConfiguration/common/config";
+import { ResFileOption } from "@/views/http-client/components/ApiConfig/config";
 import { JsonViewer } from "vue3-json-viewer";
 import "vue3-json-viewer/dist/index.css";
 import { computed, ref } from "vue";
