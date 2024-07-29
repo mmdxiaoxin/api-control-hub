@@ -9,12 +9,12 @@
 </template>
 
 <script setup lang="ts">
-import ApiRequest from "./components/ApiRequest.vue";
-import ApiResponse from "./components/ApiResponse.vue";
+import ApiRequest from "../ApiRequest.vue";
+import ApiResponse from "../ApiResponse.vue";
 import { onMounted, ref, watch } from "vue";
-import ApiHeader from "@/views/http-client/components/ApiConfig/components/ApiHeader.vue";
+import ApiHeader from "@/views/http-client/components/ApiHeader.vue";
 import { getHttpConfigApi } from "@/api/modules/http";
-import { RequestForm } from "@/views/http-client/components/ApiConfig/components/ApiRequest.vue";
+import { RequestForm } from "@/views/http-client/components/ApiRequest.vue";
 import {
   ResponseWithDetails,
   ResponseWithError
