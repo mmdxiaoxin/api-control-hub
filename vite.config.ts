@@ -1,5 +1,5 @@
 import { defineConfig, loadEnv, ConfigEnv, UserConfig } from "vite";
-import { resolve } from "path";
+import path, { resolve } from "path";
 import { wrapperEnv } from "./build/getEnv";
 import { createProxy } from "./build/proxy";
 import { createVitePlugins } from "./build/plugins";
@@ -24,7 +24,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     resolve: {
       alias: {
         "@": resolve(__dirname, "./src"),
-        "vue-i18n": "vue-i18n/dist/vue-i18n.cjs.js"
+        "vue-i18n": "vue-i18n/dist/vue-i18n.cjs.js",
+        "monaco-editor": path.resolve(__dirname, "node_modules/monaco-editor")
       }
     },
     define: {
@@ -73,6 +74,9 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           assetFileNames: "assets/[ext]/[name]-[hash].[ext]"
         }
       }
+    },
+    optimizeDeps: {
+      include: ["monaco-editor"]
     }
   };
 });
