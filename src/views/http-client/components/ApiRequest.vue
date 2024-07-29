@@ -78,8 +78,12 @@
                 placeholder="请选择请求类型"
                 v-model="requestForm.authType"
               >
-                <el-option label="No Auth" value="noAuth"></el-option>
-                <el-option label="从父级继承" value="father"></el-option>
+                <el-option
+                  v-for="(item, index) in authOptions"
+                  :key="index"
+                  :label="item.label"
+                  :value="item.value"
+                />
               </el-select>
             </div>
           </el-tab-pane>
@@ -153,10 +157,13 @@ import { Connection, MessageBox } from "@element-plus/icons-vue";
 import { AxiosRequestConfig } from "axios";
 import { ElMessage } from "element-plus";
 import {
+  authOptions,
   bodyOptions,
   requestMethodOptions
 } from "@/views/http-client/components/ApiConfig/config";
-import AxiosService from "@/views/http-client/components/ApiConfig/request";
+import AxiosService, {
+  RequestConfig
+} from "@/views/http-client/components/ApiConfig/request";
 import MonacoEditor from "@/components/MonacoEditor/MonacoEditor";
 
 const queryType = ref("query");
@@ -211,60 +218,72 @@ watch(
   }
 );
 
-/**
- * 发送请求
- */
-
 const emit = defineEmits(["onSend"]);
-
-const getRequestData = (method: string, bodyType: number) => {
-  if (method === "GET") {
-    return { params: requestForm.value.queryParams };
-  }
-  switch (bodyType) {
-    case 1:
-      return null;
-    case 2:
-      return { data: requestForm.value.queryBodyForm };
-    case 3:
-      return { data: requestForm.value.queryBodyFormX };
-    case 4:
-      return { data: JSON.parse(requestForm.value.queryJsonBody) };
-    case 5:
-      return { data: requestForm.value.queryXmlBody };
-    case 6:
-      return { data: requestForm.value.queryRawBody };
-    default:
-      return null;
-  }
-};
-
-const getRequestHeaders = () => {
-  return requestForm.value.queryHeaders.reduce(
-    (acc, cur) => {
-      acc[cur.key] = cur.value;
-      return acc;
-    },
-    {} as Record<string, string>
-  );
-};
-
 const sendRequest = async () => {
-  const axiosConfig: AxiosRequestConfig = {
-    method: requestForm.value.requestMethod,
-    url: requestForm.value.apiUrl,
-    baseURL: baseUrl.value,
-    ...getRequestData(requestForm.value.requestMethod, bodyType.value),
-    headers: getRequestHeaders()
+  const {
+    requestMethod,
+    apiUrl,
+    authType,
+    queryParams,
+    queryHeaders,
+    queryBodyForm,
+    queryBodyFormX,
+    queryJsonBody,
+    queryXmlBody,
+    queryRawBody
+  } = requestForm.value;
+
+  // 将 queryParams 转换为对象
+  const queryParamsObj = queryParams.reduce((obj, item) => {
+    obj[item.key] = item.value;
+    return obj;
+  }, {});
+
+  // 将 queryHeaders 转换为对象
+  const headersObj = queryHeaders.reduce((obj, item) => {
+    obj[item.key] = item.value;
+    return obj;
+  }, {});
+
+  // 根据 bodyType 设置请求体
+  let data;
+  if (bodyType.value === 1) {
+    data = null;
+  } else if (bodyType.value === 2 || bodyType.value === 3) {
+    const formData = new FormData();
+    const bodyForm = bodyType.value === 2 ? queryBodyForm : queryBodyFormX;
+    bodyForm.forEach(item => {
+      formData.append(item.key, item.value);
+    });
+    data = formData;
+  } else if (bodyType.value === 4) {
+    data = JSON.parse(queryJsonBody);
+  } else if (bodyType.value === 5) {
+    headersObj["Content-Type"] = "application/xml";
+    data = queryXmlBody;
+  } else if (bodyType.value === 6) {
+    data = queryRawBody;
+  }
+
+  // 创建请求配置
+  const config: RequestConfig = {
+    method: requestMethod as AxiosRequestConfig["method"],
+    url: apiUrl,
+    params: queryParamsObj,
+    headers: headersObj,
+    data,
+    authType
   };
 
   try {
-    const response = await httpInstance.sendRequest(axiosConfig);
+    const response = await httpInstance.sendRequest(config);
     emit("onSend", response);
-    console.log(response);
+    ElMessage.success("请求成功");
+    console.log(response.data);
   } catch (error) {
-    console.error(error);
     emit("onSend", error);
+    ElMessage.error("请求失败");
+    console.error(error);
   }
 };
 </script>

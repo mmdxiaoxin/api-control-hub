@@ -27,3 +27,16 @@ export const bodyOptions = [
   { label: "xml", value: 5 },
   { label: "raw", value: 6 }
 ];
+
+export const authOptions = [
+  { label: "从父级继承", value: "inherit" },
+  { label: "No Auth", value: "none" },
+  { label: "Basic Auth", value: "basic" },
+  { label: "Bearer Token", value: "bearer" },
+  { label: "JWT Bearer", value: "bearer-jwt" },
+  { label: "OAuth 1.0", value: "oauth1" },
+  { label: "OAuth 2.0", value: "oauth2" },
+  { label: "API Key", value: "apikey" },
+  { label: "Digest Auth", value: "digest" },
+  { label: "AWS Signature", value: "aws" }
+];
