@@ -1,20 +1,15 @@
-<template>
-  <div ref="editorContainer" class="editor-container"></div>
-</template>
-
-<script lang="ts">
 import { defineComponent, onMounted, ref, PropType } from "vue";
-import * as monaco from "monaco-editor";
+import { monaco } from "@/lib/monaco";
 
 export default defineComponent({
   name: "MonacoEditor",
   props: {
     value: {
-      type: String,
+      type: String as PropType<string>,
       required: true
     },
     language: {
-      type: String,
+      type: String as PropType<string>,
       required: true
     },
     options: {
@@ -42,16 +37,6 @@ export default defineComponent({
       }
     });
 
-    return {
-      editorContainer
-    };
+    return () => <div ref={editorContainer} class="editor-container"></div>;
   }
 });
-</script>
-
-<style scoped>
-.editor-container {
-  width: 100%;
-  height: 100%;
-}
-</style>

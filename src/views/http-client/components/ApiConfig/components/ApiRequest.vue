@@ -114,9 +114,10 @@
                   />
                 </div>
                 <div v-if="bodyType === 4">
-                  <BodyEditor
-                    :model-value="requestForm.queryJsonBody"
+                  <MonacoEditor
                     language="json"
+                    v-model:value="requestForm.queryJsonBody"
+                    style="height: 250px"
                   />
                 </div>
                 <div v-if="bodyType === 5">
@@ -146,17 +147,17 @@
 
 <script setup lang="ts">
 import QueryTable from "./QueryTable.vue";
-import BodyEditor from "./BodyEditor.vue";
 import { onMounted, PropType, ref, watch } from "vue";
 import { getOptionStyle } from "@/utils/workPlace";
 import { Connection, MessageBox } from "@element-plus/icons-vue";
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { ElMessage, ElNotification } from "element-plus";
+import { AxiosRequestConfig } from "axios";
+import { ElMessage } from "element-plus";
 import {
   bodyOptions,
   requestMethodOptions
 } from "@/views/http-client/components/ApiConfig/config";
 import AxiosService from "@/views/http-client/components/ApiConfig/request";
+import MonacoEditor from "@/components/MonacoEditor/MonacoEditor";
 
 const queryType = ref("query");
 const bodyType = ref(1);
@@ -213,51 +214,55 @@ watch(
 /**
  * 发送请求
  */
+
 const emit = defineEmits(["onSend"]);
+
+const getRequestData = (method: string, bodyType: number) => {
+  if (method === "GET") {
+    return { params: requestForm.value.queryParams };
+  }
+  switch (bodyType) {
+    case 1:
+      return null;
+    case 2:
+      return { data: requestForm.value.queryBodyForm };
+    case 3:
+      return { data: requestForm.value.queryBodyFormX };
+    case 4:
+      return { data: JSON.parse(requestForm.value.queryJsonBody) };
+    case 5:
+      return { data: requestForm.value.queryXmlBody };
+    case 6:
+      return { data: requestForm.value.queryRawBody };
+    default:
+      return null;
+  }
+};
+
+const getRequestHeaders = () => {
+  return requestForm.value.queryHeaders.reduce(
+    (acc, cur) => {
+      acc[cur.key] = cur.value;
+      return acc;
+    },
+    {} as Record<string, string>
+  );
+};
+
 const sendRequest = async () => {
-  // 根据请求方法配置生成axios请求配置
   const axiosConfig: AxiosRequestConfig = {
     method: requestForm.value.requestMethod,
     url: requestForm.value.apiUrl,
     baseURL: baseUrl.value,
-    // 根据请求参数配置生成params或者data
-    [requestForm.value.requestMethod === "GET" ? "params" : "data"]: (() => {
-      switch (bodyType.value) {
-        case 1:
-          return null;
-        case 2:
-          return requestForm.value.queryBodyForm;
-        case 3:
-          return requestForm.value.queryBodyFormX;
-        case 4:
-          return JSON.parse(requestForm.value.queryJsonBody);
-        case 5:
-          return requestForm.value.queryXmlBody;
-        case 6:
-          return requestForm.value.queryRawBody;
-        default:
-          return null;
-      }
-    })(),
-    // 根据请求头参数配置生成请求头
-    headers: (() => {
-      return requestForm.value.queryHeaders.reduce(
-        (acc, cur) => {
-          acc[cur.key] = cur.value;
-          return acc;
-        },
-        {} as Record<string, string>
-      );
-    })()
+    ...getRequestData(requestForm.value.requestMethod, bodyType.value),
+    headers: getRequestHeaders()
   };
 
   try {
     const response = await httpInstance.sendRequest(axiosConfig);
     emit("onSend", response);
-    // 处理响应
     console.log(response);
   } catch (error) {
-    // 处理错误
     console.error(error);
     emit("onSend", error);
   }

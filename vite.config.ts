@@ -1,5 +1,5 @@
 import { defineConfig, loadEnv, ConfigEnv, UserConfig } from "vite";
-import path, { resolve } from "path";
+import { resolve } from "path";
 import { wrapperEnv } from "./build/getEnv";
 import { createProxy } from "./build/proxy";
 import { createVitePlugins } from "./build/plugins";
@@ -24,8 +24,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     resolve: {
       alias: {
         "@": resolve(__dirname, "./src"),
-        "vue-i18n": "vue-i18n/dist/vue-i18n.cjs.js",
-        "monaco-editor": path.resolve(__dirname, "node_modules/monaco-editor")
+        "vue-i18n": "vue-i18n/dist/vue-i18n.cjs.js"
       }
     },
     define: {
@@ -71,12 +70,16 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           // Static resource classification and packaging
           chunkFileNames: "assets/js/[name]-[hash].js",
           entryFileNames: "assets/js/[name]-[hash].js",
-          assetFileNames: "assets/[ext]/[name]-[hash].[ext]"
+          assetFileNames: "assets/[ext]/[name]-[hash].[ext]",
+          manualChunks: {
+            jsonWorker: ["monaco-editor/esm/vs/language/json/json.worker"],
+            cssWorker: ["monaco-editor/esm/vs/language/css/css.worker"],
+            htmlWorker: ["monaco-editor/esm/vs/language/html/html.worker"],
+            tsWorker: ["monaco-editor/esm/vs/language/typescript/ts.worker"],
+            editorWorker: ["monaco-editor/esm/vs/editor/editor.worker"]
+          }
         }
       }
-    },
-    optimizeDeps: {
-      include: ["monaco-editor"]
     }
   };
 });
