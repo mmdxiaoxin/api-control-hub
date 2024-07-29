@@ -9,16 +9,13 @@
 </template>
 
 <script setup lang="ts">
-import ApiRequest from "../ApiRequest.vue";
-import ApiResponse from "../ApiResponse.vue";
+import ApiRequest from "./ApiRequest.vue";
+import ApiResponse from "./ApiResponse.vue";
 import { onMounted, ref, watch } from "vue";
 import ApiHeader from "@/views/http-client/components/ApiHeader.vue";
 import { getHttpConfigApi } from "@/api/modules/http";
 import { RequestForm } from "@/views/http-client/components/ApiRequest.vue";
-import {
-  ResponseWithDetails,
-  ResponseWithError
-} from "@/views/http-client/components/ApiConfig/request";
+import { ResponseWithDetails, ResponseWithError } from "@/utils/request";
 
 const apiName = ref<string>();
 const initialValues = ref<RequestForm>();

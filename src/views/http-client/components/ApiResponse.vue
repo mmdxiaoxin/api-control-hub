@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import { ResFileOption } from "@/views/http-client/components/ApiConfig/config";
+import { ResFileOption } from "@/views/http-client/config";
 import { JsonViewer } from "vue3-json-viewer";
 import "vue3-json-viewer/dist/index.css";
 import { computed, PropType, ref, watch } from "vue";
 import { useGlobalStore } from "@/stores/modules/global";
-import {
-  ResponseWithDetails,
-  ResponseWithError
-} from "@/views/http-client/components/ApiConfig/request";
+import { ResponseWithDetails, ResponseWithError } from "@/utils/request";
 
 const activeResponse = ref("first");
 const resBodyRadio = ref("Pretty");
@@ -147,13 +144,11 @@ const responseHeader = computed(() => {
   position: relative;
   height: calc(100% - 300px);
   margin-top: 10px;
-
   .response-status {
     position: absolute;
     top: 20px;
     right: 10px;
     display: flex;
-
     .status-item {
       display: flex;
       flex-flow: row nowrap;
@@ -162,49 +157,39 @@ const responseHeader = computed(() => {
       font-size: 12px;
     }
   }
-
   .response-body {
     height: 100%;
-
     .res-body-toolBar {
       display: flex;
       flex-flow: row wrap;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 20px;
-
       .tool-bar-select {
         max-width: 20%;
       }
     }
-
     .response-body-content {
       width: 99%;
       min-height: 200px;
       overflow: auto;
       border: #6b778c 1px solid;
-
       .string {
         color: green;
       }
-
       .number {
         color: darkorange;
       }
-
       .boolean {
         color: blue;
       }
-
       .null {
         color: magenta;
       }
-
       .key {
         color: red;
       }
     }
-
     .raw-json {
       white-space: pre;
     }

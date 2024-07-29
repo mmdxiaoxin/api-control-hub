@@ -3,7 +3,7 @@ import {
   RequestData,
   ResponseData,
   ResponseStatus
-} from "@/views/http-client/components/ApiConfig/types";
+} from "@/views/http-client/components/types";
 import piniaPersistConfigSession from "@/stores/helper/persist-session";
 import { getHttpConfigApi } from "@/api/modules/http";
 export const useHttpConfigStore = defineStore({

@@ -16,7 +16,7 @@ import { markRaw, ref } from "vue";
 import TreeFilter from "./components/TreeFilter.vue";
 import ProjectOverview from "./components/ProjectOverview/index.vue";
 import DirConfig from "./components/DirConfig.vue";
-import ApiConfig from "./components/ApiConfig/index.vue";
+import ApiConfig from "./components/ApiConfig.vue";
 import { getHttpTreeList } from "@/api/modules/http";
 import { useWorkbenchStore } from "@/stores/modules/workbench";
 import { Http } from "@/api/interface";

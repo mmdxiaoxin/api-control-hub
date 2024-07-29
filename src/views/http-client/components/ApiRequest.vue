@@ -160,10 +160,8 @@ import {
   authOptions,
   bodyOptions,
   requestMethodOptions
-} from "@/views/http-client/components/ApiConfig/config";
-import AxiosService, {
-  RequestConfig
-} from "@/views/http-client/components/ApiConfig/request";
+} from "@/views/http-client/config";
+import AxiosService, { RequestConfig } from "@/utils/request";
 import MonacoEditor from "@/components/MonacoEditor/MonacoEditor";
 
 const queryType = ref("query");
