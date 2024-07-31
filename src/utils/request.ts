@@ -17,6 +17,10 @@ export interface ResponseWithDetails<T = any> extends AxiosResponse<T> {
   requestTime: number;
   responseTime: number;
   duration: number;
+  requestBodySize: number;
+  responseBodySize: number;
+  requestHeadersSize: number;
+  responseHeadersSize: number;
 }
 
 export interface ResponseWithError<T = any> extends AxiosError<T> {
@@ -24,6 +28,8 @@ export interface ResponseWithError<T = any> extends AxiosError<T> {
   responseTime: number;
   duration: number;
   statusText: string;
+  requestBodySize: number;
+  requestHeadersSize: number;
 }
 
 class AxiosService {
@@ -43,6 +49,17 @@ class AxiosService {
       config => {
         this.applyAuth(config);
         (config as any).metadata = { startTime: new Date() };
+
+        // Calculate request body size
+        const requestBody = config.data ? JSON.stringify(config.data) : "";
+        const requestHeaders = JSON.stringify(config.headers || {});
+        (config as any).metadata.requestBodySize = new TextEncoder().encode(
+          requestBody
+        ).length;
+        (config as any).metadata.requestHeadersSize = new TextEncoder().encode(
+          requestHeaders
+        ).length;
+
         return config;
       },
       error => {
@@ -57,11 +74,23 @@ class AxiosService {
         metadata.endTime = new Date();
         metadata.duration = metadata.endTime - metadata.startTime;
 
+        // Calculate response body size
+        const responseBody = response.data ? JSON.stringify(response.data) : "";
+        const responseHeaders = JSON.stringify(response.headers || {});
+        const responseBodySize = new TextEncoder().encode(responseBody).length;
+        const responseHeadersSize = new TextEncoder().encode(
+          responseHeaders
+        ).length;
+
         const responseWithDetails: ResponseWithDetails = {
           ...response,
           requestTime: metadata.startTime,
           responseTime: metadata.endTime,
-          duration: metadata.duration
+          duration: metadata.duration,
+          requestBodySize: metadata.requestBodySize,
+          responseBodySize: responseBodySize,
+          requestHeadersSize: metadata.requestHeadersSize,
+          responseHeadersSize: responseHeadersSize
         };
 
         return responseWithDetails;
@@ -72,12 +101,23 @@ class AxiosService {
         metadata.endTime = new Date();
         metadata.duration = metadata.endTime - metadata.startTime;
 
+        const requestBody = error.config?.data
+          ? JSON.stringify(error.config.data)
+          : "";
+        const requestHeaders = JSON.stringify(error.config?.headers || {});
+        const requestBodySize = new TextEncoder().encode(requestBody).length;
+        const requestHeadersSize = new TextEncoder().encode(
+          requestHeaders
+        ).length;
+
         const responseWithError: ResponseWithError = {
           ...error,
           requestTime: metadata.startTime,
           responseTime: metadata.endTime,
           duration: metadata.duration,
-          statusText: error.response?.statusText || "Unknown"
+          statusText: error.response?.statusText || "Unknown",
+          requestBodySize: requestBodySize,
+          requestHeadersSize: requestHeadersSize
         };
 
         return Promise.reject(responseWithError);

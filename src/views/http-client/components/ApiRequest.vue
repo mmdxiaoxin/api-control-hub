@@ -220,7 +220,7 @@ watch(
   }
 );
 
-const emit = defineEmits(["onSend"]);
+const emit = defineEmits(["onSend", "onError", "onSuccess"]);
 const sendRequest = async () => {
   const {
     requestMethod,
@@ -279,11 +279,13 @@ const sendRequest = async () => {
 
   try {
     const response = await httpInstance.sendRequest(config);
-    emit("onSend", response);
+    emit("onSuccess", response);
+    emit("onSend", true);
     ElMessage.success("请求成功");
     console.log(response.data);
   } catch (error) {
-    emit("onSend", error);
+    emit("onError", error);
+    emit("onSend", false);
     ElMessage.error("请求失败");
     console.error(error);
   }

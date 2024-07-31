@@ -5,6 +5,7 @@ import "vue3-json-viewer/dist/index.css";
 import { computed, PropType, ref, watch } from "vue";
 import { useGlobalStore } from "@/stores/modules/global";
 import { ResponseWithDetails, ResponseWithError } from "@/utils/request";
+import { formatBytes } from "@/utils/apiConfig";
 
 const activeResponse = ref("first");
 const resBodyRadio = ref("Pretty");
@@ -12,26 +13,67 @@ const ResSelect = ref("JSON");
 const globalStore = useGlobalStore();
 const props = defineProps({
   httpResponse: {
-    type: Object as PropType<ResponseWithDetails | ResponseWithError>,
+    type: Object as PropType<ResponseWithDetails>,
     default: () => {
       return {
         status: 0,
-        duration: 0,
-        headers: {},
-        data: ""
+        duration: 0
       };
     }
+  },
+  httpError: {
+    type: Object as PropType<ResponseWithError>,
+    default: () => {
+      return {
+        status: 0,
+        duration: 0
+      };
+    }
+  },
+  httpStatus: {
+    type: Boolean,
+    default: true
   }
 });
 
-const responsePanel = ref<ResponseWithDetails | ResponseWithError>(
-  props.httpResponse
-);
-
+const responseSuccess = ref<ResponseWithDetails>(props.httpResponse);
+const responseError = ref<ResponseWithError>(props.httpError);
+const requestBodySize = computed(() => {
+  return formatBytes(responseSuccess.value.requestBodySize);
+});
+const requestHeadersSize = computed(() => {
+  return formatBytes(responseSuccess.value.requestHeadersSize);
+});
+const responseSize = computed(() => {
+  return formatBytes(
+    responseSuccess.value.responseBodySize +
+      responseSuccess.value.responseHeadersSize
+  );
+});
+const responseBodySize = computed(() => {
+  return formatBytes(responseSuccess.value.responseBodySize);
+});
+const responseHeadersSize = computed(() => {
+  return formatBytes(responseSuccess.value.responseHeadersSize);
+});
 watch(
   () => props.httpResponse,
   () => {
-    responsePanel.value = props.httpResponse;
+    responseSuccess.value = props.httpResponse;
+  }
+);
+watch(
+  () => props.httpError,
+  () => {
+    responseError.value = props.httpError;
+  }
+);
+watch(
+  () => props.httpStatus,
+  () => {
+    if (props.httpStatus) {
+      activeResponse.value = "first";
+    }
   }
 );
 
@@ -48,12 +90,12 @@ const responseHeader = computed(() => {
 </script>
 
 <template>
-  <div class="interface-response card">
+  <div class="response card">
     <!-- 响应内容、Cookies 和响应头选项卡 -->
     <el-tabs v-model="activeResponse">
       <el-tab-pane label="Body" name="first">
         <div class="response-body">
-          <div class="res-body-toolBar">
+          <div class="body-toolBar">
             <el-radio-group v-model="resBodyRadio" size="small">
               <el-radio-button value="Pretty">Pretty</el-radio-button>
               <el-radio-button value="Raw">Raw</el-radio-button>
@@ -76,12 +118,12 @@ const responseHeader = computed(() => {
               </el-option>
             </el-select>
           </div>
-          <div v-if="responsePanel.status === 0">
+          <div v-if="responseSuccess.status === 0 || !httpStatus">
             <el-empty :image-size="70" />
           </div>
           <!-- JSON 视图，pretty -->
           <JsonViewer
-            :value="responsePanel.data"
+            :value="responseSuccess.data"
             copyable
             boxed
             sort
@@ -89,7 +131,8 @@ const responseHeader = computed(() => {
             v-if="
               resBodyRadio === 'Pretty' &&
               ResSelect === 'JSON' &&
-              responsePanel.status !== 0
+              responseSuccess.status !== 0 &&
+              httpStatus
             "
           />
           <!-- JSON 视图，raw -->
@@ -98,10 +141,11 @@ const responseHeader = computed(() => {
             v-if="
               resBodyRadio === 'Raw' &&
               ResSelect === 'JSON' &&
-              responsePanel.status !== 0
+              responseSuccess.status !== 0 &&
+              httpStatus
             "
           >
-            {{ responsePanel.data || "" }}
+            {{ responseSuccess.data || "" }}
           </div>
           <!-- 非 JSON 格式的提示 -->
           <div v-if="ResSelect !== 'JSON'">
@@ -125,22 +169,60 @@ const responseHeader = computed(() => {
     <div class="response-status">
       <div class="status-item">
         <span>Status:</span>
-        <p>{{ responsePanel.status }}</p>
+        <span>{{
+          httpStatus ? responseSuccess.status : responseError.response?.status
+        }}</span>
       </div>
       <div class="status-item">
         <span>Time:</span>
-        <p>{{ responsePanel.duration }}</p>
+        <span>{{
+          httpStatus ? responseSuccess.duration : responseError.duration
+        }}</span>
       </div>
-      <div class="status-item">
-        <span>Size:</span>
-        <p>{{ "test" }}</p>
-      </div>
+      <el-tooltip
+        :effect="globalStore.isDark ? 'dark' : 'light'"
+        placement="top-start"
+        :open-delay="500"
+      >
+        <template #content>
+          <div v-if="httpStatus" class="tooltip-content">
+            <div class="tooltip-section">
+              <h3 class="tooltip-title">Response Size</h3>
+              <p class="tooltip-item">
+                Body: <span>{{ responseBodySize }}</span>
+              </p>
+              <p class="tooltip-item">
+                Headers: <span>{{ responseHeadersSize }}</span>
+              </p>
+            </div>
+            <el-divider />
+            <div class="tooltip-section">
+              <h3 class="tooltip-title">Request Size</h3>
+              <p class="tooltip-item">
+                Body: <span>{{ requestBodySize }}</span>
+              </p>
+              <p class="tooltip-item">
+                Headers: <span>{{ requestHeadersSize }}</span>
+              </p>
+            </div>
+          </div>
+          <div v-else class="tooltip-content">
+            <h3 class="tooltip-title">Error</h3>
+            <el-divider />
+            <p class="tooltip-item">{{ responseError.message }}</p>
+          </div>
+        </template>
+        <div class="status-item">
+          <span>Size:</span>
+          <span>{{ httpStatus ? responseSize : "Error" }}</span>
+        </div>
+      </el-tooltip>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.interface-response {
+.response {
   position: relative;
   height: calc(100% - 300px);
   margin-top: 10px;
@@ -159,7 +241,7 @@ const responseHeader = computed(() => {
   }
   .response-body {
     height: 100%;
-    .res-body-toolBar {
+    .body-toolBar {
       display: flex;
       flex-flow: row wrap;
       align-items: center;
@@ -169,29 +251,29 @@ const responseHeader = computed(() => {
         max-width: 20%;
       }
     }
-    .response-body-content {
-      width: 99%;
-      min-height: 200px;
-      overflow: auto;
-      border: #6b778c 1px solid;
-      .string {
-        color: green;
-      }
-      .number {
-        color: darkorange;
-      }
-      .boolean {
-        color: blue;
-      }
-      .null {
-        color: magenta;
-      }
-      .key {
-        color: red;
-      }
-    }
     .raw-json {
       white-space: pre;
+    }
+  }
+}
+.tooltip-content {
+  font-family: "Noto Sans SC", "思源黑体", sans-serif;
+  .tooltip-section {
+    margin-bottom: 10px;
+    .tooltip-title {
+      margin-bottom: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #333333;
+    }
+    .tooltip-item {
+      margin: 0;
+      font-size: 14px;
+      color: #555555;
+      span {
+        font-weight: bold;
+        color: #000000;
+      }
     }
   }
 }
