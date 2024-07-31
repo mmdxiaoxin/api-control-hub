@@ -17,7 +17,11 @@ const props = defineProps({
     default: () => {
       return {
         status: 0,
-        duration: 0
+        duration: 0,
+        responseBodySize: 0,
+        responseHeadersSize: 0,
+        requestBodySize: 0,
+        requestHeadersSize: 0
       };
     }
   },
@@ -26,7 +30,9 @@ const props = defineProps({
     default: () => {
       return {
         status: 0,
-        duration: 0
+        duration: 0,
+        requestBodySize: 0,
+        requestHeadersSize: 0
       };
     }
   },
@@ -86,6 +92,10 @@ const responseHeader = computed(() => {
       value: headers[key]
     };
   });
+});
+
+const toolTipTheme = computed(() => {
+  return globalStore.isDark ? "dark" : "light";
 });
 </script>
 
@@ -168,19 +178,22 @@ const responseHeader = computed(() => {
     </el-tabs>
     <div class="response-status">
       <div class="status-item">
-        <span>Status:</span>
-        <span>{{
-          httpStatus ? responseSuccess.status : responseError.response?.status
-        }}</span>
+        <span class="status-label">Status:</span>
+        <span class="status-value">
+          {{
+            httpStatus ? responseSuccess.status : responseError.response?.status
+          }}
+        </span>
       </div>
       <div class="status-item">
-        <span>Time:</span>
-        <span>{{
-          httpStatus ? responseSuccess.duration : responseError.duration
-        }}</span>
+        <span class="status-label">Time:</span>
+        <span class="status-value">
+          {{ httpStatus ? responseSuccess.duration : responseError.duration }}
+          ms
+        </span>
       </div>
       <el-tooltip
-        :effect="globalStore.isDark ? 'dark' : 'light'"
+        :effect="toolTipTheme"
         placement="top-start"
         :open-delay="500"
       >
@@ -213,8 +226,10 @@ const responseHeader = computed(() => {
           </div>
         </template>
         <div class="status-item">
-          <span>Size:</span>
-          <span>{{ httpStatus ? responseSize : "Error" }}</span>
+          <span class="status-label">Size:</span>
+          <span class="status-value">{{
+            httpStatus ? responseSize : "Error"
+          }}</span>
         </div>
       </el-tooltip>
     </div>
@@ -233,17 +248,23 @@ const responseHeader = computed(() => {
     display: flex;
     .status-item {
       display: flex;
-      flex-flow: row nowrap;
       align-items: center;
-      margin-right: 10px;
-      font-size: 12px;
+      margin-right: 15px;
+      font-size: 14px;
+      color: var(--el-text-color-regular);
+      .status-label {
+        margin-right: 5px;
+        font-weight: bold;
+      }
+      .status-value {
+        color: var(--el-text-color-regular);
+      }
     }
   }
   .response-body {
     height: 100%;
     .body-toolBar {
       display: flex;
-      flex-flow: row wrap;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 20px;
@@ -258,21 +279,22 @@ const responseHeader = computed(() => {
 }
 .tooltip-content {
   font-family: "Noto Sans SC", "思源黑体", sans-serif;
+  background-color: var(--el-popper-bg-color);
   .tooltip-section {
     margin-bottom: 10px;
     .tooltip-title {
       margin-bottom: 5px;
       font-size: 16px;
       font-weight: bold;
-      color: #333333;
+      color: var(--el-text-color-primary);
     }
     .tooltip-item {
       margin: 0;
       font-size: 14px;
-      color: #555555;
+      color: var(--el-text-color-regular);
       span {
         font-weight: bold;
-        color: #000000;
+        color: var(--el-text-color-regular);
       }
     }
   }
