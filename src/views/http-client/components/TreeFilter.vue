@@ -7,7 +7,6 @@
           {{ workbenchStore.projectName }}
         </el-breadcrumb-item>
       </el-breadcrumb>
-      <!-- TODO: 之后完善整个接口系统的需求暂时使用全局项目名称     -->
       <span v-if="workbenchStore.projectName" class="title sle">
         {{ workbenchStore.projectName }}
       </span>
@@ -31,6 +30,8 @@
         highlight-current
         default-expand-all
         draggable
+        :allow-drop="allowDrop"
+        :allow-drag="allowDrag"
         @node-click="handleNodeClick"
       >
         <template #default="{ node, data: nodeData }">
@@ -42,28 +43,34 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <!-- TODO: 使用组合式api封装对是否存在下拉菜单进行判断 -->
+                  <!-- Project node (root) -->
                   <el-dropdown-item
                     :icon="FolderAdd"
-                    v-if="nodeData.type !== `dir`"
+                    v-if="
+                      nodeData.type === 'project' || nodeData.type === 'dir'
+                    "
                   >
                     子目录添加
                   </el-dropdown-item>
                   <el-dropdown-item
                     :icon="DocumentAdd"
-                    v-if="nodeData.type !== `dir`"
+                    v-if="
+                      nodeData.type === 'project' || nodeData.type === 'dir'
+                    "
                   >
                     接口添加
                   </el-dropdown-item>
+                  <!-- API node -->
                   <el-dropdown-item
                     :icon="DocumentCopy"
-                    v-if="nodeData.type !== `dir`"
+                    v-if="nodeData.type === 'api'"
                   >
                     克隆
                   </el-dropdown-item>
+                  <!-- Not root node -->
                   <el-dropdown-item
                     :icon="Delete"
-                    v-if="nodeData.type !== `project`"
+                    v-if="nodeData.type !== 'project'"
                   >
                     删除
                   </el-dropdown-item>
@@ -91,6 +98,7 @@ import {
 import { ElTree } from "element-plus";
 import { FilterValue } from "element-plus/es/components/tree/src/tree.type";
 import { TreeNodeData } from "element-plus/es/components/tree-v2/src/types";
+import type Node from "element-plus/es/components/tree/src/model/node";
 
 /**
  * 树形组件过滤组件部分
@@ -162,6 +170,27 @@ const handleNodeClick = (data: { [key: string]: any }) => {
     treeCurrentData: treeCurrentData.value
   };
   emit("change", payload);
+};
+
+// 拖拽规则
+const allowDrop = (draggingNode: Node, dropNode: Node) => {
+  const draggingData = draggingNode.data;
+  const dropData = dropNode.data;
+
+  if (draggingData.type === "project") {
+    return false;
+  }
+  if (draggingData.type === "dir" && dropData.type === "api") {
+    return false;
+  }
+  if (draggingData.type === "api" && dropData.type === "api") {
+    return false;
+  }
+  return true;
+};
+
+const allowDrag = (node: Node) => {
+  return node.data.type !== "project";
 };
 
 onBeforeMount(() => {
