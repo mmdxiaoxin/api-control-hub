@@ -6,14 +6,18 @@
         placeholder="请选择请求方法"
         v-model="requestForm.requestMethod"
       >
+        <template #label="{ label, value }">
+          <span :style="{ color: labelStyles[value], 'font-weight': 'bold' }">{{
+            label
+          }}</span>
+        </template>
         <el-option
-          v-for="option in requestMethodOptions"
+          v-for="option in methods"
           :key="option.value"
           :label="option.label"
           :value="option.value"
-          :style="getOptionStyle(option.value)"
         >
-          {{ option.label }}
+          <span :style="{ color: option.color }">{{ option.label }}</span>
         </el-option>
       </el-select>
     </el-col>
@@ -152,14 +156,14 @@
 <script setup lang="ts">
 import QueryTable from "./QueryTable.vue";
 import { onMounted, PropType, ref, watch } from "vue";
-import { getOptionStyle } from "@/utils/workPlace";
 import { Connection, MessageBox } from "@element-plus/icons-vue";
 import { AxiosRequestConfig } from "axios";
 import { ElMessage } from "element-plus";
 import {
   authOptions,
   bodyOptions,
-  requestMethodOptions
+  labelStyles,
+  methods
 } from "@/views/http-client/config";
 import AxiosService, { RequestConfig } from "@/utils/request";
 import MonacoEditor from "@/components/MonacoEditor/MonacoEditor";
