@@ -172,18 +172,36 @@ const handleNodeClick = (data: { [key: string]: any }) => {
   emit("change", payload);
 };
 
+// 检查节点是否在 project 内部
+const isInProject = (node: Node) => {
+  while (node && node.level > 1) {
+    node = node.parent;
+  }
+  return node && node.data.type === "project";
+};
+
 // 拖拽规则
-const allowDrop = (draggingNode: Node, dropNode: Node) => {
+const allowDrop = (
+  draggingNode: Node,
+  dropNode: Node,
+  type: "prev" | "inner" | "next"
+) => {
   const draggingData = draggingNode.data;
   const dropData = dropNode.data;
 
   if (draggingData.type === "project") {
     return false;
   }
+  if (type !== "inner" && dropData.type === "project") {
+    return false;
+  }
   if (draggingData.type === "dir" && dropData.type === "api") {
     return false;
   }
   if (draggingData.type === "api" && dropData.type === "api") {
+    return false;
+  }
+  if (!isInProject(dropNode)) {
     return false;
   }
   return true;
