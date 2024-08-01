@@ -43,14 +43,19 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <!-- Project node (root) -->
+                  <el-dropdown-item
+                    :icon="EditPen"
+                    v-if="nodeData.type !== 'project'"
+                  >
+                    重命名
+                  </el-dropdown-item>
                   <el-dropdown-item
                     :icon="FolderAdd"
                     v-if="
                       nodeData.type === 'project' || nodeData.type === 'dir'
                     "
                   >
-                    子目录添加
+                    添加子目录
                   </el-dropdown-item>
                   <el-dropdown-item
                     :icon="DocumentAdd"
@@ -58,14 +63,14 @@
                       nodeData.type === 'project' || nodeData.type === 'dir'
                     "
                   >
-                    接口添加
+                    添加接口
                   </el-dropdown-item>
                   <!-- API node -->
                   <el-dropdown-item
                     :icon="DocumentCopy"
                     v-if="nodeData.type === 'api'"
                   >
-                    克隆
+                    复制
                   </el-dropdown-item>
                   <!-- Not root node -->
                   <el-dropdown-item
@@ -74,6 +79,7 @@
                   >
                     删除
                   </el-dropdown-item>
+                  <el-dropdown-item :icon="Download"> 导出 </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -93,7 +99,9 @@ import {
   More,
   FolderAdd,
   DocumentAdd,
-  DocumentCopy
+  DocumentCopy,
+  EditPen,
+  Download
 } from "@element-plus/icons-vue";
 import { ElTree } from "element-plus";
 import { FilterValue } from "element-plus/es/components/tree/src/tree.type";
@@ -162,7 +170,7 @@ const selected = ref();
 const setSelected = () => {
   selected.value = props.defaultValue ? [props.defaultValue] : [];
 };
-// 单选
+
 const handleNodeClick = (data: { [key: string]: any }) => {
   treeCurrentData.value = treeRef.value?.getCurrentNode();
   const payload = {

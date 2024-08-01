@@ -17,12 +17,12 @@ export const getHttpConfigApi = (params: { apiId: string }) => {
 };
 
 //更新接口配置
-export const updateHttpConfig = (params: { apiId: string }) => {
+export const updateHttpConfig = (params: Http.ReqUpdate) => {
   return http.post<Http.ResConfig>(PORT1 + `/http/config/update`, params);
 };
 
 //添加接口配置
-export const addHttpConfig = (params: { apiId: string }) => {
+export const addHttpConfig = (params: Http.ReqAdd) => {
   return http.post<Http.ResConfig>(PORT1 + `/http/config/add`, params);
 };
 

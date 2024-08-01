@@ -3,10 +3,12 @@
     <ApiHeader :api-name="apiName" />
     <!-- 请求体 -->
     <ApiRequest
+      :api-id="props.itemId"
       :initial-values="initialValues"
       @on-success="handleSuccess"
       @on-error="handleError"
       @on-send="handleSend"
+      @on-save="handleSave"
     />
     <!-- 响应体 -->
     <ApiResponse
@@ -54,6 +56,10 @@ function handleError(response: ResponseWithError) {
 }
 function handleSend(status: boolean) {
   httpStatus.value = status;
+}
+
+function handleSave() {
+  fetchApiConfig(props.itemId);
 }
 
 onMounted(() => {

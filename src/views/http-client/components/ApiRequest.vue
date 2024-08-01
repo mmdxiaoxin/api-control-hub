@@ -52,11 +52,7 @@
       </el-button>
     </el-col>
     <el-col :span="2">
-      <el-button
-        type="info"
-        @click="ElMessage.success('保存成功')"
-        style="width: 100%"
-      >
+      <el-button type="info" @click="handleSave" style="width: 100%">
         保存
         <el-icon class="el-icon--right">
           <MessageBox />
@@ -167,6 +163,8 @@ import {
 } from "@/views/http-client/config";
 import AxiosService, { RequestConfig } from "@/utils/request";
 import MonacoEditor from "@/components/MonacoEditor/MonacoEditor";
+import { updateHttpConfig } from "@/api/modules/http";
+import { Http } from "@/api/interface";
 
 const queryType = ref("query");
 const bodyType = ref(1);
@@ -178,10 +176,10 @@ export interface RequestForm {
   requestMethod: string;
   apiUrl: string;
   authType: string;
-  queryParams: Array<{ key: string; value: string }>;
-  queryHeaders: Array<{ key: string; value: string }>;
-  queryBodyForm: Array<{ key: string; value: string }>;
-  queryBodyFormX: Array<{ key: string; value: string }>;
+  queryParams: Array<{ key: string; value: string; description: string }>;
+  queryHeaders: Array<{ key: string; value: string; description: string }>;
+  queryBodyForm: Array<{ key: string; value: string; description: string }>;
+  queryBodyFormX: Array<{ key: string; value: string; description: string }>;
   queryJsonBody: string;
   queryXmlBody: string;
   queryRawBody: string;
@@ -204,6 +202,10 @@ const props = defineProps({
         queryRawBody: ""
       };
     }
+  },
+  apiId: {
+    type: String,
+    required: true
   }
 });
 
@@ -220,7 +222,27 @@ watch(
   }
 );
 
-const emit = defineEmits(["onSend", "onError", "onSuccess"]);
+const handleSave = async () => {
+  console.log(requestForm.value);
+  const req: Http.ReqUpdate = {
+    apiId: parseInt(props.apiId),
+    requestMethod: requestForm.value.requestMethod,
+    apiUrl: requestForm.value.apiUrl,
+    authType: requestForm.value.authType,
+    queryParams: requestForm.value.queryParams,
+    queryHeaders: requestForm.value.queryHeaders,
+    queryBodyForm: requestForm.value.queryBodyForm,
+    queryBodyFormX: requestForm.value.queryBodyFormX,
+    queryJsonBody: requestForm.value.queryJsonBody,
+    queryXmlBody: requestForm.value.queryXmlBody,
+    queryRawBody: requestForm.value.queryRawBody
+  };
+  await updateHttpConfig(req);
+  emit("onSave");
+  ElMessage.success("保存成功");
+};
+
+const emit = defineEmits(["onSend", "onError", "onSuccess", "onSave"]);
 const sendRequest = async () => {
   const {
     requestMethod,
