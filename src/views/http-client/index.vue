@@ -5,6 +5,7 @@
       :default-value="initialValue"
       :tree-data="treeData"
       @change="handleChange"
+      @on-node-change="handleNodeChange"
     />
     <component :is="view" v-if="view" :item-id="`${selected}`" />
     <el-empty v-else class="card" style="flex: 1; height: 100%"></el-empty>
@@ -50,6 +51,7 @@ interface TreeNode {
   id: number | string;
   item_id: number;
   label: string;
+  parent_id: number | null;
   children: TreeNode[];
   type?: string;
 }
@@ -65,12 +67,16 @@ const fetchTreeData = async () => {
 };
 fetchTreeData();
 
-function convertToTreeNode(resTreeList: Http.ResTree): TreeNode {
+function convertToTreeNode(
+  resTreeList: Http.ResTree,
+  parentItemId: number | null = null
+): TreeNode {
   // 创建一个新的 TreeNode 对象
   const treeNode: TreeNode = {
     id: generateUUID(),
     item_id: resTreeList.id,
     label: resTreeList.category_name,
+    parent_id: parentItemId,
     children: [],
     type: resTreeList.type
   };
@@ -78,7 +84,7 @@ function convertToTreeNode(resTreeList: Http.ResTree): TreeNode {
   // 转换 children
   if (resTreeList.children) {
     treeNode.children = resTreeList.children.map(child =>
-      convertToTreeNode(child)
+      convertToTreeNode(child, resTreeList.id)
     );
   }
 
@@ -89,6 +95,7 @@ function convertToTreeNode(resTreeList: Http.ResTree): TreeNode {
         id: generateUUID(),
         item_id: config.id,
         label: config.api_name,
+        parent_id: resTreeList.id,
         children: [],
         type: "api"
       }))
@@ -97,6 +104,10 @@ function convertToTreeNode(resTreeList: Http.ResTree): TreeNode {
 
   return treeNode;
 }
+
+const handleNodeChange = () => {
+  fetchTreeData();
+};
 </script>
 
 <style scoped lang="scss">

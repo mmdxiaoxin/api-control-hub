@@ -192,6 +192,7 @@ export namespace Http {
   export interface ResTree {
     id: number;
     category_name: string;
+    parent_id: number | null;
     children: ResTree[];
     configs: Config[];
     type: string;
@@ -244,6 +245,7 @@ export namespace Http {
 
   export interface ReqAdd {
     name: string;
+    categoryId?: number;
   }
 
   export interface ResConfig {

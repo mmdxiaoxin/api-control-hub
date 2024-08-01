@@ -46,6 +46,7 @@
                   <el-dropdown-item
                     :icon="EditPen"
                     v-if="nodeData.type !== 'project'"
+                    @click="renameNode(nodeData)"
                   >
                     重命名
                   </el-dropdown-item>
@@ -54,6 +55,7 @@
                     v-if="
                       nodeData.type === 'project' || nodeData.type === 'dir'
                     "
+                    @click="addSubDirectory(nodeData)"
                   >
                     添加子目录
                   </el-dropdown-item>
@@ -62,24 +64,30 @@
                     v-if="
                       nodeData.type === 'project' || nodeData.type === 'dir'
                     "
+                    @click="addInterface(nodeData)"
                   >
                     添加接口
                   </el-dropdown-item>
-                  <!-- API node -->
                   <el-dropdown-item
                     :icon="DocumentCopy"
                     v-if="nodeData.type === 'api'"
+                    @click="copyNode(nodeData)"
                   >
                     复制
                   </el-dropdown-item>
-                  <!-- Not root node -->
                   <el-dropdown-item
                     :icon="Delete"
                     v-if="nodeData.type !== 'project'"
+                    @click="deleteNode(nodeData)"
                   >
                     删除
                   </el-dropdown-item>
-                  <el-dropdown-item :icon="Download"> 导出 </el-dropdown-item>
+                  <el-dropdown-item
+                    :icon="Download"
+                    @click="exportNode(nodeData)"
+                  >
+                    导出
+                  </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -103,10 +111,11 @@ import {
   EditPen,
   Download
 } from "@element-plus/icons-vue";
-import { ElTree } from "element-plus";
+import { ElMessage, ElMessageBox, ElTree } from "element-plus";
 import { FilterValue } from "element-plus/es/components/tree/src/tree.type";
 import { TreeNodeData } from "element-plus/es/components/tree-v2/src/types";
 import type Node from "element-plus/es/components/tree/src/model/node";
+import { addHttpConfig } from "@/api/modules/http";
 
 /**
  * 树形组件过滤组件部分
@@ -139,6 +148,7 @@ interface TreeNode {
   item_id: number;
   label: string;
   children: TreeNode[];
+  parent_id: number;
   type?: string;
 }
 
@@ -157,7 +167,7 @@ const props = withDefaults(defineProps<TreeFilterProps>(), {
   children: "children"
 });
 
-const emit = defineEmits(["change"]);
+const emit = defineEmits(["change", "onNodeChange"]);
 
 const defaultProps = {
   label: props.label,
@@ -217,6 +227,64 @@ const allowDrop = (
 
 const allowDrag = (node: Node) => {
   return node.data.type !== "project";
+};
+
+// 功能实现
+const renameNode = (nodeData: TreeNode) => {
+  //TODO: 实现重命名逻辑
+  console.log("重命名", nodeData);
+};
+
+const addSubDirectory = (nodeData: TreeNode) => {
+  //TODO: 实现添加子目录逻辑
+  console.log("添加子目录", nodeData);
+};
+
+const addInterface = (nodeData: TreeNode) => {
+  // 实现添加接口逻辑
+  ElMessageBox.prompt("请输入接口名称", "添加接口", {
+    confirmButtonText: "确认",
+    cancelButtonText: "取消"
+  })
+    .then(({ value }) => {
+      addHttpConfig({ name: value, categoryId: nodeData.item_id }).then(() => {
+        ElMessage({
+          type: "success",
+          message: `添加成功：${value}`
+        });
+        emit("onNodeChange", value);
+      });
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "取消输入"
+      });
+    });
+};
+
+const copyNode = (nodeData: TreeNode) => {
+  // 实现复制逻辑
+  addHttpConfig({
+    name: `${nodeData.label}-copy`,
+    categoryId: nodeData.parent_id
+  }).then(() => {
+    ElMessage({
+      type: "success",
+      message: `复制成功：${nodeData.label}-copy`
+    });
+    emit("onNodeChange", `${nodeData.label}-copy`);
+  });
+};
+
+const deleteNode = (nodeData: TreeNode) => {
+  //TODO: 实现删除逻辑
+  console.log("删除", nodeData);
+};
+
+const exportNode = (nodeData: TreeNode) => {
+  //TODO: 实现导出逻辑
+  console.log("导出", nodeData);
 };
 
 onBeforeMount(() => {
