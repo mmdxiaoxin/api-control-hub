@@ -231,7 +231,7 @@ const allowDrag = (node: Node) => {
 
 // 功能实现
 const renameNode = (nodeData: TreeNode) => {
-  //TODO: 实现重命名逻辑
+  // 实现重命名逻辑
   console.log("重命名", nodeData);
   if (nodeData.type !== "api") return;
   ElMessageBox.prompt("请输入新名称", `重命名-${nodeData.label}`, {
