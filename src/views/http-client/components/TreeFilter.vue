@@ -115,7 +115,7 @@ import { ElMessage, ElMessageBox, ElTree } from "element-plus";
 import { FilterValue } from "element-plus/es/components/tree/src/tree.type";
 import { TreeNodeData } from "element-plus/es/components/tree-v2/src/types";
 import type Node from "element-plus/es/components/tree/src/model/node";
-import { addHttpConfig } from "@/api/modules/http";
+import { addHttpConfig, updateHttpConfig } from "@/api/modules/http";
 
 /**
  * 树形组件过滤组件部分
@@ -233,6 +233,29 @@ const allowDrag = (node: Node) => {
 const renameNode = (nodeData: TreeNode) => {
   //TODO: 实现重命名逻辑
   console.log("重命名", nodeData);
+  if (nodeData.type !== "api") return;
+  ElMessageBox.prompt("请输入新名称", `重命名-${nodeData.label}`, {
+    confirmButtonText: "确认",
+    cancelButtonText: "取消",
+    inputValue: nodeData.label,
+    autofocus: true,
+    draggable: true
+  })
+    .then(({ value }) => {
+      updateHttpConfig({ name: value, apiId: nodeData.item_id }).then(() => {
+        ElMessage({
+          type: "success",
+          message: `重命名成功：${value}`
+        });
+        emit("onNodeChange", value);
+      });
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "取消输入"
+      });
+    });
 };
 
 const addSubDirectory = (nodeData: TreeNode) => {
@@ -244,7 +267,9 @@ const addInterface = (nodeData: TreeNode) => {
   // 实现添加接口逻辑
   ElMessageBox.prompt("请输入接口名称", "添加接口", {
     confirmButtonText: "确认",
-    cancelButtonText: "取消"
+    cancelButtonText: "取消",
+    autofocus: true,
+    draggable: true
   })
     .then(({ value }) => {
       addHttpConfig({ name: value, categoryId: nodeData.item_id }).then(() => {
