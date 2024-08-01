@@ -18,8 +18,10 @@ api-control-hub 一款基于[Geeker Admin](https://github.com/HalseySpicy/Geeker
 
 1. 项目管理：支持按项目维度管理接口集合，每个项目可单独设置管理、读写权限；
 2. 接口管理：项目管理员可以通过平台添加、修改、删除接口，接口需要支持如下字段：
-   - 名称、接口地址、请求方式、请求参数、返回数据等信息；
-   - 其次，接口每次变更都需要记录相应更新日志，方便后续查看、回滚等；
+
+- 名称、接口地址、请求方式、请求参数、返回数据等信息；
+- 其次，接口每次变更都需要记录相应更新日志，方便后续查看、回滚等；
+
 3. 接口 Mock 服务：创建接口后，平台自动按照接口描述提供对应 mock 服务；
 4. ~~版本管理：支持接口版本管理，包括历史版本的查看、回滚等操作，便于开发人员管理接口的变更历史。(待实现)~~
 
@@ -87,12 +89,14 @@ pnpm commit
 
 - 项目管理
   ![项目管理](./public/images/img1.png)
+- ![项目管理-权限管理](./public/images/img2.png)
 
 - 接口管理
-  ![接口管理](./public/images/img2.png)
+  ![接口管理-项目界面](./public/images/img3.png)
+- ![接口管理-接口详情](./public/images/img5.png)
 
 - Mock服务
-  ![Mock服务](./public/images/img3.png)
+  ![Mock服务](./public/images/img7.png)
 
 - 夜间模式
 
