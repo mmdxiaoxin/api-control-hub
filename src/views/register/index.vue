@@ -19,7 +19,7 @@
           <el-form-item prop="username">
             <el-input
               v-model="registerForm.username"
-              placeholder="请输入用户名(邮箱)"
+              placeholder="请输入用户名"
             >
               <template #prefix>
                 <el-icon class="el-input__icon">
