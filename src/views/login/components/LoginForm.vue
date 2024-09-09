@@ -81,7 +81,6 @@ import { useKeepAliveStore } from "@/stores/modules/keepAlive";
 import { initDynamicRouter } from "@/routers/modules/dynamicRouter";
 import { CircleClose, UserFilled, User, Lock } from "@element-plus/icons-vue";
 import type { ElForm } from "element-plus";
-import md5 from "md5";
 import { useWorkbenchStore } from "@/stores/modules/workbench";
 
 const router = useRouter();
@@ -113,7 +112,7 @@ const login = (formEl: FormInstance | undefined) => {
       // 1.执行登录接口
       const { data } = await loginApi({
         ...loginForm,
-        password: md5(loginForm.password)
+        password: loginForm.password
       });
       userStore.setToken(data.access_token);
       await userStore.getUserInfo();
