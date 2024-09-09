@@ -139,12 +139,11 @@ const backToLogin = () => {
 };
 
 //注册账号
-const register = async (formEl: FormInstance | undefined) => {
+const register = async () => {
   if (!registerFormRef.value) return;
 
   try {
     await registerFormRef.value.validate();
-    console.log("表单数据:", formEl);
     // 执行你的注册逻辑
     const resp = await RegisterApi({
       username: registerForm.username,
@@ -158,7 +157,6 @@ const register = async (formEl: FormInstance | undefined) => {
     }
   } catch (error) {
     // 验证失败，显示错误信息
-    console.error("表单验证失败:", error);
     ElMessage.error("注册失败,请检查表单数据");
   }
 };
