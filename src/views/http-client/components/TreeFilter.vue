@@ -115,7 +115,11 @@ import { ElMessage, ElMessageBox, ElTree } from "element-plus";
 import { FilterValue } from "element-plus/es/components/tree/src/tree.type";
 import { TreeNodeData } from "element-plus/es/components/tree-v2/src/types";
 import type Node from "element-plus/es/components/tree/src/model/node";
-import { addHttpConfig, updateHttpConfig } from "@/api/modules/http";
+import {
+  addHttpConfig,
+  deleteHttpConfig,
+  updateHttpConfig
+} from "@/api/modules/http";
 
 /**
  * 树形组件过滤组件部分
@@ -304,7 +308,13 @@ const copyNode = (nodeData: TreeNode) => {
 
 const deleteNode = (nodeData: TreeNode) => {
   //TODO: 实现删除逻辑
-  console.log("删除", nodeData);
+  deleteHttpConfig({ apiId: nodeData.item_id }).then(() => {
+    ElMessage({
+      type: "success",
+      message: `删除成功：${nodeData.label}`
+    });
+    emit("onNodeChange", "");
+  });
 };
 
 const exportNode = (nodeData: TreeNode) => {

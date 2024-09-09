@@ -27,7 +27,7 @@ export const addHttpConfig = (params: Http.ReqAdd) => {
 };
 
 //删除接口配置
-export const deleteHttpConfig = (params: { apiId: string }) => {
+export const deleteHttpConfig = (params: { apiId: number }) => {
   return http.post<Http.ResConfig>(PORT1 + `/http/config/delete`, params);
 };
 
