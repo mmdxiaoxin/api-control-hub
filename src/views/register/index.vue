@@ -3,12 +3,24 @@
     <div class="register-box">
       <div class="register-form">
         <div class="register-logo">
-          <img class="register-icon" src="@/assets/images/logo_sunny.svg" alt="" />
+          <img
+            class="register-icon"
+            src="@/assets/images/logo_sunny.svg"
+            alt=""
+          />
           <h2 class="logo-text">账号注册</h2>
         </div>
-        <el-form ref="registerFormRef" :model="registerForm" :rules="registerRules" size="large">
+        <el-form
+          ref="registerFormRef"
+          :model="registerForm"
+          :rules="registerRules"
+          size="large"
+        >
           <el-form-item prop="username">
-            <el-input v-model="registerForm.username" placeholder="请输入用户名(邮箱)">
+            <el-input
+              v-model="registerForm.username"
+              placeholder="请输入用户名(邮箱)"
+            >
               <template #prefix>
                 <el-icon class="el-input__icon">
                   <user />
@@ -17,7 +29,12 @@
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input v-model="registerForm.password" type="password" show-password placeholder="请输入密码">
+            <el-input
+              v-model="registerForm.password"
+              type="password"
+              show-password
+              placeholder="请输入密码"
+            >
               <template #prefix>
                 <el-icon class="el-input__icon">
                   <lock />
@@ -26,7 +43,12 @@
             </el-input>
           </el-form-item>
           <el-form-item prop="confirm">
-            <el-input v-model="registerForm.confirm" type="password" show-password placeholder="请确认密码">
+            <el-input
+              v-model="registerForm.confirm"
+              type="password"
+              show-password
+              placeholder="请确认密码"
+            >
               <template #prefix>
                 <el-icon class="el-input__icon">
                   <lock />
@@ -36,8 +58,22 @@
           </el-form-item>
         </el-form>
         <div class="register-btn">
-          <el-button :icon="CircleClose" round size="large" @click="backToLogin"> 返回</el-button>
-          <el-button :icon="UserFilled" round size="large" type="primary" :loading="loading" @click="register(registerFormRef)">
+          <el-button
+            :icon="CircleClose"
+            round
+            size="large"
+            @click="backToLogin"
+          >
+            返回
+          </el-button>
+          <el-button
+            :icon="UserFilled"
+            round
+            size="large"
+            type="primary"
+            :loading="loading"
+            @click="register(registerFormRef)"
+          >
             注册
           </el-button>
         </div>
@@ -51,7 +87,7 @@ import { ElForm, ElMessage, FormItemRule } from "element-plus";
 import { reactive, ref } from "vue";
 import { CircleClose, UserFilled } from "@element-plus/icons-vue";
 import router from "@/routers/index";
-import { Register } from "@/api/interface/index";
+import { Register } from "@/api/interface";
 
 type FormInstance = InstanceType<typeof ElForm>;
 const loading = ref(false);
@@ -59,15 +95,20 @@ const registerFormRef = ref<FormInstance>();
 const registerRules: { [key: string]: FormItemRule[] } = {
   username: [
     { required: true, message: "请输入用户名", trigger: "blur" },
-    { min: 4, max: 12, message: "用户名长度必须为4-12位", trigger: "blur" },
-    { pattern: /^[A-Za-z0-9]+$/, message: "用户名只能包含字母和数字", trigger: "blur" }
+    {
+      pattern:
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      message: "请检查邮箱格式是否有误！",
+      trigger: "blur"
+    }
   ],
   password: [
     { required: true, message: "请输入密码", trigger: "blur" },
     { min: 6, max: 18, message: "密码长度必须为6-18位", trigger: "blur" },
     {
       pattern: /^[A-Za-z0-9.!@#$%^&*()-+=/?:;'",`~]+$/,
-      message: "密码只能包含字母、数字以及特定字符 . ! @ # $ % ^ & * ( ) - + = / ? ; ' : \" , . ` ~",
+      message:
+        "密码只能包含字母、数字以及特定字符 . ! @ # $ % ^ & * ( ) - + = / ? ; ' : \" , . ` ~",
       trigger: "blur"
     }
   ],
