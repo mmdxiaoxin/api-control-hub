@@ -33,7 +33,7 @@
                     修改名称
                   </el-dropdown-item>
                   <el-dropdown-item :icon="DocumentCopy" command="clone">
-                    >克隆项目
+                    克隆项目
                   </el-dropdown-item>
                   <el-dropdown-item :icon="Delete" command="delete">
                     删除项目
