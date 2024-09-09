@@ -23,7 +23,7 @@
             >
               <template #prefix>
                 <el-icon class="el-input__icon">
-                  <user />
+                  <User />
                 </el-icon>
               </template>
             </el-input>
@@ -37,7 +37,7 @@
             >
               <template #prefix>
                 <el-icon class="el-input__icon">
-                  <lock />
+                  <Lock />
                 </el-icon>
               </template>
             </el-input>
@@ -85,9 +85,9 @@
 <script setup lang="ts" name="register">
 import { ElForm, ElMessage, FormItemRule } from "element-plus";
 import { reactive, ref } from "vue";
-import { CircleClose, UserFilled } from "@element-plus/icons-vue";
+import { CircleClose, Lock, User, UserFilled } from "@element-plus/icons-vue";
 import router from "@/routers/index";
-import { Register } from "@/api/interface";
+import { RegisterApi } from "@/api/modules/register";
 
 type FormInstance = InstanceType<typeof ElForm>;
 const loading = ref(false);
@@ -127,7 +127,7 @@ const registerRules: { [key: string]: FormItemRule[] } = {
   ]
 };
 
-const registerForm = reactive<Register.ReqRegisterForm>({
+const registerForm = reactive({
   username: "",
   password: "",
   confirm: ""
@@ -146,8 +146,16 @@ const register = async (formEl: FormInstance | undefined) => {
     await registerFormRef.value.validate();
     console.log("表单数据:", formEl);
     // 执行你的注册逻辑
-    ElMessage.success("注册成功");
-    router.push("/login");
+    const resp = await RegisterApi({
+      username: registerForm.username,
+      password: registerForm.confirm
+    });
+    if (resp.code === 200) {
+      ElMessage.success("注册成功");
+      router.push("/login");
+    } else {
+      ElMessage.error(resp.msg);
+    }
   } catch (error) {
     // 验证失败，显示错误信息
     console.error("表单验证失败:", error);
