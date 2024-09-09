@@ -95,10 +95,10 @@ const registerFormRef = ref<FormInstance>();
 const registerRules: { [key: string]: FormItemRule[] } = {
   username: [
     { required: true, message: "请输入用户名", trigger: "blur" },
+    { min: 4, max: 16, message: "用户名长度必须为4-16位", trigger: "blur" },
     {
-      pattern:
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-      message: "请检查邮箱格式是否有误！",
+      pattern: /^[\w-]{4,16}$/,
+      message: "请输入符合规范的用户名：4-16位字母、数字、下划线、减号",
       trigger: "blur"
     }
   ],
