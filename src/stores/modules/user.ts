@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { UserState } from "@/stores/interface";
 import piniaPersistConfig from "@/stores/helper/persist";
-import { getUserInfoApi } from "@/api/modules/login";
+import { getUserInfoApi } from "@/api/modules/auth";
 
 export const useUserStore = defineStore({
   id: "apiHub-user",

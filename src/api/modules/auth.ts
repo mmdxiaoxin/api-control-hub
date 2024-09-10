@@ -14,20 +14,12 @@ export const loginApi = (params: { username: string; password: string }) => {
 
 // 获取菜单列表
 export const getAuthMenuListApi = () => {
-  return http.get<Menu.MenuOptions[]>(
-    PORT1 + `/menu/list`,
-    {},
-    { loading: false }
-  );
+  return http.get<Menu.MenuOptions[]>(PORT1 + `/menu/list`, {}, { loading: false });
 };
 
 // 获取按钮权限
 export const getAuthButtonListApi = () => {
-  return http.get<Login.ResAuthButtons>(
-    PORT1 + `/auth/buttons`,
-    {},
-    { loading: false }
-  );
+  return http.get<Login.ResAuthButtons>(PORT1 + `/auth/buttons`, {}, { loading: false });
 };
 
 // 用户退出登录

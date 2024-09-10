@@ -1,10 +1,5 @@
 <template>
-  <el-form
-    ref="loginFormRef"
-    :model="loginForm"
-    :rules="loginRules"
-    size="large"
-  >
+  <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" size="large">
     <el-form-item prop="username">
       <el-input v-model="loginForm.username" placeholder="用户名：admin / user">
         <template #prefix>
@@ -40,18 +35,11 @@
     <!-- 忘记密码链接 -->
     <div class="forgot-password-link">
       <span class="link-text">忘记密码？</span>
-      <router-link to="/forgot-password" class="forgot-password-button">
-        找回密码
-      </router-link>
+      <router-link to="/forgot-password" class="forgot-password-button"> 找回密码 </router-link>
     </div>
   </div>
   <div class="login-btn">
-    <el-button
-      :icon="CircleClose"
-      round
-      size="large"
-      @click="resetForm(loginFormRef)"
-    >
+    <el-button :icon="CircleClose" round size="large" @click="resetForm(loginFormRef)">
       重置
     </el-button>
     <el-button
@@ -74,7 +62,7 @@ import { HOME_URL } from "@/config";
 import { getTimeState } from "@/utils";
 import { Login } from "@/api/interface";
 import { ElNotification } from "element-plus";
-import { loginApi } from "@/api/modules/login";
+import { loginApi } from "@/api/modules/auth";
 import { useUserStore } from "@/stores/modules/user";
 import { useTabsStore } from "@/stores/modules/tabs";
 import { useKeepAliveStore } from "@/stores/modules/keepAlive";
