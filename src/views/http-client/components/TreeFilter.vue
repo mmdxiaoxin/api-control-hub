@@ -1,6 +1,6 @@
 <template>
   <div class="card filter">
-    <div class="filter-header">
+    <div class="filter__header">
       <el-breadcrumb :separator-icon="ArrowRight" style="margin-bottom: 20px">
         <el-breadcrumb-item>{{ workbenchStore.teamName }}</el-breadcrumb-item>
         <el-breadcrumb-item>
@@ -14,9 +14,7 @@
     <el-input v-model="filterText" placeholder="输入关键字进行过滤" clearable />
     <el-scrollbar
       :style="{
-        height: workbenchStore.projectName
-          ? `calc(100% - 125px)`
-          : `calc(100% - 86px)`
+        height: workbenchStore.projectName ? `calc(100% - 125px)` : `calc(100% - 86px)`
       }"
     >
       <el-tree
@@ -52,18 +50,14 @@
                   </el-dropdown-item>
                   <el-dropdown-item
                     :icon="FolderAdd"
-                    v-if="
-                      nodeData.type === 'project' || nodeData.type === 'dir'
-                    "
+                    v-if="nodeData.type === 'project' || nodeData.type === 'dir'"
                     @click="addSubDirectory(nodeData)"
                   >
                     添加子目录
                   </el-dropdown-item>
                   <el-dropdown-item
                     :icon="DocumentAdd"
-                    v-if="
-                      nodeData.type === 'project' || nodeData.type === 'dir'
-                    "
+                    v-if="nodeData.type === 'project' || nodeData.type === 'dir'"
                     @click="addInterface(nodeData)"
                   >
                     添加接口
@@ -82,10 +76,7 @@
                   >
                     删除
                   </el-dropdown-item>
-                  <el-dropdown-item
-                    :icon="Download"
-                    @click="exportNode(nodeData)"
-                  >
+                  <el-dropdown-item :icon="Download" @click="exportNode(nodeData)">
                     导出
                   </el-dropdown-item>
                 </el-dropdown-menu>
@@ -115,11 +106,7 @@ import { ElMessage, ElMessageBox, ElTree } from "element-plus";
 import { FilterValue } from "element-plus/es/components/tree/src/tree.type";
 import { TreeNodeData } from "element-plus/es/components/tree-v2/src/types";
 import type Node from "element-plus/es/components/tree/src/model/node";
-import {
-  addHttpConfig,
-  deleteHttpConfig,
-  updateHttpConfig
-} from "@/api/modules/http";
+import { addHttpConfig, deleteHttpConfig, updateHttpConfig } from "@/api/modules/http";
 
 /**
  * 树形组件过滤组件部分
@@ -203,11 +190,7 @@ const isInProject = (node: Node) => {
 };
 
 // 拖拽规则
-const allowDrop = (
-  draggingNode: Node,
-  dropNode: Node,
-  type: "prev" | "inner" | "next"
-) => {
+const allowDrop = (draggingNode: Node, dropNode: Node, type: "prev" | "inner" | "next") => {
   const draggingData = draggingNode.data;
   const dropData = dropNode.data;
 
@@ -333,10 +316,9 @@ defineExpose({ treeRef });
 .filter {
   box-sizing: border-box;
   width: 300px;
-  min-height: 100%;
   padding: 18px;
   margin-right: 10px;
-  .filter-header {
+  &__header {
     margin-bottom: 20px;
     .title {
       margin: 0 0 15px;
