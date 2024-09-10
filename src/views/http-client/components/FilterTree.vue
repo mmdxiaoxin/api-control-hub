@@ -30,6 +30,7 @@
         draggable
         :allow-drop="allowDrop"
         :allow-drag="allowDrag"
+        @node-drop="nodeDrop"
         @node-click="handleNodeClick"
       >
         <template #default="{ node, data: nodeData }">
@@ -103,7 +104,7 @@ import {
   Download
 } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox, ElTree } from "element-plus";
-import { FilterValue } from "element-plus/es/components/tree/src/tree.type";
+import { FilterValue, NodeDropType } from "element-plus/es/components/tree/src/tree.type";
 import { TreeNodeData } from "element-plus/es/components/tree-v2/src/types";
 import type Node from "element-plus/es/components/tree/src/model/node";
 import { addHttpConfig, deleteHttpConfig, updateHttpConfig } from "@/api/modules/http";
@@ -158,7 +159,7 @@ const props = withDefaults(defineProps<TreeFilterProps>(), {
   children: "children"
 });
 
-const emit = defineEmits(["change", "onNodeChange"]);
+const emit = defineEmits(["change", "onNodeChange", "onNodeDrop"]);
 
 const defaultProps = {
   label: props.label,
@@ -214,6 +215,18 @@ const allowDrop = (draggingNode: Node, dropNode: Node, type: "prev" | "inner" | 
 
 const allowDrag = (node: Node) => {
   return node.data.type !== "project";
+};
+
+const nodeDrop = (draggingNode: Node, dropNode: Node) => {
+  const draggingData = draggingNode.data;
+  const dropData = dropNode.data;
+  const type = draggingData.type;
+  const payload: NodeDropType = {
+    draggingData,
+    dropData,
+    type
+  };
+  emit("onNodeDrop", payload);
 };
 
 // 功能实现

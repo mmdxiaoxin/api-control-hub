@@ -5,6 +5,7 @@
       :default-value="initialValue"
       :tree-data="treeData"
       @change="handleChange"
+      @on-node-drop="handleNodeDrop"
       @on-node-change="handleNodeChange"
     />
     <component :is="view" v-if="view" :item-id="`${selected}`" />
@@ -18,7 +19,7 @@ import TreeFilter from "./components/FilterTree.vue";
 import ProjectOverview from "./components/OverviewPanel.vue";
 import DirConfig from "./components/DirConfig.vue";
 import ApiConfig from "./components/ApiConfig.vue";
-import { getHttpTreeList } from "@/api/modules/http";
+import { getHttpTreeList, updateHttpConfig } from "@/api/modules/http";
 import { useWorkbenchStore } from "@/stores/modules/workbench";
 import { Http } from "@/api/interface";
 import { generateUUID } from "@/utils";
@@ -105,6 +106,17 @@ function convertToTreeNode(
 
 const handleNodeChange = () => {
   fetchTreeData();
+};
+
+const handleNodeDrop = ({ draggingData, dropData, type }) => {
+  if (type === "api") {
+    updateHttpConfig({
+      apiId: draggingData.item_id,
+      categoryId: dropData.item_id
+    }).then(() => {
+      fetchTreeData();
+    });
+  }
 };
 </script>
 
