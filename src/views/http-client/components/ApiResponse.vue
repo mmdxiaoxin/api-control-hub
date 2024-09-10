@@ -52,8 +52,7 @@ const requestHeadersSize = computed(() => {
 });
 const responseSize = computed(() => {
   return formatBytes(
-    responseSuccess.value.responseBodySize +
-      responseSuccess.value.responseHeadersSize
+    responseSuccess.value.responseBodySize + responseSuccess.value.responseHeadersSize
   );
 });
 const responseBodySize = computed(() => {
@@ -104,8 +103,8 @@ const toolTipTheme = computed(() => {
     <!-- 响应内容、Cookies 和响应头选项卡 -->
     <el-tabs v-model="activeResponse">
       <el-tab-pane label="Body" name="first">
-        <div class="response-body">
-          <div class="body-toolBar">
+        <div class="body">
+          <div class="toolBar">
             <el-radio-group v-model="resBodyRadio" size="small">
               <el-radio-button value="Pretty">Pretty</el-radio-button>
               <el-radio-button value="Raw">Raw</el-radio-button>
@@ -115,7 +114,7 @@ const toolTipTheme = computed(() => {
               v-model="ResSelect"
               size="small"
               v-if="resBodyRadio === 'Pretty'"
-              class="tool-bar-select"
+              class="select"
             >
               <!-- 选择响应体格式 -->
               <el-option
@@ -176,27 +175,21 @@ const toolTipTheme = computed(() => {
         </div>
       </el-tab-pane>
     </el-tabs>
-    <div class="response-status">
-      <div class="status-item">
-        <span class="status-label">Status:</span>
-        <span class="status-value">
-          {{
-            httpStatus ? responseSuccess.status : responseError.response?.status
-          }}
+    <div class="status">
+      <div class="item">
+        <span class="label">Status:</span>
+        <span class="value">
+          {{ httpStatus ? responseSuccess.status : responseError.response?.status }}
         </span>
       </div>
-      <div class="status-item">
-        <span class="status-label">Time:</span>
-        <span class="status-value">
+      <div class="item">
+        <span class="label">Time:</span>
+        <span class="value">
           {{ httpStatus ? responseSuccess.duration : responseError.duration }}
           ms
         </span>
       </div>
-      <el-tooltip
-        :effect="toolTipTheme"
-        placement="top-start"
-        :open-delay="500"
-      >
+      <el-tooltip :effect="toolTipTheme" placement="top-start" :open-delay="500">
         <template #content>
           <div v-if="httpStatus" class="tooltip-content">
             <div class="tooltip-section">
@@ -225,11 +218,9 @@ const toolTipTheme = computed(() => {
             <p class="tooltip-item">{{ responseError.message }}</p>
           </div>
         </template>
-        <div class="status-item">
-          <span class="status-label">Size:</span>
-          <span class="status-value">{{
-            httpStatus ? responseSize : "Error"
-          }}</span>
+        <div class="item">
+          <span class="label">Size:</span>
+          <span class="value">{{ httpStatus ? responseSize : "Error" }}</span>
         </div>
       </el-tooltip>
     </div>
@@ -239,36 +230,35 @@ const toolTipTheme = computed(() => {
 <style scoped lang="scss">
 .response {
   position: relative;
-  height: calc(100% - 300px);
   margin-top: 10px;
-  .response-status {
+  .status {
     position: absolute;
     top: 20px;
     right: 10px;
     display: flex;
-    .status-item {
+    .item {
       display: flex;
       align-items: center;
       margin-right: 15px;
       font-size: 14px;
       color: var(--el-text-color-regular);
-      .status-label {
+      .label {
         margin-right: 5px;
         font-weight: bold;
       }
-      .status-value {
+      .value {
         color: var(--el-text-color-regular);
       }
     }
   }
-  .response-body {
+  .body {
     height: 100%;
-    .body-toolBar {
+    .toolBar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 20px;
-      .tool-bar-select {
+      .select {
         max-width: 20%;
       }
     }

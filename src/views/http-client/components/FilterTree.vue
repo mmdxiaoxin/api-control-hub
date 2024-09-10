@@ -314,8 +314,8 @@ defineExpose({ treeRef });
 
 <style scoped lang="scss">
 .filter {
-  box-sizing: border-box;
   width: 300px;
+  height: 100%;
   padding: 18px;
   margin-right: 10px;
   &__header {

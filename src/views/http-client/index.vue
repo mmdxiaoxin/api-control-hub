@@ -14,8 +14,8 @@
 
 <script setup lang="ts" name="api-management">
 import { markRaw, ref } from "vue";
-import TreeFilter from "./components/TreeFilter.vue";
-import ProjectOverview from "./components/ProjectOverview/index.vue";
+import TreeFilter from "./components/FilterTree.vue";
+import ProjectOverview from "./components/OverviewPanel.vue";
 import DirConfig from "./components/DirConfig.vue";
 import ApiConfig from "./components/ApiConfig.vue";
 import { getHttpTreeList } from "@/api/modules/http";
@@ -83,9 +83,7 @@ function convertToTreeNode(
 
   // 转换 children
   if (resTreeList.children) {
-    treeNode.children = resTreeList.children.map(child =>
-      convertToTreeNode(child, resTreeList.id)
-    );
+    treeNode.children = resTreeList.children.map(child => convertToTreeNode(child, resTreeList.id));
   }
 
   // 转换 configs 并加入到 children 中

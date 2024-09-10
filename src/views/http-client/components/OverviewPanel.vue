@@ -1,35 +1,21 @@
 <template>
   <el-container class="project-description card">
-    <el-main class="project-content">
-      <div class="project-header" @click="saveContent">
+    <el-main class="content">
+      <div class="header" @click="saveContent">
         <span class="text">
           {{ projectName }}
-          <el-button
-            :icon="Edit"
-            circle
-            size="small"
-            @click="modifyName(projectName)"
-          />
+          <el-button :icon="Edit" circle size="small" @click="modifyName(projectName)" />
         </span>
         <el-tag>项目概览</el-tag>
       </div>
-      <el-divider
-        direction="horizontal"
-        style="width: 100%"
-        @click="saveContent"
-      />
+      <el-divider direction="horizontal" style="width: 100%" @click="saveContent" />
       <ApiStatistic @click="saveContent" />
-      <div
-        class="content-view"
-        v-html="content"
-        v-if="!EditMode"
-        @click="editContent"
-      ></div>
+      <div class="view" v-html="content" v-if="!EditMode" @click="editContent"></div>
       <WangEditor v-else v-model:value="content" height="300px" />
     </el-main>
     <el-divider direction="vertical" style="height: 100%" />
     <el-aside>
-      <div class="project-aside" @click="saveContent">
+      <div class="aside" @click="saveContent">
         <span class="text"> ABOUT </span>
       </div>
     </el-aside>
@@ -96,5 +82,51 @@ onBeforeMount(() => {
 </script>
 
 <style scoped lang="scss">
-@import "index";
+.project-description {
+  flex: 1;
+  height: 100%;
+  .content {
+    width: calc(100% - 230px);
+    .header {
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+    }
+    .view {
+      position: relative;
+      min-height: 300px;
+      border-radius: 4px;
+
+      /* 添加伪元素 */
+      &::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        color: var(--el-color-info-dark-2);
+        pointer-events: none; /* 防止干扰用户交互 */
+        content: "点击这里可以编辑项目概览内容";
+        background: rgb(255 255 255 / 80%);
+        opacity: 0; /* 初始时不可见 */
+        transition: opacity 0.3s; /* 添加渐变效果 */
+      }
+      &:hover::before {
+        opacity: 1; /* 鼠标悬停时显示 */
+      }
+      &:hover {
+        border: 1px solid #ebeef5;
+      }
+    }
+  }
+  .aside {
+    width: 200px;
+    height: 100%;
+    margin-left: 20px;
+  }
+}
 </style>

@@ -11,11 +11,7 @@
       @on-save="handleSave"
     />
     <!-- 响应体 -->
-    <ApiResponse
-      :http-response="httpResp"
-      :http-error="httpErr"
-      :http-status="httpStatus"
-    />
+    <ApiResponse :http-response="httpResp" :http-error="httpErr" :http-status="httpStatus" />
   </div>
 </template>
 
@@ -78,7 +74,7 @@ watch(
 <style scoped lang="scss">
 .http-config {
   width: calc(100% - 260px);
-  min-height: 100%;
+  height: 100%;
   padding: 3%;
 }
 </style>
