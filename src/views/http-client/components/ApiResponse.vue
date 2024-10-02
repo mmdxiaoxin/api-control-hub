@@ -132,6 +132,7 @@ const toolTipTheme = computed(() => {
           </div>
           <!-- JSON 视图，pretty -->
           <JsonViewer
+            style="min-height: calc(100vh - 700px)"
             :value="responseSuccess.data"
             copyable
             boxed
