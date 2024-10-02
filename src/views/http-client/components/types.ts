@@ -22,7 +22,7 @@ export interface QueryBodyFormX {
   description: string;
 }
 
-export interface RequestData {
+export interface RequestForm {
   requestMethod: string;
   apiUrl: string;
   authType: string;
@@ -33,14 +33,4 @@ export interface RequestData {
   queryJsonBody: string;
   queryXmlBody: string;
   queryRawBody: string;
-}
-
-export interface ResponseData {
-  [key: string]: unknown;
-}
-
-export interface ResponseStatus {
-  status: number;
-  time: string;
-  size: string;
 }
