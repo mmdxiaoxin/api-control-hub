@@ -1,152 +1,144 @@
 <template>
   <!-- 请求方法和接口 URL -->
-  <el-row :gutter="16">
-    <el-col :span="4">
-      <el-select
-        placeholder="请选择请求方法"
-        v-model="requestForm.requestMethod"
-      >
-        <template #label="{ label, value }">
-          <span :style="{ color: labelStyles[value], 'font-weight': 'bold' }">{{
-            label
-          }}</span>
-        </template>
-        <el-option
-          v-for="option in methods"
-          :key="option.value"
-          :label="option.label"
-          :value="option.value"
-        >
-          <span :style="{ color: option.color }">{{ option.label }}</span>
-        </el-option>
-      </el-select>
-    </el-col>
-    <el-col :span="16">
-      <el-input
-        placeholder="请输入接口 URL"
-        clearable
-        v-model="requestForm.apiUrl"
-      >
-        <template #prepend>
-          <el-popover
-            placement="top-start"
-            title="URL前缀"
-            :width="200"
-            trigger="hover"
-            content="可以在项目的环境设置中更改(暂不支持...)"
-          >
-            <template #reference>
-              <div>{{ baseUrl == "" ? "前缀" : baseUrl }}</div>
+  <el-form ref="formRef" :model="requestForm" :rules="rules">
+    <el-row :gutter="16">
+      <el-col :span="4">
+        <el-form-item prop="requestMethod">
+          <el-select placeholder="请选择请求方法" v-model="requestForm.requestMethod">
+            <template #label="{ label, value }">
+              <span :style="{ color: labelStyles[value], 'font-weight': 'bold' }">{{ label }}</span>
             </template>
-          </el-popover>
-        </template>
-      </el-input>
-    </el-col>
-    <el-col :span="2">
-      <!-- 发送按钮 -->
-      <el-button type="primary" @click="sendRequest" style="width: 100%">
-        发送
-        <el-icon class="el-icon--right">
-          <Connection />
-        </el-icon>
-      </el-button>
-    </el-col>
-    <el-col :span="2">
-      <el-button type="info" @click="handleSave" style="width: 100%">
-        保存
-        <el-icon class="el-icon--right">
-          <MessageBox />
-        </el-icon>
-      </el-button>
-    </el-col>
-  </el-row>
-  <!-- 查询参数、鉴权、请求头和请求体选项卡 -->
-  <el-row :gutter="16">
-    <el-col :span="24">
-      <div :style="{ marginTop: '10px' }" class="card">
-        <el-tabs v-model="queryType">
-          <el-tab-pane label="Params" name="query">
-            <div class="query-params">
-              <!-- 查询参数 -->
-              <QueryTable v-model:queryParams="requestForm.queryParams" />
-            </div>
-          </el-tab-pane>
-          <el-tab-pane label="Auth" name="auth">
-            <div class="query-params">
-              <!-- 鉴权类型选择 -->
-              <el-select
-                placeholder="请选择请求类型"
-                v-model="requestForm.authType"
+            <el-option
+              v-for="option in methods"
+              :key="option.value"
+              :label="option.label"
+              :value="option.value"
+            >
+              <span :style="{ color: option.color }">{{ option.label }}</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col :span="16">
+        <el-form-item prop="apiUrl">
+          <el-input placeholder="请输入接口 URL" clearable v-model="requestForm.apiUrl">
+            <template #prepend>
+              <el-popover
+                placement="top-start"
+                title="URL前缀"
+                :width="200"
+                trigger="hover"
+                content="可以在项目的环境设置中更改(暂不支持...)"
               >
-                <el-option
-                  v-for="(item, index) in authOptions"
-                  :key="index"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </div>
-          </el-tab-pane>
-          <el-tab-pane label="Headers" name="header">
-            <div class="query-params">
-              <!-- 请求头参数 -->
-              <QueryTable v-model:queryParams="requestForm.queryHeaders" />
-            </div>
-          </el-tab-pane>
-          <el-tab-pane label="Body" name="body">
-            <div class="query-params">
-              <el-radio-group v-model="bodyType">
-                <el-radio
-                  v-for="(option, index) in bodyOptions"
-                  :key="index"
-                  :value="option.value"
-                >
-                  {{ option.label }}
-                </el-radio>
-              </el-radio-group>
-              <!-- 根据选中的 queryBody 显示不同的内容 -->
-              <div class="query-body-container">
-                <div v-if="bodyType === 1">
-                  <el-empty :image-size="70" />
-                </div>
-                <div v-if="bodyType === 2">
-                  <QueryTable v-model:queryParams="requestForm.queryBodyForm" />
-                </div>
-                <div v-if="bodyType === 3">
-                  <QueryTable
-                    v-model:queryParams="requestForm.queryBodyFormX"
+                <template #reference>
+                  <div>{{ baseUrl == "" ? "前缀" : baseUrl }}</div>
+                </template>
+              </el-popover>
+            </template>
+          </el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="2">
+        <!-- 发送按钮 -->
+        <el-button type="primary" @click="sendRequest" style="width: 100%">
+          发送
+          <el-icon class="el-icon--right">
+            <Connection />
+          </el-icon>
+        </el-button>
+      </el-col>
+      <el-col :span="2">
+        <el-button type="info" @click="handleSave" style="width: 100%">
+          保存
+          <el-icon class="el-icon--right">
+            <MessageBox />
+          </el-icon>
+        </el-button>
+      </el-col>
+    </el-row>
+    <!-- 查询参数、鉴权、请求头和请求体选项卡 -->
+    <el-row :gutter="16">
+      <el-col :span="24">
+        <div :style="{ marginTop: '10px' }" class="card">
+          <el-tabs v-model="queryType">
+            <el-tab-pane label="Params" name="query">
+              <div class="query-params">
+                <!-- 查询参数 -->
+                <QueryTable v-model:queryParams="requestForm.queryParams" />
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="Auth" name="auth">
+              <div class="query-params">
+                <!-- 鉴权类型选择 -->
+                <el-select placeholder="请选择请求类型" v-model="requestForm.authType">
+                  <el-option
+                    v-for="(item, index) in authOptions"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.value"
                   />
-                </div>
-                <div v-if="bodyType === 4">
-                  <MonacoEditor
-                    language="json"
-                    v-model:value="requestForm.queryJsonBody"
-                    style="height: 250px"
-                  />
-                </div>
-                <div v-if="bodyType === 5">
-                  <el-input
-                    v-model="requestForm.queryXmlBody"
-                    :autosize="{ minRows: 6, maxRows: 10 }"
-                    type="textarea"
-                    placeholder="Please input"
-                  />
-                </div>
-                <div v-if="bodyType === 6">
-                  <el-input
-                    v-model="requestForm.queryRawBody"
-                    :autosize="{ minRows: 6, maxRows: 10 }"
-                    type="textarea"
-                    placeholder="Please input"
-                  />
+                </el-select>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="Headers" name="header">
+              <div class="query-params">
+                <!-- 请求头参数 -->
+                <QueryTable v-model:queryParams="requestForm.queryHeaders" />
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="Body" name="body">
+              <div class="query-params">
+                <el-radio-group v-model="bodyType">
+                  <el-radio
+                    v-for="(option, index) in bodyOptions"
+                    :key="index"
+                    :value="option.value"
+                  >
+                    {{ option.label }}
+                  </el-radio>
+                </el-radio-group>
+                <!-- 根据选中的 queryBody 显示不同的内容 -->
+                <div class="query-body-container">
+                  <div v-if="bodyType === 1">
+                    <el-empty :image-size="70" />
+                  </div>
+                  <div v-if="bodyType === 2">
+                    <QueryTable v-model:queryParams="requestForm.queryBodyForm" />
+                  </div>
+                  <div v-if="bodyType === 3">
+                    <QueryTable v-model:queryParams="requestForm.queryBodyFormX" />
+                  </div>
+                  <div v-if="bodyType === 4">
+                    <MonacoEditor
+                      language="json"
+                      v-model:value="requestForm.queryJsonBody"
+                      style="height: 250px"
+                    />
+                  </div>
+                  <div v-if="bodyType === 5">
+                    <el-input
+                      v-model="requestForm.queryXmlBody"
+                      :autosize="{ minRows: 6, maxRows: 10 }"
+                      type="textarea"
+                      placeholder="Please input"
+                    />
+                  </div>
+                  <div v-if="bodyType === 6">
+                    <el-input
+                      v-model="requestForm.queryRawBody"
+                      :autosize="{ minRows: 6, maxRows: 10 }"
+                      type="textarea"
+                      placeholder="Please input"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          </el-tab-pane>
-        </el-tabs>
-      </div>
-    </el-col>
-  </el-row>
+            </el-tab-pane>
+          </el-tabs>
+        </div>
+      </el-col>
+    </el-row>
+  </el-form>
 </template>
 
 <script setup lang="ts">
@@ -154,13 +146,8 @@ import QueryTable from "./QueryTable.vue";
 import { onMounted, PropType, ref, watch } from "vue";
 import { Connection, MessageBox } from "@element-plus/icons-vue";
 import { AxiosRequestConfig } from "axios";
-import { ElMessage } from "element-plus";
-import {
-  authOptions,
-  bodyOptions,
-  labelStyles,
-  methods
-} from "@/views/http-client/config";
+import { ElMessage, FormInstance } from "element-plus";
+import { authOptions, bodyOptions, labelStyles, methods } from "@/views/http-client/config";
 import AxiosService, { RequestConfig } from "@/utils/request";
 import MonacoEditor from "@/components/MonacoEditor/MonacoEditor";
 import { updateHttpConfig } from "@/api/modules/http";
@@ -210,6 +197,11 @@ const props = defineProps({
 });
 
 const baseUrl = ref("");
+const formRef = ref<FormInstance>(null);
+const rules = {
+  requestMethod: [{ required: true, message: "请选择请求方法", trigger: "change" }],
+  apiUrl: [{ required: true, message: "请输入接口 URL", trigger: "blur", max: 256 }]
+};
 const requestForm = ref<RequestForm>(props.initialValues);
 const httpInstance = new AxiosService(baseUrl.value);
 onMounted(() => {
@@ -223,7 +215,6 @@ watch(
 );
 
 const handleSave = async () => {
-  console.log(requestForm.value);
   const req: Http.ReqUpdate = {
     apiId: parseInt(props.apiId),
     requestMethod: requestForm.value.requestMethod,
@@ -244,6 +235,13 @@ const handleSave = async () => {
 
 const emit = defineEmits(["onSend", "onError", "onSuccess", "onSave"]);
 const sendRequest = async () => {
+  if (formRef.value) {
+    try {
+      await formRef.value.validate();
+    } catch (error) {
+      return;
+    }
+  }
   const {
     requestMethod,
     apiUrl,
